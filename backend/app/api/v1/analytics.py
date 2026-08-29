@@ -12,3 +12,8 @@ router = APIRouter(prefix="/analytics", tags=["analytics"])
 @router.get("/dashboard")
 async def dashboard(user=Depends(get_current_user), db: AsyncSession = Depends(get_db)):
     return ok(await svc.dashboard(db, user["id"]))
+
+
+@router.get("/corridors")
+async def corridors(user=Depends(get_current_user), db: AsyncSession = Depends(get_db)):
+    return ok(await svc.corridors(db, user["id"]))

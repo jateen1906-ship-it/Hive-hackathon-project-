@@ -40,6 +40,19 @@ async function unwrap(promise) {
   return res.data?.data;
 }
 
+// Fetch a file (with auth header) as a blob and trigger a browser download.
+export async function downloadFile(url, filename) {
+  const res = await client.get(url, { responseType: "blob" });
+  const blobUrl = window.URL.createObjectURL(res.data);
+  const a = document.createElement("a");
+  a.href = blobUrl;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  window.URL.revokeObjectURL(blobUrl);
+}
+
 export const api = {
   raw: client,
   get: (url, config) => unwrap(client.get(url, config)),
@@ -62,6 +75,7 @@ export const TripAPI = {
   remove: (id) => api.del(`/trips/${id}`),
   analyze: (id) => api.post(`/trips/${id}/analyze`),
   risk: (id) => api.get(`/trips/${id}/risk`),
+  reportPdf: (id) => downloadFile(`/trips/${id}/report.pdf`, `truckshield-risk-${String(id).slice(0, 8)}.pdf`),
 };
 export const VehicleAPI = {
   list: () => api.get("/vehicles"),
@@ -74,6 +88,7 @@ export const DocumentAPI = {
   validate: (id) => api.post(`/documents/${id}/validate`),
   upload: (formData) =>
     api.post("/documents", formData, { headers: { "Content-Type": "multipart/form-data" } }),
+  download: (id, filename) => downloadFile(`/documents/${id}/download`, filename || `document-${String(id).slice(0, 8)}`),
   downloadUrl: (id) => `${API_BASE}/documents/${id}/download`,
 };
 export const IncidentAPI = {
@@ -83,6 +98,7 @@ export const IncidentAPI = {
 };
 export const AnalyticsAPI = {
   dashboard: () => api.get("/analytics/dashboard"),
+  corridors: () => api.get("/analytics/corridors"),
 };
 export const RouteAPI = {
   analyze: (payload) => api.post("/routes/analyze", payload),

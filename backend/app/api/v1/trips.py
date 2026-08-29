@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from fastapi.responses import Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ...database import get_db
@@ -6,6 +7,7 @@ from ...schemas import TripIn, TripUpdate
 from ...security import get_current_user
 from ...envelope import ok, NotFound
 from ...services import trips as svc
+from ...services.report import build_risk_report_pdf
 
 router = APIRouter(prefix="/trips", tags=["trips"])
 
@@ -54,3 +56,13 @@ async def risk_(trip_id: str, user=Depends(get_current_user), db: AsyncSession =
     if not r:
         raise NotFound("Trip not found")
     return ok(r)
+
+
+@router.get("/{trip_id}/report.pdf")
+async def report_pdf_(trip_id: str, user=Depends(get_current_user), db: AsyncSession = Depends(get_db)):
+    pdf = await build_risk_report_pdf(db, user["id"], trip_id)
+    return Response(
+        content=pdf,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="truckshield-risk-{trip_id[:8]}.pdf"'},
+    )

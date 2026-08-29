@@ -42,6 +42,8 @@ export default function DocumentDetails() {
   const fields = doc.extracted_data?.fields || {};
   const val = doc.validation_result;
   const ocrError = doc.extracted_data?.error;
+  const pages = doc.extracted_data?.pages || [];
+  const pageCount = doc.extracted_data?.page_count || pages.length || 1;
 
   return (
     <div className="mx-auto max-w-4xl">
@@ -50,12 +52,10 @@ export default function DocumentDetails() {
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold">{doc.file_name}</h1>
-          <p className="text-sm capitalize text-muted-foreground">{doc.document_type?.replace("_", " ")} · {doc.provider || doc.extracted_data?.provider || "AI"} extraction</p>
+          <p className="text-sm capitalize text-muted-foreground">{doc.document_type?.replace("_", " ")} · {doc.provider || doc.extracted_data?.provider || "AI"} extraction · {pageCount} page{pageCount > 1 ? "s" : ""}</p>
         </div>
         <div className="flex gap-2">
-          <a href={DocumentAPI.downloadUrl(id)} target="_blank" rel="noreferrer">
-            <Button variant="outline" data-testid="document-download"><Download className="mr-2 h-4 w-4" />Download</Button>
-          </a>
+          <Button variant="outline" onClick={() => DocumentAPI.download(id, doc.file_name)} data-testid="document-download"><Download className="mr-2 h-4 w-4" />Download</Button>
           {!ocrError && (
             <Button variant="outline" onClick={() => validate.mutate()} disabled={validate.isPending} data-testid="document-revalidate">
               {validate.isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Re-checking…</> : <><RefreshCw className="mr-2 h-4 w-4" />Re-run pre-check</>}
@@ -130,6 +130,38 @@ export default function DocumentDetails() {
           {!val && !ocrError && <Card className="p-4 text-sm text-muted-foreground">No pre-check run yet.</Card>}
         </div>
       </div>
+      {pageCount > 1 && (
+        <div className="mt-5">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-700" data-testid="document-pages-breakdown">Page-by-page extraction</h2>
+          <div className="grid gap-4 md:grid-cols-2">
+            {pages.map((p) => {
+              const pf = p.fields || {};
+              const detected = Object.keys(FIELD_LABELS).filter((k) => pf[k]?.value);
+              return (
+                <Card key={p.page} className="p-4" data-testid={`document-page-${p.page}`}>
+                  <div className="mb-2 flex items-center justify-between">
+                    <span className="text-sm font-semibold">Page {p.page}</span>
+                    <span className="rounded-full bg-secondary px-2 py-0.5 text-xs text-muted-foreground">{detected.length} field{detected.length !== 1 ? "s" : ""}</span>
+                  </div>
+                  {detected.length === 0 ? (
+                    <p className="text-xs text-muted-foreground">No fields detected on this page.</p>
+                  ) : (
+                    <div className="space-y-1">
+                      {detected.map((k) => (
+                        <div key={k} className="flex items-center justify-between text-xs">
+                          <span className="text-muted-foreground">{FIELD_LABELS[k]}</span>
+                          <span className="font-mono">{pf[k].value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       <div className="mt-5"><Disclaimer /></div>
     </div>
   );

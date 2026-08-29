@@ -1,30 +1,26 @@
 [
   {
-    "content": "Phase 1: Core POC (Neon DB, JWT, risk engine, Gemini OCR, storage)",
+    "content": "Feature 1: Multi-page PDF e-way bill OCR",
     "status": "completed"
   },
   {
-    "content": "Phase 2: Design blueprint via design_agent",
+    "content": "Feature 2: One-tap PDF risk report export",
     "status": "completed"
   },
   {
-    "content": "Phase 2: Backend foundation + engines + routers + seed",
+    "content": "Feature 3: Corridor heatmap live map",
     "status": "completed"
   },
   {
-    "content": "Phase 2: Frontend - services/auth/context/routing + design system",
+    "content": "Feature 4: README + docs/ + pytest test suite (22 tests pass)",
     "status": "completed"
   },
   {
-    "content": "Phase 2: Frontend pages (all 14 pages)",
+    "content": "Testing: new features verified (API + in-browser)",
     "status": "completed"
   },
   {
-    "content": "Phase 2: End-to-end testing (backend 100%, journeys A/B/C verified)",
-    "status": "completed"
-  },
-  {
-    "content": "Phase 2: Fixed analytics alert score formatting; verified session/direct-nav (no real bug)",
-    "status": "completed"
+    "content": "GitHub: guide safe push via platform integration",
+    "status": "in_progress"
   }
 ]

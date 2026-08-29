@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { ArrowLeft, Gauge, Loader2, CheckCircle2, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Gauge, Loader2, CheckCircle2, AlertTriangle, Download } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TripAPI } from "@/lib/apiClient";
@@ -53,6 +53,19 @@ export default function RiskReport() {
     onError: (e) => toast.error(e.message || "Analysis failed"),
   });
 
+  const [exporting, setExporting] = React.useState(false);
+  const exportPdf = async () => {
+    setExporting(true);
+    try {
+      await TripAPI.reportPdf(id);
+      toast.success("Report downloaded");
+    } catch (e) {
+      toast.error(e.message || "Export failed");
+    } finally {
+      setExporting(false);
+    }
+  };
+
   if (isLoading) return <LoadingState label="Loading risk report…" />;
   if (isError) return <ErrorState message={error?.message} onRetry={refetch} />;
 
@@ -73,7 +86,12 @@ export default function RiskReport() {
           <Card className="p-5 sm:p-6">
             <div className="mb-2 flex items-center justify-between">
               <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Pre-departure risk report</span>
-              {trip.is_demo && <SyntheticBadge />}
+              <div className="flex items-center gap-2">
+                {trip.is_demo && <SyntheticBadge />}
+                <Button size="sm" variant="outline" onClick={exportPdf} disabled={exporting} data-testid="risk-export-pdf">
+                  {exporting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Preparing…</> : <><Download className="mr-2 h-4 w-4" />Export PDF</>}
+                </Button>
+              </div>
             </div>
             <div className="grid items-center gap-6 sm:grid-cols-2">
               <div>
