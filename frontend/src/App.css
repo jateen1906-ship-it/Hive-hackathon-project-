@@ -1,0 +1,14 @@
+.App { min-height: 100vh; }
+
+.ts-hero-gradient {
+  background:
+    radial-gradient(1200px circle at 15% 10%, rgba(15,23,42,0.10), transparent 55%),
+    radial-gradient(900px circle at 85% 0%, rgba(2,132,199,0.10), transparent 50%),
+    hsl(222 47% 11%);
+}
+
+.ts-grid-lines {
+  background-image: linear-gradient(rgba(148,163,184,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148,163,184,0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+}

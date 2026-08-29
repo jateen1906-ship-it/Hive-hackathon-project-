@@ -1,0 +1,30 @@
+[
+  {
+    "content": "Phase 1: Core POC (Neon DB, JWT, risk engine, Gemini OCR, storage)",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 2: Design blueprint via design_agent",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 2: Backend foundation + engines + routers + seed",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 2: Frontend - services/auth/context/routing + design system",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 2: Frontend pages (all 14 pages)",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 2: End-to-end testing (backend 100%, journeys A/B/C verified)",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 2: Fixed analytics alert score formatting; verified session/direct-nav (no real bug)",
+    "status": "completed"
+  }
+]
