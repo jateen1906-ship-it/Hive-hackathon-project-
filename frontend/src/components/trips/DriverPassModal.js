@@ -4,17 +4,22 @@ import { QrCode, Copy, Check, ExternalLink, Smartphone, Share2, Printer } from "
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
-export function DriverPassModal({ trip }) {
+export function DriverPassModal({ trip, className = "" }) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  if (!trip?.id) return null;
+  const tripId = typeof trip === "string" ? trip : (trip?.id || trip?._id);
+  if (!tripId) return null;
 
-  const driverUrl = `${window.location.origin}/driver/sos/${trip.id}`;
+  const vehicleNumber = typeof trip === "object" ? trip?.vehicle_number : "";
+  const origin = typeof trip === "object" ? trip?.origin : "";
+  const destination = typeof trip === "object" ? trip?.destination : "";
+
+  const driverUrl = `${window.location.origin}/driver/sos/${tripId}`;
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(driverUrl)}&margin=10`;
 
   const copyLink = () => {
-    const text = `TruckShield Driver Fast-Pass for ${trip.vehicle_number || "Truck"} (${trip.origin} → ${trip.destination}): ${driverUrl}`;
+    const text = `TruckShield Driver Fast-Pass for ${vehicleNumber || "Truck"} (${origin} → ${destination}): ${driverUrl}`;
     navigator.clipboard.writeText(text);
     setCopied(true);
     toast.success("Driver Fast-Pass link copied to clipboard!");
@@ -22,7 +27,7 @@ export function DriverPassModal({ trip }) {
   };
 
   const shareWhatsApp = () => {
-    const text = `TruckShield Driver Fast-Pass for ${trip.vehicle_number || "Truck"} (${trip.origin} → ${trip.destination}):\n${driverUrl}`;
+    const text = `TruckShield Driver Fast-Pass for ${vehicleNumber || "Truck"} (${origin} → ${destination}):\n${driverUrl}`;
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, "_blank");
   };
 
@@ -32,7 +37,7 @@ export function DriverPassModal({ trip }) {
     printWindow.document.write(`
       <html>
         <head>
-          <title>Driver Dispatch Slip - ${trip.vehicle_number || "TruckShield"}</title>
+          <title>Driver Dispatch Slip - ${vehicleNumber || "TruckShield"}</title>
           <style>
             body { font-family: sans-serif; padding: 30px; text-align: center; color: #0f172a; }
             .card { border: 2px solid #0f172a; border-radius: 12px; padding: 24px; max-width: 400px; margin: auto; }
@@ -47,8 +52,8 @@ export function DriverPassModal({ trip }) {
           <div class="card">
             <div class="logo">TruckShield Fleet Dispatch</div>
             <div style="font-size: 12px; text-transform: uppercase; color: #64748b;">Driver Fast-Pass Slip</div>
-            <div class="truck">${trip.vehicle_number || "DECLARED VEHICLE"}</div>
-            <div class="route">${trip.origin} → ${trip.destination}</div>
+            <div class="truck">${vehicleNumber || "DECLARED VEHICLE"}</div>
+            <div class="route">${origin} → ${destination}</div>
             <img class="qr" src="${qrUrl}" alt="Driver QR" />
             <div class="instructions">
               <strong>Scan with Phone Camera if stopped by RTO/Checkpost.</strong><br />
@@ -65,15 +70,14 @@ export function DriverPassModal({ trip }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button 
-          variant="outline" 
-          size="sm"
+        <button 
+          type="button"
           data-testid="trip-driver-qr-btn"
-          className="border-slate-200 text-xs font-semibold text-slate-800 hover:bg-slate-50 h-8 flex items-center gap-1.5"
+          className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-[#cca25a] bg-[#fffde6] text-[#715113] hover:bg-[#fff9cb] text-xs font-bold shadow-2xs transition-colors cursor-pointer ${className}`}
         >
-          <QrCode className="h-3.5 w-3.5 text-[#cca25a]" />
-          <span>Driver Fast-Pass QR</span>
-        </Button>
+          <QrCode className="h-3.5 w-3.5 text-[#b88e44]" />
+          <span>Driver QR</span>
+        </button>
       </DialogTrigger>
 
       <DialogContent className="max-w-md bg-white border-slate-200 text-slate-900 p-6">
@@ -99,10 +103,10 @@ export function DriverPassModal({ trip }) {
           </div>
           <div className="mt-3 text-center">
             <div className="font-mono text-sm font-bold text-slate-900">
-              {trip.vehicle_number || "Assigned Vehicle"}
+              {vehicleNumber || "Assigned Vehicle"}
             </div>
             <div className="text-xs text-slate-500 font-medium">
-              {trip.origin} → {trip.destination}
+              {origin} → {destination}
             </div>
           </div>
         </div>
@@ -129,8 +133,9 @@ export function DriverPassModal({ trip }) {
 
         <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-xs">
           <button 
+            type="button"
             onClick={printPass}
-            className="text-slate-600 hover:text-slate-900 font-semibold flex items-center gap-1"
+            className="text-slate-600 hover:text-slate-900 font-semibold flex items-center gap-1 cursor-pointer"
           >
             <Printer className="h-3.5 w-3.5 text-slate-500" /> Print Dispatch Slip
           </button>
