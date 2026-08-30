@@ -59,10 +59,6 @@ export default function Landing() {
       {/* Hero Section */}
       <section className="bg-white border-b border-slate-200 py-16 sm:py-24">
         <div className="mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#fef9ee] border border-[#cca25a]/30 text-[#8a6522] text-xs font-bold mb-6">
-            <Sparkles className="h-3.5 w-3.5 text-[#cca25a]" /> Pre-Dispatch Risk Engine for Indian Freight
-          </div>
-          
           <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-6xl md:text-7xl leading-[1.1]">
             Plan The Route.<br />
             <span className="text-[#cca25a]">
