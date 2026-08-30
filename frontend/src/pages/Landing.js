@@ -107,7 +107,7 @@ export default function Landing() {
 
           <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-3">
             <div className="bg-white rounded-xl p-8 border border-slate-200 shadow-2xs">
-              <div className="text-4xl font-extrabold font-mono text-[#cca25a]/40">01</div>
+              <div className="text-4xl font-extrabold tracking-tight text-[#cca25a]">01</div>
               <h3 className="mt-4 text-lg font-bold text-slate-900">Input Trip & Consignment</h3>
               <p className="mt-2 text-xs text-slate-600 leading-relaxed font-medium">
                 Declare origin, destination, invoice value, carrier registration, and cargo nature.
@@ -115,7 +115,7 @@ export default function Landing() {
             </div>
 
             <div className="bg-white rounded-xl p-8 border border-slate-200 shadow-2xs">
-              <div className="text-4xl font-extrabold font-mono text-[#cca25a]/40">02</div>
+              <div className="text-4xl font-extrabold tracking-tight text-[#cca25a]">02</div>
               <h3 className="mt-4 text-lg font-bold text-slate-900">Optical OCR Verification</h3>
               <p className="mt-2 text-xs text-slate-600 leading-relaxed font-medium">
                 Upload tax invoices and E-Way bills for instant optical field extraction and statutory rule matching.
@@ -123,7 +123,7 @@ export default function Landing() {
             </div>
 
             <div className="bg-white rounded-xl p-8 border border-slate-200 shadow-2xs">
-              <div className="text-4xl font-extrabold font-mono text-[#cca25a]/40">03</div>
+              <div className="text-4xl font-extrabold tracking-tight text-[#cca25a]">03</div>
               <h3 className="mt-4 text-lg font-bold text-slate-900">Explainable Risk Score</h3>
               <p className="mt-2 text-xs text-slate-600 leading-relaxed font-medium">
                 Receive factor-by-factor risk signals, live OSRM routing checks, and actionable driver checklists.
@@ -206,7 +206,7 @@ export default function Landing() {
               <span className="font-bold text-slate-900 text-sm">TruckShield Compliance Intel</span>
             </div>
             <div className="text-xs text-slate-500">
-              Demo credentials: <code className="rounded bg-slate-100 border border-slate-200 px-2 py-0.5 text-slate-800 font-mono">demo@truckshield.app</code> / <code className="rounded bg-slate-100 border border-slate-200 px-2 py-0.5 text-slate-800 font-mono">Demo@12345</code>
+              Demo credentials: <code className="rounded bg-slate-100 border border-slate-200 px-2 py-0.5 text-slate-800">demo@truckshield.app</code> / <code className="rounded bg-slate-100 border border-slate-200 px-2 py-0.5 text-slate-800">Demo@12345</code>
             </div>
           </div>
           <p className="mt-6 text-[11px] text-slate-400 max-w-3xl leading-relaxed">
