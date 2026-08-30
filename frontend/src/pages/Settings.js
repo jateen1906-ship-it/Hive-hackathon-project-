@@ -2,24 +2,106 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ShieldCheck, Building2, Mail, Cpu, CreditCard, KeyRound, Copy, Loader2, Trash2 } from "lucide-react";
+import { ShieldCheck, Building2, Mail, Phone, Cpu, CreditCard, KeyRound, Copy, Loader2, Trash2, Pencil, Check, X, Sparkles } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/context/AuthContext";
 import { useBilling } from "@/hooks/useBilling";
-import { BillingAPI } from "@/lib/apiClient";
+import { BillingAPI, AuthAPI } from "@/lib/apiClient";
 import { PageHeader } from "@/components/common/PageHeader";
 import { Disclaimer, SyntheticBadge } from "@/components/common/Disclaimer";
 import { fmtDate } from "@/lib/riskMeta";
 
 function Row({ icon: Icon, label, value }) {
   return (
-    <div className="flex items-center gap-3 px-4 py-3">
-      <Icon className="h-4 w-4 text-slate-500" />
-      <span className="w-32 text-xs text-muted-foreground">{label}</span>
-      <span className="text-sm">{value || "—"}</span>
+    <div className="flex items-center gap-3 px-5 py-3.5">
+      <Icon className="h-4 w-4 text-orange-400" />
+      <span className="w-32 text-xs text-[#9e958d]">{label}</span>
+      <span className="text-xs font-semibold text-white">{value || "—"}</span>
     </div>
+  );
+}
+
+function ProfileEdit({ user, isDemo }) {
+  const qc = useQueryClient();
+  const [editing, setEditing] = useState(false);
+  const [form, setForm] = useState({ full_name: "", company_name: "", phone: "" });
+
+  const startEdit = () => {
+    setForm({
+      full_name: user?.full_name || "",
+      company_name: user?.company_name || "",
+      phone: user?.phone || "",
+    });
+    setEditing(true);
+  };
+
+  const save = useMutation({
+    mutationFn: () => AuthAPI.updateMe(form),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["auth-me"] });
+      window.location.reload();
+    },
+    onError: (e) => toast.error(e.message || "Failed to save profile"),
+  });
+
+  return (
+    <Card className="alvero-card divide-y divide-white/[0.04] border-white/[0.08]">
+      <div className="flex items-center justify-between p-5 bg-white/[0.01]">
+        <div className="flex items-center gap-2">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-white">Operator Profile</h2>
+          {isDemo && <SyntheticBadge />}
+        </div>
+        {!isDemo && (
+          editing ? (
+            <div className="flex gap-1.5">
+              <Button size="sm" onClick={() => save.mutate()} disabled={save.isPending} className="btn-sunset-orange text-xs h-7">
+                {save.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <><Check className="mr-1 h-3 w-3" />Save</>}
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => setEditing(false)} disabled={save.isPending} className="h-7 text-[#a8a29e] hover:text-white">
+                <X className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+          ) : (
+            <Button size="sm" variant="outline" onClick={startEdit} className="border-white/[0.08] hover:bg-white/[0.04] text-xs h-7 text-[#d6d3d1]">
+              <Pencil className="mr-1.5 h-3 w-3" />Edit Profile
+            </Button>
+          )
+        )}
+      </div>
+      <div className="flex items-center gap-3 px-5 py-3.5">
+        <Mail className="h-4 w-4 text-orange-400" />
+        <span className="w-32 text-xs text-[#9e958d]">Email Address</span>
+        <span className="text-xs font-mono font-semibold text-white">{user?.email || "—"}</span>
+      </div>
+      {editing ? (
+        <div className="space-y-3.5 p-5">
+          <div>
+            <label className="text-xs text-[#9e958d]">Full Name</label>
+            <Input className="mt-1 bg-[#12100e] border-white/[0.08] text-white text-xs" value={form.full_name}
+              onChange={(e) => setForm(f => ({ ...f, full_name: e.target.value }))} />
+          </div>
+          <div>
+            <label className="text-xs text-[#9e958d]">Fleet / Company</label>
+            <Input className="mt-1 bg-[#12100e] border-white/[0.08] text-white text-xs" value={form.company_name}
+              onChange={(e) => setForm(f => ({ ...f, company_name: e.target.value }))} />
+          </div>
+          <div>
+            <label className="text-xs text-[#9e958d]">Phone Contact</label>
+            <Input className="mt-1 bg-[#12100e] border-white/[0.08] text-white text-xs" value={form.phone} type="tel"
+              onChange={(e) => setForm(f => ({ ...f, phone: e.target.value }))} />
+          </div>
+        </div>
+      ) : (
+        <>
+          <Row icon={ShieldCheck} label="Full Name" value={user?.full_name} />
+          <Row icon={Building2} label="Fleet / Company" value={user?.company_name} />
+          <Row icon={Phone} label="Phone Contact" value={user?.phone} />
+          <Row icon={ShieldCheck} label="Account Role" value={user?.role} />
+        </>
+      )}
+    </Card>
   );
 }
 
@@ -40,30 +122,45 @@ export default function Settings() {
   });
 
   return (
-    <div className="mx-auto max-w-2xl">
-      <PageHeader title="Settings" subtitle="Your account, plan and billing." />
+    <div className="mx-auto max-w-2xl space-y-6">
+      <PageHeader title="Workspace Settings" subtitle="Account credentials, plan subscriptions, and API tokens." />
 
       {/* Billing */}
-      <Card className="mb-5">
-        <div className="flex items-center justify-between border-b border-border p-4">
-          <div className="flex items-center gap-2"><CreditCard className="h-4 w-4 text-slate-600" /><h2 className="text-sm font-semibold">Plan & Billing</h2></div>
-          {ent && <span className="rounded-full bg-secondary px-2.5 py-1 text-xs font-semibold" data-testid="settings-current-plan">{PLAN_LABEL[ent.plan]} · {ent.status}</span>}
+      <Card className="alvero-card border-white/[0.08]">
+        <div className="flex items-center justify-between border-b border-white/[0.06] p-5 bg-white/[0.01]">
+          <div className="flex items-center gap-2">
+            <CreditCard className="h-4 w-4 text-orange-400" />
+            <h2 className="text-xs font-bold uppercase tracking-wider text-white">Subscription & Entitlements</h2>
+          </div>
+          {ent && (
+            <span className="rounded-full bg-orange-500/10 border border-orange-500/30 px-3 py-1 text-xs font-bold text-orange-400" data-testid="settings-current-plan">
+              {PLAN_LABEL[ent.plan]} · {ent.status?.toUpperCase()}
+            </span>
+          )}
         </div>
-        {billing.isLoading ? <div className="p-4 text-sm text-muted-foreground">Loading…</div> : ent && (
-          <div className="p-4">
+        {billing.isLoading ? <div className="p-6 text-xs text-[#9e958d]">Loading plan parameters…</div> : ent && (
+          <div className="p-6">
             <div className="grid gap-3 sm:grid-cols-3">
-              <div><div className="text-xs text-muted-foreground">Checks this month</div>
-                <div className="font-mono text-lg">{ent.usage.checks_used}{ent.usage.checks_limit != null ? ` / ${ent.usage.checks_limit}` : " (unlimited)"}</div></div>
-              <div><div className="text-xs text-muted-foreground">Active share links</div>
-                <div className="font-mono text-lg">{ent.usage.active_share_links}{ent.usage.share_link_limit != null ? ` / ${ent.usage.share_link_limit}` : " (unlimited)"}</div></div>
-              <div><div className="text-xs text-muted-foreground">Renews</div>
-                <div className="text-sm">{ent.current_period_end ? fmtDate(ent.current_period_end) : "—"}</div></div>
+              <div className="rounded-xl bg-white/[0.02] border border-white/[0.04] p-3">
+                <div className="text-[11px] text-[#9e958d]">Monthly Checks</div>
+                <div className="font-mono text-lg font-bold text-white mt-0.5">{ent.usage.checks_used}{ent.usage.checks_limit != null ? ` / ${ent.usage.checks_limit}` : " (unlimited)"}</div>
+              </div>
+              <div className="rounded-xl bg-white/[0.02] border border-white/[0.04] p-3">
+                <div className="text-[11px] text-[#9e958d]">Active Share Links</div>
+                <div className="font-mono text-lg font-bold text-white mt-0.5">{ent.usage.active_share_links}{ent.usage.share_link_limit != null ? ` / ${ent.usage.share_link_limit}` : " (unlimited)"}</div>
+              </div>
+              <div className="rounded-xl bg-white/[0.02] border border-white/[0.04] p-3">
+                <div className="text-[11px] text-[#9e958d]">Renewal Cycle</div>
+                <div className="text-xs font-semibold text-white mt-1.5">{ent.current_period_end ? fmtDate(ent.current_period_end) : "Permanent Active"}</div>
+              </div>
             </div>
-            <div className="mt-4 flex flex-wrap gap-2">
-              <Button onClick={() => navigate("/pricing")} data-testid="settings-upgrade">{ent.plan === "pro" ? "View plans" : "Upgrade"}</Button>
+            <div className="mt-5 flex flex-wrap gap-2.5">
+              <Button onClick={() => navigate("/pricing")} data-testid="settings-upgrade" className="btn-sunset-orange font-semibold text-xs rounded-xl">
+                {ent.plan === "pro" ? "View Tiers" : "Upgrade Plan"}
+              </Button>
               {ent.plan !== "free" && (
-                <Button variant="outline" onClick={() => cancel.mutate()} disabled={cancel.isPending} data-testid="settings-cancel-plan">
-                  {cancel.isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Cancelling…</> : "Cancel plan"}
+                <Button variant="outline" onClick={() => cancel.mutate()} disabled={cancel.isPending} data-testid="settings-cancel-plan" className="border-white/[0.08] hover:bg-white/[0.04] text-xs font-semibold text-rose-400 hover:text-rose-300">
+                  {cancel.isPending ? <><Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />Cancelling…</> : "Cancel subscription"}
                 </Button>
               )}
             </div>
@@ -75,26 +172,17 @@ export default function Settings() {
       {billing.can.apiAccess && <ApiKeys />}
 
       {/* Profile */}
-      <Card className="divide-y divide-border">
-        <div className="flex items-center justify-between p-4">
-          <h2 className="text-sm font-semibold">Profile</h2>
-          {isDemo && <SyntheticBadge />}
-        </div>
-        <Row icon={Mail} label="Email" value={user?.email} />
-        <Row icon={Building2} label="Company" value={user?.company_name} />
-        <Row icon={ShieldCheck} label="Role" value={user?.role} />
-      </Card>
+      <ProfileEdit user={user} isDemo={isDemo} />
 
-      <Card className="mt-5 divide-y divide-border">
-        <div className="p-4"><h2 className="text-sm font-semibold">About the risk engine</h2></div>
-        <Row icon={Cpu} label="Engine" value="risk-engine-1.0 (deterministic)" />
-        <div className="px-4 py-3 text-sm text-muted-foreground">
-          Route/distance uses a live provider (OSRM) on paid plans, or a labelled "Estimated" demo
-          provider on Free. Corridor intelligence is synthetic and clearly labelled.
+      <Card className="alvero-card divide-y divide-white/[0.04] border-white/[0.08]">
+        <div className="p-5"><h2 className="text-xs font-bold uppercase tracking-wider text-white">Risk Engine Core</h2></div>
+        <Row icon={Cpu} label="Core Version" value="risk-engine-core-v2.2 (explainable)" />
+        <div className="px-5 py-3.5 text-xs text-[#9e958d] leading-relaxed">
+          Route & distance matrix connects to live OSRM highway routing. Corridor intelligence calculates synthetic checkpost signals.
         </div>
       </Card>
 
-      <div className="mt-5"><Disclaimer /></div>
+      <Disclaimer />
     </div>
   );
 }
@@ -114,29 +202,32 @@ function ApiKeys() {
   });
 
   return (
-    <Card className="mb-5">
-      <div className="flex items-center justify-between border-b border-border p-4">
-        <div className="flex items-center gap-2"><KeyRound className="h-4 w-4 text-slate-600" /><h2 className="text-sm font-semibold">API Access (Pro)</h2></div>
-        <Button size="sm" onClick={() => create.mutate()} disabled={create.isPending} data-testid="settings-create-apikey">
-          {create.isPending ? "Generating…" : "Generate key"}
+    <Card className="alvero-card border-white/[0.08]">
+      <div className="flex items-center justify-between border-b border-white/[0.06] p-5 bg-white/[0.01]">
+        <div className="flex items-center gap-2">
+          <KeyRound className="h-4 w-4 text-orange-400" />
+          <h2 className="text-xs font-bold uppercase tracking-wider text-white">Developer API Access (Pro)</h2>
+        </div>
+        <Button size="sm" onClick={() => create.mutate()} disabled={create.isPending} data-testid="settings-create-apikey" className="btn-sunset-orange font-semibold text-xs h-8">
+          {create.isPending ? "Generating…" : "Generate Key"}
         </Button>
       </div>
-      <div className="p-4">
+      <div className="p-5">
         {newKey && (
-          <div className="mb-3 rounded-lg border border-emerald-300 bg-emerald-50 p-3">
-            <div className="text-xs font-medium text-emerald-800">Copy this key now — it won't be shown again.</div>
-            <div className="mt-1 flex items-center gap-2">
-              <code className="flex-1 truncate rounded bg-white px-2 py-1 text-xs">{newKey}</code>
-              <Button size="icon" variant="outline" onClick={() => { navigator.clipboard.writeText(newKey); toast.success("Copied"); }}><Copy className="h-4 w-4" /></Button>
+          <div className="mb-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3.5">
+            <div className="text-xs font-bold text-emerald-400">Copy this API token now — it will not be displayed again.</div>
+            <div className="mt-2 flex items-center gap-2">
+              <code className="flex-1 truncate rounded-lg bg-[#12100e] border border-white/[0.08] px-2.5 py-1.5 text-xs text-emerald-300 font-mono">{newKey}</code>
+              <Button size="icon" variant="outline" onClick={() => { navigator.clipboard.writeText(newKey); toast.success("API key copied"); }} className="h-8 w-8 border-white/[0.08]"><Copy className="h-3.5 w-3.5" /></Button>
             </div>
           </div>
         )}
-        {(keys || []).length === 0 ? <p className="text-sm text-muted-foreground">No API keys yet.</p> : (
-          <div className="divide-y divide-border">
+        {(keys || []).length === 0 ? <p className="text-xs text-[#9e958d]">No developer API tokens active.</p> : (
+          <div className="divide-y divide-white/[0.04]">
             {keys.map((k) => (
-              <div key={k.id} className="flex items-center justify-between py-2 text-sm">
-                <span className="font-mono">{k.key_prefix}••• {k.revoked && <span className="text-red-600">(revoked)</span>}</span>
-                {!k.revoked && <Button size="icon" variant="ghost" onClick={() => revoke.mutate(k.id)}><Trash2 className="h-4 w-4 text-red-600" /></Button>}
+              <div key={k.id} className="flex items-center justify-between py-2.5 text-xs">
+                <span className="font-mono text-white">{k.key_prefix}•••••••••••• {k.revoked && <span className="text-rose-400 font-sans">(revoked)</span>}</span>
+                {!k.revoked && <Button size="icon" variant="ghost" onClick={() => revoke.mutate(k.id)} className="h-7 w-7 text-rose-400 hover:text-rose-300"><Trash2 className="h-3.5 w-3.5" /></Button>}
               </div>
             ))}
           </div>

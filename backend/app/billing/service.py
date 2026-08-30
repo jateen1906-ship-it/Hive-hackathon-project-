@@ -38,7 +38,7 @@ async def is_demo_user(db, user_id) -> bool:
 
 # ---------------- Plans bootstrap ----------------
 async def ensure_plans(db):
-    """Store tier amounts locally (Orders flow — no Razorpay Plan objects needed)."""
+    """Upsert tier amounts — updates existing rows so price changes take effect."""
     for tier in PAID_TIERS:
         row = (await db.execute(
             select(BillingPlan).where(BillingPlan.tier == tier)
@@ -49,6 +49,9 @@ async def ensure_plans(db):
                 tier=tier,
                 amount=PLANS[tier]["price"],
             ))
+        else:
+            # Update price if it has changed
+            row.amount = PLANS[tier]["price"]
     await db.commit()
 
 
@@ -160,7 +163,21 @@ async def active_share_link_count(db, user_id) -> int:
 
 async def entitlements(db, user_id) -> dict:
     sub = await get_subscription(db, user_id)
-    effective_plan = sub["plan"] if (sub["plan"] == FREE or sub["status"] == "active") else FREE
+    # Enforce plan expiry: if period has ended, downgrade to FREE
+    now = datetime.now(timezone.utc)
+    period_end = sub.get("current_period_end")
+    if period_end and isinstance(period_end, str):
+        try:
+            period_end = datetime.fromisoformat(period_end.replace("Z", "+00:00"))
+        except Exception:
+            period_end = None
+    plan_is_valid = (
+        sub["plan"] == FREE
+        or sub["status"] != "active"
+        or (period_end is None)  # demo/admin accounts with no expiry
+        or (period_end and period_end > now)
+    )
+    effective_plan = sub["plan"] if (sub["status"] == "active" and plan_is_valid) else FREE
     cfg = plan_config(effective_plan)
     used = await get_usage(db, user_id)
     limit = cfg["checks_per_month"]
@@ -222,6 +239,17 @@ async def verify_and_activate(db, user_id, payment_id, order_id, signature):
     await _upsert_subscription(db, user_id, plan=tier, status="active",
                                razorpay_subscription_id=order_id,
                                current_period_end=period_end)
+    # Send payment confirmation email (silent fail)
+    try:
+        from sqlalchemy import select as _sel
+        from ..models import Profile
+        prof = (await db.execute(_sel(Profile).where(Profile.id == user_id))).scalar_one_or_none()
+        if prof:
+            from ..integrations.email import send_payment_confirmation_email
+            plan_name = PLANS.get(tier, {}).get("name", tier.title())
+            send_payment_confirmation_email(prof.email, plan_name, period_end.strftime("%d %b %Y"))
+    except Exception:
+        pass
     return await get_subscription(db, user_id)
 
 

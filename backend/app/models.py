@@ -248,3 +248,13 @@ class BillingPlan(Base):
     razorpay_plan_id = Column(String(255))
     amount = Column(Integer)
     created_at = Column(DateTime(timezone=True), default=_now)
+
+
+class PasswordResetToken(Base):
+    __tablename__ = "password_reset_tokens"
+    id = Column(GUID(), primary_key=True, default=_uuid)
+    user_id = Column(GUID(), ForeignKey("profiles.id", ondelete="CASCADE"), index=True)
+    token_hash = Column(String(255), unique=True, nullable=False)
+    expires_at = Column(DateTime(timezone=True), nullable=False)
+    used = Column(Boolean, default=False, nullable=False)
+    created_at = Column(DateTime(timezone=True), default=_now)

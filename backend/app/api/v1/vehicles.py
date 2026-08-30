@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ...database import get_db
@@ -23,6 +23,15 @@ async def create(payload: VehicleIn, user=Depends(get_current_user), db: AsyncSe
 @router.get("/{vehicle_id}")
 async def get_(vehicle_id: str, user=Depends(get_current_user), db: AsyncSession = Depends(get_db)):
     v = await svc.get_vehicle(db, user["id"], vehicle_id)
+    if not v:
+        raise NotFound("Vehicle not found")
+    return ok(v)
+
+
+@router.put("/{vehicle_id}")
+async def update_(vehicle_id: str, payload: dict = Body(default={}),
+                  user=Depends(get_current_user), db: AsyncSession = Depends(get_db)):
+    v = await svc.update_vehicle(db, user["id"], vehicle_id, payload or {})
     if not v:
         raise NotFound("Vehicle not found")
     return ok(v)

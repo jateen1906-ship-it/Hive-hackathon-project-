@@ -6,11 +6,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 export function LoadingState({ label = "Loading…", rows = 3 }) {
   return (
     <div className="space-y-3" data-testid="loading-state">
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+      <div className="flex items-center gap-2 text-xs font-semibold text-orange-400">
         <Loader2 className="h-4 w-4 animate-spin" /> {label}
       </div>
       {Array.from({ length: rows }).map((_, i) => (
-        <Skeleton key={i} className="h-16 w-full rounded-xl" />
+        <Skeleton key={i} className="h-16 w-full rounded-2xl bg-white/[0.03] border border-white/[0.04]" />
       ))}
     </div>
   );
@@ -18,25 +18,25 @@ export function LoadingState({ label = "Loading…", rows = 3 }) {
 
 export function EmptyState({ title = "Nothing here yet", description, action, testId = "empty-state" }) {
   return (
-    <div data-testid={testId} className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border bg-card px-6 py-14 text-center">
-      <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-secondary">
-        <Inbox className="h-6 w-6 text-muted-foreground" />
+    <div data-testid={testId} className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/[0.08] bg-[#1a1714]/60 px-6 py-14 text-center">
+      <div className="mb-3.5 flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-400">
+        <Inbox className="h-6 w-6" />
       </div>
-      <h3 className="text-base font-semibold">{title}</h3>
-      {description && <p className="mt-1 max-w-sm text-sm text-muted-foreground">{description}</p>}
-      {action && <div className="mt-4">{action}</div>}
+      <h3 className="text-base font-bold text-white tracking-tight">{title}</h3>
+      {description && <p className="mt-1 max-w-sm text-xs text-[#9e958d]">{description}</p>}
+      {action && <div className="mt-5">{action}</div>}
     </div>
   );
 }
 
 export function ErrorState({ message = "Something went wrong.", onRetry }) {
   return (
-    <div data-testid="error-state" className="flex flex-col items-center justify-center rounded-xl border border-destructive/30 bg-destructive/5 px-6 py-12 text-center">
-      <AlertTriangle className="mb-2 h-7 w-7 text-destructive" />
-      <p className="max-w-md text-sm text-foreground">{message}</p>
+    <div data-testid="error-state" className="flex flex-col items-center justify-center rounded-2xl border border-rose-500/20 bg-rose-500/5 px-6 py-12 text-center">
+      <AlertTriangle className="mb-2 h-7 w-7 text-rose-400" />
+      <p className="max-w-md text-xs text-[#f5f5f4]">{message}</p>
       {onRetry && (
-        <Button variant="outline" className="mt-4" onClick={onRetry} data-testid="error-retry-button">
-          <RefreshCw className="mr-2 h-4 w-4" /> Try again
+        <Button variant="outline" className="mt-4 border-white/[0.08] hover:bg-white/[0.04] text-xs font-semibold text-white" onClick={onRetry} data-testid="error-retry-button">
+          <RefreshCw className="mr-2 h-3.5 w-3.5" /> Try again
         </Button>
       )}
     </div>

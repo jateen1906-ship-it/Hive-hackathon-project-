@@ -1,63 +1,100 @@
-
 .App {
   min-height: 100vh;
+  background-color: #12100e;
+  color: #fafaf9;
 }
 
-/* Cinematic Dark Hero Background matching Reference Images */
-.cinematic-hero-bg {
-  background-color: #08090d;
+/* Alvero Ambient Dark Canvas & Glow */
+.alvero-bg {
+  background-color: #12100e;
   background-image: 
-    radial-gradient(circle at 50% 25%, rgba(30, 41, 59, 0.45) 0%, transparent 60%),
-    radial-gradient(circle at 10% 80%, rgba(2, 132, 199, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 90% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 50%);
+    radial-gradient(circle at 10% 10%, rgba(249, 115, 22, 0.04) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(245, 158, 11, 0.03) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(28, 25, 23, 0.5) 0%, transparent 100%);
   position: relative;
 }
 
-.cinematic-hero-bg::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.2) 0%, rgba(8, 9, 13, 0.85) 100%);
-  pointer-events: none;
+/* Alvero Card Container */
+.alvero-card {
+  background-color: #1a1714;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.35);
+  border-radius: 1.1rem;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Subtle micro-dot pattern for white content sections */
-.bg-dot-pattern {
-  background-color: #fbfcfd;
-  background-image: radial-gradient(#d1d5db 1px, transparent 1px);
-  background-size: 24px 24px;
+.alvero-card:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.5);
 }
 
-.bg-dot-pattern-dense {
-  background-color: #ffffff;
-  background-image: radial-gradient(#cbd5e1 1.2px, transparent 1.2px);
-  background-size: 20px 20px;
+/* Warm Sunset Orange Primary Gradient Button */
+.btn-sunset-orange {
+  background: linear-gradient(135deg, #ff6b35 0%, #f97316 50%, #ea580c 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 14px -1px rgba(249, 115, 22, 0.35);
+  transition: all 0.2s ease;
 }
 
-/* Mac Browser Window Mockup */
-.mac-mockup-shadow {
-  box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.15),
-    0 0 0 1px rgba(226, 232, 240, 0.8),
-    0 10px 15px -3px rgba(0, 0, 0, 0.05);
+.btn-sunset-orange:hover {
+  background: linear-gradient(135deg, #ff7a47 0%, #fb923c 50%, #f97316 100%);
+  box-shadow: 0 6px 20px 0px rgba(249, 115, 22, 0.5);
+  transform: translateY(-1px);
 }
 
-/* Card Glow Effect */
-.card-featured-glow {
-  box-shadow: 
-    0 0 0 1.5px #6366f1,
-    0 10px 25px -5px rgba(99, 102, 241, 0.12);
+.btn-sunset-orange:active {
+  transform: translateY(0);
 }
 
+/* Active Sidebar Navigation Pill */
+.nav-pill-active {
+  background: linear-gradient(135deg, #ff6b35 0%, #f97316 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 16px -2px rgba(249, 115, 22, 0.45);
+}
+
+/* Dark Glassmorphism Header */
+.alvero-header {
+  background-color: rgba(18, 16, 14, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+/* Alvero Dark Hero Gradient */
 .ts-hero-gradient {
   background:
-    radial-gradient(1200px circle at 15% 10%, rgba(15,23,42,0.10), transparent 55%),
-    radial-gradient(900px circle at 85% 0%, rgba(2,132,199,0.10), transparent 50%),
-    hsl(222 47% 11%);
+    radial-gradient(800px circle at 15% 20%, rgba(249, 115, 22, 0.15), transparent 60%),
+    radial-gradient(600px circle at 85% 10%, rgba(245, 158, 11, 0.12), transparent 50%),
+    #14110f;
 }
 
 .ts-grid-lines {
-  background-image: linear-gradient(rgba(148,163,184,0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(148,163,184,0.08) 1px, transparent 1px);
-  background-size: 28px 28px;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Featured Credit Card / Fleet Master Badge */
+.fleet-card-gold {
+  background: linear-gradient(135deg, #422817 0%, #2e1d13 50%, #1f140d 100%);
+  border: 1px solid rgba(249, 115, 22, 0.25);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+}
+
+/* KPI Card Accent Highlights */
+.kpi-accent-orange {
+  border-left: 3.5px solid #f97316;
+}
+.kpi-accent-amber {
+  border-left: 3.5px solid #f59e0b;
+}
+.kpi-accent-emerald {
+  border-left: 3.5px solid #10b981;
+}
+.kpi-accent-crimson {
+  border-left: 3.5px solid #ef4444;
+}
+.kpi-accent-sky {
+  border-left: 3.5px solid #38bdf8;
 }

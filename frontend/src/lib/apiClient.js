@@ -67,6 +67,9 @@ export const AuthAPI = {
   register: (payload) => api.post("/auth/register", payload),
   login: (payload) => api.post("/auth/login", payload),
   me: () => api.get("/auth/me"),
+  updateMe: (payload) => api.put("/auth/me", payload),
+  forgotPassword: (email) => api.post("/auth/forgot-password", { email }),
+  resetPassword: (token, new_password) => api.post("/auth/reset-password", { token, new_password }),
 };
 export const TripAPI = {
   list: () => api.get("/trips"),
@@ -81,6 +84,7 @@ export const TripAPI = {
 export const VehicleAPI = {
   list: () => api.get("/vehicles"),
   create: (payload) => api.post("/vehicles", payload),
+  update: (id, payload) => api.put(`/vehicles/${id}`, payload),
   remove: (id) => api.del(`/vehicles/${id}`),
 };
 export const DocumentAPI = {

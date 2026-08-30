@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { ArrowLeft, Gauge, Loader2, CheckCircle2, AlertTriangle, Download, Share2, Copy, Trash2, Lock } from "lucide-react";
+import { ArrowLeft, Gauge, Loader2, CheckCircle2, AlertTriangle, Download, Share2, Copy, Trash2, Lock, ShieldCheck, MapPin, Truck } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,16 +30,25 @@ const FACTOR_LABELS = {
 function FactorCard({ f }) {
   const sev = SEVERITY_META[f.severity] || SEVERITY_META.medium;
   return (
-    <Card className="border-l-4 p-4" style={{ borderLeftColor: sev.color }} data-testid={`risk-factor-${f.factor_type}`}>
+    <Card 
+      className="alvero-card p-5 border-l-4 transition-all hover:border-orange-500/40" 
+      style={{ borderLeftColor: sev.color }} 
+      data-testid={`risk-factor-${f.factor_type}`}
+    >
       <div className="flex items-center justify-between">
-        <div className="text-sm font-semibold">{f.title}</div>
-        <span className="rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase" style={{ color: sev.color, backgroundColor: sev.color + "1a" }}>{sev.label}</span>
+        <div className="text-sm font-bold text-white">{f.title}</div>
+        <span 
+          className="rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider" 
+          style={{ color: sev.color, backgroundColor: sev.color + "20" }}
+        >
+          {sev.label}
+        </span>
       </div>
-      <div className="mt-1 text-[11px] uppercase tracking-wide text-muted-foreground">{FACTOR_LABELS[f.factor_type] || f.factor_type}</div>
-      <p className="mt-2 text-sm text-muted-foreground">{f.description}</p>
-      <div className="mt-3 flex items-start gap-2 rounded-lg bg-secondary/60 px-3 py-2 text-sm">
-        <span className="font-medium">Recommended:</span>
-        <span className="text-muted-foreground">{f.recommendation}</span>
+      <div className="mt-1 text-[11px] uppercase tracking-wider text-orange-400/90 font-semibold">{FACTOR_LABELS[f.factor_type] || f.factor_type}</div>
+      <p className="mt-2 text-xs text-[#d6d3d1] leading-relaxed">{f.description}</p>
+      <div className="mt-3.5 flex items-start gap-2 rounded-xl bg-white/[0.03] border border-white/[0.05] p-3 text-xs">
+        <span className="font-bold text-orange-400 shrink-0">Action:</span>
+        <span className="text-[#a8a29e]">{f.recommendation}</span>
       </div>
     </Card>
   );
@@ -72,81 +81,128 @@ export default function RiskReport() {
     }
   };
 
-  if (isLoading) return <LoadingState label="Loading risk report…" />;
+  if (isLoading) return <LoadingState label="Loading risk intelligence report…" />;
   if (isError) return <ErrorState message={error?.message} onRetry={refetch} />;
 
   const trip = data.trip;
   const ev = data.evaluation;
 
   return (
-    <div className="mx-auto max-w-4xl">
-      <Button variant="ghost" size="sm" className="mb-3" onClick={() => navigate(`/trips/${id}`)}><ArrowLeft className="mr-1.5 h-4 w-4" />Back to trip</Button>
+    <div className="mx-auto max-w-4xl space-y-6">
+      <Button 
+        variant="ghost" 
+        size="sm" 
+        className="text-xs text-[#a8a29e] hover:text-white hover:bg-white/5" 
+        onClick={() => navigate(`/trips/${id}`)}
+      >
+        <ArrowLeft className="mr-1.5 h-3.5 w-3.5" /> Back to trip details
+      </Button>
 
       {!ev ? (
-        <EmptyState title="Not analyzed yet" description="Run the risk engine to generate an explainable report for this trip."
-          action={<Button onClick={() => analyze.mutate()} disabled={analyze.isPending} data-testid="risk-run-analysis">
-            {analyze.isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Analyzing…</> : <><Gauge className="mr-2 h-4 w-4" />Analyze now</>}</Button>} />
+        <EmptyState 
+          title="Trip Not Analyzed Yet" 
+          description="Run the risk engine to generate an explainable multi-factor report."
+          action={
+            <Button onClick={() => analyze.mutate()} disabled={analyze.isPending} data-testid="risk-run-analysis" className="btn-sunset-orange font-semibold rounded-xl">
+              {analyze.isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Running Engine…</> : <><Gauge className="mr-2 h-4 w-4" />Analyze Now</>}
+            </Button>
+          } 
+        />
       ) : (
-        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className="space-y-5">
-          {/* Ticket + gauge */}
-          <Card className="p-5 sm:p-6">
-            <div className="mb-2 flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Pre-departure risk report</span>
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className="space-y-6">
+          {/* Main Risk Gauge Card */}
+          <Card className="alvero-card p-6 sm:p-8 border-white/[0.08]">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] pb-4">
               <div className="flex items-center gap-2">
+                <ShieldCheck className="h-4 w-4 text-orange-400" />
+                <span className="text-xs font-bold uppercase tracking-widest text-[#9e958d]">Pre-Departure Risk Evaluation</span>
                 {trip.is_demo && <SyntheticBadge />}
+              </div>
+              <div className="flex items-center gap-2">
                 <ShareControls tripId={id} />
-                <Button size="sm" variant="outline" onClick={exportPdf} disabled={exporting} data-testid="risk-export-pdf">
-                  {exporting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Preparing…</> : <><Download className="mr-2 h-4 w-4" />Export PDF</>}
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  onClick={exportPdf} 
+                  disabled={exporting} 
+                  data-testid="risk-export-pdf"
+                  className="border-white/[0.08] hover:bg-white/[0.04] text-xs font-semibold"
+                >
+                  {exporting ? <><Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />Exporting…</> : <><Download className="mr-1.5 h-3.5 w-3.5" />Export PDF</>}
                 </Button>
               </div>
             </div>
-            <div className="grid items-center gap-6 sm:grid-cols-2">
-              <div>
-                <RouteStrip origin={trip.origin} destination={trip.destination} className="text-xl" />
-                <div className="mt-1 text-sm text-muted-foreground">Travel date: {fmtDate(trip.travel_date)}</div>
-                <div className="mt-1 font-mono text-sm text-muted-foreground">{trip.vehicle_number || "No vehicle assigned"} · {trip.vehicle_type || "Commercial Truck"}</div>
-                <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-                  <div><div className="text-xs text-muted-foreground">Declared Distance</div><div className="font-mono">{trip.declared_distance_km ? `${trip.declared_distance_km} km` : "—"}</div></div>
-                  <div><div className="text-xs text-muted-foreground">Estimated Route</div><div className="font-mono">{trip.estimated_distance_km ? `${trip.estimated_distance_km} km` : "—"}</div></div>
+
+            <div className="grid items-center gap-8 sm:grid-cols-2">
+              <div className="space-y-3">
+                <RouteStrip origin={trip.origin} destination={trip.destination} className="text-2xl font-extrabold" />
+                <div className="text-xs text-[#9e958d]">Dispatch Date: <span className="text-white font-medium">{fmtDate(trip.travel_date)}</span></div>
+                <div className="font-mono text-xs text-[#d6d3d1]">{trip.vehicle_number || "No vehicle registered"} · {trip.vehicle_type || "Commercial Truck"}</div>
+                
+                <div className="mt-4 grid grid-cols-2 gap-3 rounded-xl bg-white/[0.02] border border-white/[0.04] p-3 text-xs">
+                  <div>
+                    <div className="text-[#9e958d]">Declared Distance</div>
+                    <div className="font-mono font-bold text-white text-sm mt-0.5">{trip.declared_distance_km ? `${trip.declared_distance_km} km` : "—"}</div>
+                  </div>
+                  <div>
+                    <div className="text-[#9e958d]">Estimated Route</div>
+                    <div className="font-mono font-bold text-orange-400 text-sm mt-0.5">{trip.estimated_distance_km ? `${trip.estimated_distance_km} km` : "—"}</div>
+                  </div>
                 </div>
               </div>
-              <div className="flex justify-center"><RiskGauge score={Number(ev.score)} level={ev.level} /></div>
+              
+              <div className="flex justify-center">
+                <RiskGauge score={Number(ev.score)} level={ev.level} />
+              </div>
             </div>
           </Card>
 
-          {/* Findings */}
+          {/* Detailed Findings */}
           <div>
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-700">Detailed Risk Factors & Compliance Check</h2>
+            <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-[#9e958d]">
+              Detailed Factor Risk Breakdown
+            </h2>
             <div className="grid gap-4 md:grid-cols-2">
               {(ev.factors || []).map((f, i) => <FactorCard key={i} f={f} />)}
             </div>
           </div>
 
-          {/* Recommended actions */}
-          <Card className="p-5">
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-700">Actionable Pre-Departure Checklist</h2>
-            <ol className="space-y-2">
+          {/* Recommendations Checklist */}
+          <Card className="alvero-card p-6 border-white/[0.07]">
+            <h2 className="mb-4 text-xs font-bold uppercase tracking-wider text-white flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+              Actionable Pre-Departure Checklist
+            </h2>
+            <ol className="space-y-2.5">
               {(ev.recommendations || []).map((r, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm">
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" /><span>{r}</span>
+                <li key={i} className="flex items-start gap-3 rounded-xl bg-white/[0.02] p-3 text-xs border border-white/[0.04]">
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
+                  <span className="text-[#e7e5e4] leading-relaxed font-medium">{r}</span>
                 </li>
               ))}
             </ol>
           </Card>
 
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>Analysis engine: {ev.engine_version} · Dynamic corridor intelligence</span>
-            <Button variant="outline" size="sm" onClick={() => analyze.mutate()} disabled={analyze.isPending} data-testid="risk-reanalyze">
-              {analyze.isPending ? "Analyzing…" : "Re-run analysis"}
+          <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-[#9e958d] border-t border-white/[0.04] pt-4">
+            <span>Engine: <code className="text-white font-mono">{ev.engine_version}</code> · Dynamic Corridor Intelligence</span>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => analyze.mutate()} 
+              disabled={analyze.isPending} 
+              data-testid="risk-reanalyze"
+              className="border-white/[0.08] hover:bg-white/[0.04] text-xs font-semibold"
+            >
+              {analyze.isPending ? "Running Engine…" : "Re-evaluate Trip"}
             </Button>
           </div>
+
           <Disclaimer />
         </motion.div>
       )}
     </div>
   );
 }
-
 
 function ShareControls({ tripId }) {
   const billing = useBilling();
@@ -169,8 +225,8 @@ function ShareControls({ tripId }) {
 
   if (!canShare) {
     return (
-      <Button size="sm" variant="outline" onClick={() => (window.location.href = "/pricing")} data-testid="risk-share-locked">
-        <Lock className="mr-2 h-4 w-4" />Share (upgrade)
+      <Button size="sm" variant="outline" onClick={() => (window.location.href = "/pricing")} data-testid="risk-share-locked" className="border-white/[0.08] hover:bg-white/[0.04] text-xs">
+        <Lock className="mr-1.5 h-3.5 w-3.5 text-orange-400" />Share (Upgrade)
       </Button>
     );
   }
@@ -180,30 +236,32 @@ function ShareControls({ tripId }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" variant="outline" data-testid="risk-share-button"><Share2 className="mr-2 h-4 w-4" />Share</Button>
+        <Button size="sm" variant="outline" data-testid="risk-share-button" className="border-white/[0.08] hover:bg-white/[0.04] text-xs">
+          <Share2 className="mr-1.5 h-3.5 w-3.5 text-orange-400" />Share
+        </Button>
       </DialogTrigger>
-      <DialogContent>
-        <DialogHeader><DialogTitle>Share this report</DialogTitle></DialogHeader>
-        <p className="text-sm text-muted-foreground">Anyone with the link can view a read-only report (no login needed).</p>
-        <div className="flex items-end gap-2">
+      <DialogContent className="bg-[#1a1714] border-white/[0.08] text-white">
+        <DialogHeader><DialogTitle className="text-white">Share Read-Only Report</DialogTitle></DialogHeader>
+        <p className="text-xs text-[#9e958d]">Anyone with this secure link can view this compliance assessment (no login needed).</p>
+        <div className="flex items-end gap-2 mt-2">
           {isPro && (
             <div className="w-28">
-              <label className="text-xs text-muted-foreground">Expiry (days)</label>
-              <Input type="number" min={1} value={days} onChange={(e) => setDays(e.target.value)} data-testid="share-expiry-input" />
+              <label className="text-xs text-[#9e958d]">Expiry (days)</label>
+              <Input type="number" min={1} value={days} onChange={(e) => setDays(e.target.value)} data-testid="share-expiry-input" className="bg-[#12100e] border-white/[0.08] text-white" />
             </div>
           )}
-          <Button onClick={() => create.mutate()} disabled={create.isPending} data-testid="share-create-button">
-            {create.isPending ? "Creating…" : "Create link"}
+          <Button onClick={() => create.mutate()} disabled={create.isPending} data-testid="share-create-button" className="btn-sunset-orange font-semibold text-xs">
+            {create.isPending ? "Creating…" : "Generate Link"}
           </Button>
         </div>
-        <div className="mt-2 max-h-64 space-y-2 overflow-auto">
-          {(links || []).filter((l) => l.active).length === 0 && <p className="text-sm text-muted-foreground">No active links yet.</p>}
+        <div className="mt-3 max-h-64 space-y-2 overflow-auto">
+          {(links || []).filter((l) => l.active).length === 0 && <p className="text-xs text-[#9e958d]">No active share links yet.</p>}
           {(links || []).map((l) => (
-            <div key={l.id} className={`flex items-center gap-2 rounded-lg border border-border p-2 ${l.active ? "" : "opacity-50"}`}>
-              <code className="flex-1 truncate text-xs">{shareUrl(l.token)}</code>
+            <div key={l.id} className={`flex items-center gap-2 rounded-xl border border-white/[0.06] bg-white/[0.02] p-2.5 ${l.active ? "" : "opacity-40"}`}>
+              <code className="flex-1 truncate text-xs text-orange-300 font-mono">{shareUrl(l.token)}</code>
               {l.active && <>
-                <Button size="icon" variant="ghost" onClick={() => { navigator.clipboard.writeText(shareUrl(l.token)); toast.success("Copied"); }} data-testid="share-copy-button"><Copy className="h-4 w-4" /></Button>
-                <Button size="icon" variant="ghost" onClick={() => revoke.mutate(l.id)} data-testid="share-revoke-button"><Trash2 className="h-4 w-4 text-red-600" /></Button>
+                <Button size="icon" variant="ghost" onClick={() => { navigator.clipboard.writeText(shareUrl(l.token)); toast.success("Link copied"); }} data-testid="share-copy-button" className="h-7 w-7 text-[#9e958d] hover:text-white"><Copy className="h-3.5 w-3.5" /></Button>
+                <Button size="icon" variant="ghost" onClick={() => revoke.mutate(l.id)} data-testid="share-revoke-button" className="h-7 w-7 text-rose-400 hover:text-rose-300"><Trash2 className="h-3.5 w-3.5" /></Button>
               </>}
             </div>
           ))}

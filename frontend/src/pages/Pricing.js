@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Check, ShieldCheck, Loader2 } from "lucide-react";
+import { Check, ShieldCheck, Loader2, Sparkles, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { BillingAPI } from "@/lib/apiClient";
@@ -9,7 +9,11 @@ import { useAuth } from "@/context/AuthContext";
 import { useBilling, startCheckout } from "@/hooks/useBilling";
 import { LoadingState } from "@/components/common/StateViews";
 
-const TIER_ACCENT = { free: "hsl(215 16% 47%)", growth: "hsl(199 89% 48%)", pro: "hsl(222 47% 30%)" };
+const TIER_ACCENT = { 
+  free: "#78716c", 
+  growth: "#f97316", 
+  pro: "#f59e0b" 
+};
 
 export default function Pricing() {
   const navigate = useNavigate();
@@ -32,60 +36,118 @@ export default function Pricing() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="ts-hero-gradient px-4 py-6 sm:px-6">
+    <div className="min-h-screen bg-[#12100e] text-[#f5f5f4]">
+      <header className="border-b border-white/[0.06] bg-[#161311]/90 backdrop-blur-xl px-4 py-4 sm:px-8">
         <div className="mx-auto flex max-w-6xl items-center justify-between">
-          <button onClick={() => navigate(user ? "/dashboard" : "/")} className="flex items-center gap-2 text-white">
-            <ShieldCheck className="h-5 w-5 text-sky-300" /><span className="font-bold">TruckShield</span>
+          <button onClick={() => navigate(user ? "/dashboard" : "/")} className="flex items-center gap-2.5 text-white">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/20 border border-orange-500/30 text-orange-400">
+              <ShieldCheck className="h-5 w-5" />
+            </div>
+            <span className="font-bold text-lg tracking-tight">TruckShield</span>
           </button>
-          {user ? <Button variant="ghost" className="text-slate-200 hover:bg-white/10" onClick={() => navigate("/dashboard")}>Dashboard</Button>
-                : <Button className="bg-white text-slate-900 hover:bg-slate-100" onClick={() => navigate("/login")}>Sign in</Button>}
+          {user ? (
+            <Button variant="outline" className="border-white/[0.08] hover:bg-white/[0.04] text-xs font-semibold" onClick={() => navigate("/dashboard")}>
+              <ArrowLeft className="mr-1.5 h-3.5 w-3.5" /> Back to Dashboard
+            </Button>
+          ) : (
+            <Button className="btn-sunset-orange font-semibold text-xs" onClick={() => navigate("/login")}>Sign in</Button>
+          )}
         </div>
       </header>
 
-      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-        <div className="text-center">
-          <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Simple, transparent pricing</h1>
-          <p className="mt-2 text-muted-foreground">Choose the plan that fits your fleet. Upgrade or cancel anytime.</p>
+      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+        <div className="text-center max-w-2xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-semibold mb-4">
+            <Sparkles className="h-3.5 w-3.5" /> Simple, Transparent Pricing
+          </div>
+          <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
+            Choose the right tier for your fleet
+          </h1>
+          <p className="mt-4 text-base text-[#9e958d]">
+            Full pre-dispatch intelligence, live OSRM distance engine, and verified statutory checks. Upgrade or cancel anytime.
+          </p>
         </div>
 
-        {isLoading ? <div className="mx-auto mt-10 max-w-md"><LoadingState label="Loading plans…" /></div> : (
-          <div className="mt-10 grid gap-6 lg:grid-cols-3">
+        {isLoading ? (
+          <div className="mx-auto mt-12 max-w-md"><LoadingState label="Loading available tiers…" /></div>
+        ) : (
+          <div className="mt-12 grid gap-6 lg:grid-cols-3 items-stretch">
             {data?.plans?.map((p) => {
               const isCurrent = currentPlan === p.tier;
               const highlight = p.tier === "growth";
               return (
-                <Card key={p.tier} data-testid={`pricing-card-${p.tier}`}
-                      className={`relative flex flex-col p-6 ${highlight ? "ring-2 ring-sky-500" : ""}`}
-                      style={{ borderTop: `4px solid ${TIER_ACCENT[p.tier]}` }}>
-                  {highlight && <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-sky-500 px-3 py-0.5 text-xs font-semibold text-white">Popular</span>}
-                  <div className="text-lg font-semibold">{p.name}</div>
-                  <div className="mt-2 flex items-end gap-1">
-                    <span className="font-mono text-3xl font-bold">{p.price_label}</span>
-                    <span className="mb-1 text-sm text-muted-foreground">/month</span>
+                <Card 
+                  key={p.tier} 
+                  data-testid={`pricing-card-${p.tier}`}
+                  className={`alvero-card relative flex flex-col p-7 transition-all duration-300 ${
+                    highlight 
+                      ? "ring-2 ring-orange-500/80 shadow-xl shadow-orange-950/40 bg-[#1e1915]" 
+                      : "bg-[#181512]"
+                  }`}
+                  style={{ borderTop: `3px solid ${TIER_ACCENT[p.tier]}` }}
+                >
+                  {highlight && (
+                    <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 px-3.5 py-0.5 text-xs font-bold text-white shadow-md">
+                      Most Popular
+                    </span>
+                  )}
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="text-xl font-bold text-white">{p.name}</div>
+                    <div 
+                      className="h-2.5 w-2.5 rounded-full" 
+                      style={{ backgroundColor: TIER_ACCENT[p.tier] }} 
+                    />
                   </div>
-                  <ul className="mt-5 flex-1 space-y-2.5">
+
+                  <div className="mt-4 flex items-baseline gap-1.5 border-b border-white/[0.06] pb-5">
+                    <span className="font-mono text-4xl font-extrabold text-white">{p.price_label}</span>
+                    <span className="text-sm font-medium text-[#9e958d]">/month</span>
+                  </div>
+
+                  <ul className="mt-6 flex-1 space-y-3.5">
                     {p.features.map((f, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm">
-                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" /><span>{f}</span>
+                      <li key={i} className="flex items-start gap-2.5 text-sm text-[#d6d3d1]">
+                        <div className="h-4 w-4 rounded-full bg-emerald-500/15 flex items-center justify-center text-emerald-400 mt-0.5 shrink-0">
+                          <Check className="h-3 w-3 stroke-[3]" />
+                        </div>
+                        <span>{f}</span>
                       </li>
                     ))}
                   </ul>
-                  <Button className="mt-6 w-full" variant={isCurrent ? "outline" : highlight ? "default" : "outline"}
-                          disabled={isCurrent || busy === p.tier} onClick={() => choose(p.tier)}
-                          data-testid={`pricing-cta-${p.tier}`}>
-                    {busy === p.tier ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Starting…</>
-                      : isCurrent ? "Current plan" : p.tier === "free" ? "Get started" : `Upgrade to ${p.name}`}
+
+                  <Button 
+                    className={`mt-8 w-full font-semibold rounded-xl h-11 ${
+                      isCurrent 
+                        ? "border border-white/10 bg-white/5 text-[#a8a29e] hover:bg-white/5 cursor-default" 
+                        : highlight 
+                          ? "btn-sunset-orange text-white" 
+                          : "bg-white/[0.04] hover:bg-white/[0.08] text-white border border-white/[0.08]"
+                    }`}
+                    disabled={isCurrent || busy === p.tier} 
+                    onClick={() => choose(p.tier)}
+                    data-testid={`pricing-cta-${p.tier}`}
+                  >
+                    {busy === p.tier ? (
+                      <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Initiating…</>
+                    ) : isCurrent ? (
+                      "Current active plan"
+                    ) : p.tier === "free" ? (
+                      "Get started free"
+                    ) : (
+                      `Upgrade to ${p.name}`
+                    )}
                   </Button>
                 </Card>
               );
             })}
           </div>
         )}
-        <p className="mt-8 text-center text-xs text-muted-foreground">
-          Payments processed securely by Razorpay (test mode). TruckShield provides informational
+
+        <div className="mt-12 text-center text-xs text-[#9e958d] max-w-xl mx-auto border-t border-white/[0.04] pt-6">
+          Payments processed securely via Razorpay. TruckShield provides informational
           compliance pre-checks and risk signals — not legal advice.
-        </p>
+        </div>
       </div>
     </div>
   );

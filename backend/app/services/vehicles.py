@@ -41,3 +41,20 @@ async def delete_vehicle(db, user_id, vehicle_id):
     await db.delete(r)
     await db.commit()
     return True
+
+
+async def update_vehicle(db, user_id, vehicle_id, payload: dict):
+    r = (await db.execute(
+        select(Vehicle).where(Vehicle.id == vehicle_id, Vehicle.user_id == user_id)
+    )).scalar_one_or_none()
+    if not r:
+        return None
+    allowed = {"vehicle_number", "vehicle_type", "capacity", "status"}
+    for field, value in payload.items():
+        if field in allowed and value is not None:
+            if field == "vehicle_number":
+                value = str(value).upper().replace(" ", "")
+            setattr(r, field, value)
+    await db.commit()
+    await db.refresh(r)
+    return to_dict(r)

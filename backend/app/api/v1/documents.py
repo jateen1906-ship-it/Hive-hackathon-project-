@@ -7,6 +7,7 @@ from ...database import get_db
 from ...security import get_current_user
 from ...envelope import ok, NotFound
 from ...services import documents as svc
+from ...config import settings
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
@@ -26,6 +27,10 @@ async def upload(
     db: AsyncSession = Depends(get_db),
 ):
     data = await file.read()
+    max_bytes = settings.MAX_UPLOAD_MB * 1024 * 1024
+    if len(data) > max_bytes:
+        from ...envelope import AppError
+        raise AppError("FILE_TOO_LARGE", f"File exceeds the {settings.MAX_UPLOAD_MB} MB upload limit", 413)
     doc = await svc.upload_document(
         db, user["id"], trip_id=trip_id or None, document_type=document_type,
         filename=file.filename, mime_type=file.content_type, data=data, run_ocr=run_ocr,
