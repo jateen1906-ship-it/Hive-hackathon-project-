@@ -8,8 +8,8 @@ body {
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #fdf8f4;
-    color: #2c1810;
+    background-color: #f2fcfb;
+    color: #0c333a;
 }
 
 code, .font-mono {
@@ -18,36 +18,36 @@ code, .font-mono {
 
 @layer base {
     :root {
-        /* Tuscan Sunset Color Palette */
-        /* #E35336, #FFD3AC, #9988A1, #8A2B0E */
+        /* Charming Seaside Palette */
+        /* #B3EBF2, #85D1DB, #B6F2D1, #C9FDF2 */
         
-        --background: 28 60% 98%;          /* #fdf8f4 */
-        --foreground: 18 47% 12%;          /* #2c1810 */
+        --background: 172 65% 97%;         /* #f2fcfb with #C9FDF2 tint */
+        --foreground: 189 65% 14%;         /* #0c333a */
         
         --card: 0 0% 100%;                 /* #ffffff */
-        --card-foreground: 18 47% 12%;     /* #2c1810 */
+        --card-foreground: 189 65% 14%;    /* #0c333a */
         
         --popover: 0 0% 100%;              /* #ffffff */
-        --popover-foreground: 18 47% 12%;
+        --popover-foreground: 189 65% 14%;
         
-        --primary: 10 77% 55%;             /* #E35336 - Terracotta Sunset */
-        --primary-foreground: 0 0% 100%;
+        --primary: 187 53% 69%;            /* #85D1DB - Coastal Sea Teal */
+        --primary-foreground: 189 65% 12%; /* #0c333a */
         
-        --secondary: 28 100% 92%;          /* #FFD3AC - Warm Apricot */
-        --secondary-foreground: 14 81% 30%;/* #8A2B0E */
+        --secondary: 187 73% 83%;          /* #B3EBF2 - Soft Sky Cyan */
+        --secondary-foreground: 189 65% 14%;
         
-        --muted: 28 40% 94%;               /* #f7eeea */
-        --muted-foreground: 275 12% 45%;   /* #7b6d82 (tints of #9988A1) */
+        --muted: 170 85% 92%;              /* #C9FDF2 - Aqua Ice */
+        --muted-foreground: 187 25% 42%;   /* #507e86 */
         
-        --accent: 275 12% 58%;             /* #9988A1 - Dusty Lavender */
-        --accent-foreground: 0 0% 100%;
+        --accent: 147 69% 83%;             /* #B6F2D1 - Seafoam Mint */
+        --accent-foreground: 155 60% 16%;  /* #0d381e */
         
-        --destructive: 10 77% 50%;         /* #d94326 */
+        --destructive: 350 84% 60%;        /* #f43f5e */
         --destructive-foreground: 0 0% 100%;
         
-        --border: 28 100% 84%;             /* #FFD3AC tint */
-        --input: 28 100% 84%;
-        --ring: 10 77% 55%;                /* #E35336 */
+        --border: 187 73% 83%;             /* #B3EBF2 */
+        --input: 187 73% 83%;              /* #B3EBF2 */
+        --ring: 187 53% 60%;               /* #85D1DB */
         
         --radius: 0.75rem;
     }
@@ -62,20 +62,20 @@ code, .font-mono {
     }
 }
 
-/* Subtle Tuscan Scrollbars */
+/* Subtle Seaside Scrollbars */
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
 }
 ::-webkit-scrollbar-track {
-    background: #fdf8f4;
+    background: #f2fcfb;
 }
 ::-webkit-scrollbar-thumb {
-    background: #ffd3ac;
+    background: #b3ebf2;
     border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #e35336;
+    background: #85d1db;
 }
 
 @layer base {

@@ -1,30 +1,31 @@
 .App {
   min-height: 100vh;
-  background-color: #fdf8f4;
-  color: #2c1810;
+  background-color: #f2fcfb;
+  color: #0c333a;
 }
 
-/* Clean Tuscan Sunset Card */
+/* Clean Charming Seaside Card */
 .pro-card {
   background-color: #ffffff;
-  border: 1px solid #ffd3ac;
+  border: 1px solid #b3ebf2;
   border-radius: 0.75rem;
-  box-shadow: 0 1px 3px 0 rgba(227, 83, 54, 0.08), 0 1px 2px -1px rgba(227, 83, 54, 0.04);
+  box-shadow: 0 1px 3px 0 rgba(133, 209, 219, 0.15), 0 1px 2px -1px rgba(133, 209, 219, 0.08);
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .pro-card:hover {
-  border-color: #fca566;
-  box-shadow: 0 4px 6px -1px rgba(227, 83, 54, 0.12), 0 2px 4px -2px rgba(227, 83, 54, 0.06);
+  border-color: #85d1db;
+  box-shadow: 0 4px 6px -1px rgba(133, 209, 219, 0.25), 0 2px 4px -2px rgba(133, 209, 219, 0.12);
 }
 
-/* Terracotta Primary Action Button */
+/* Sea Teal Primary Action Button (#85D1DB) */
 .btn-primary-blue {
-  background: linear-gradient(135deg, #e35336 0%, #cc4125 100%);
-  color: #ffffff;
-  font-weight: 600;
+  background: linear-gradient(135deg, #85d1db 0%, #58b9c6 100%);
+  color: #05262c;
+  font-weight: 700;
+  border: 1px solid #74c7d2;
   border-radius: 0.5rem;
-  box-shadow: 0 2px 4px 0 rgba(227, 83, 54, 0.25);
+  box-shadow: 0 2px 4px 0 rgba(133, 209, 219, 0.35);
   transition: opacity 0.15s ease, transform 0.1s ease;
 }
 
@@ -36,19 +37,27 @@
   transform: scale(0.99);
 }
 
-/* Dusty Lavender Accent Tag */
-.tuscan-lavender-badge {
-  background-color: #f0ecf3;
-  color: #5c4d65;
-  border: 1px solid #9988a1;
+/* Seafoam Mint Accent Pill (#B6F2D1) */
+.seafoam-badge {
+  background-color: #b6f2d1;
+  color: #0d381e;
+  border: 1px solid #95e3b6;
 }
 
-/* Deep Sienna Master Fleet Card */
+/* Aqua Ice Ambient Container (#C9FDF2) */
+.aqua-ice-panel {
+  background-color: #c9fdf2;
+  color: #0c333a;
+  border: 1px solid #b3ebf2;
+}
+
+/* Deep Marine Master Fleet Card */
 .fleet-card-slate {
-  background: linear-gradient(135deg, #8a2b0e 0%, #5e1c07 100%);
+  background: linear-gradient(135deg, #093b44 0%, #052227 100%);
   color: #ffffff;
   border-radius: 0.75rem;
-  box-shadow: 0 4px 8px -1px rgba(138, 43, 14, 0.25);
+  box-shadow: 0 4px 8px -1px rgba(9, 59, 68, 0.25);
+  border: 1px solid #85d1db;
 }
 
 /* Clean Input Styling */
@@ -57,6 +66,6 @@ input, textarea, select {
 }
 
 input:focus, textarea:focus, select:focus {
-  border-color: #e35336 !important;
-  box-shadow: 0 0 0 1px #e35336 !important;
+  border-color: #85d1db !important;
+  box-shadow: 0 0 0 1px #85d1db !important;
 }
