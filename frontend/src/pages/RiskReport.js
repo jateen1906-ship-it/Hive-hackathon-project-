@@ -15,6 +15,8 @@ import { Disclaimer, SyntheticBadge } from "@/components/common/Disclaimer";
 import { RouteStrip } from "@/components/common/PageHeader";
 import { fmtDate, SEVERITY_META } from "@/lib/riskMeta";
 
+import { DriverPassModal } from "@/components/trips/DriverPassModal";
+
 const FACTOR_LABELS = {
   route_risk: "Corridor & Checkpost Risk",
   distance_anomaly: "Distance & Transit Feasibility",
@@ -117,7 +119,8 @@ export default function RiskReport() {
                 <span className="text-xs font-bold uppercase tracking-widest text-slate-500">Pre-Departure Risk Evaluation</span>
                 {trip.is_demo && <SyntheticBadge />}
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <DriverPassModal trip={trip} />
                 <ShareControls tripId={id} />
                 <Button 
                   size="sm" 

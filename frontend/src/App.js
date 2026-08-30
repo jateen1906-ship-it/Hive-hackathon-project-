@@ -11,6 +11,9 @@ import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import ForgotPassword from "@/pages/ForgotPassword";
 import ResetPassword from "@/pages/ResetPassword";
+import Pricing from "@/pages/Pricing";
+import PublicReport from "@/pages/PublicReport";
+import DriverSos from "@/pages/DriverSos";
 import Dashboard from "@/pages/Dashboard";
 import Trips from "@/pages/Trips";
 import CreateTrip from "@/pages/CreateTrip";
@@ -22,8 +25,6 @@ import Incidents from "@/pages/Incidents";
 import ReportIncident from "@/pages/ReportIncident";
 import Analytics from "@/pages/Analytics";
 import Settings from "@/pages/Settings";
-import Pricing from "@/pages/Pricing";
-import PublicReport from "@/pages/PublicReport";
 
 const Shell = ({ children }) => (
   <ProtectedRoute>
@@ -44,6 +45,7 @@ function App() {
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/r/:token" element={<PublicReport />} />
+            <Route path="/driver/sos/:tripId" element={<DriverSos />} />
             <Route path="/dashboard" element={<Shell><Dashboard /></Shell>} />
             <Route path="/trips" element={<Shell><Trips /></Shell>} />
             <Route path="/trips/new" element={<Shell><CreateTrip /></Shell>} />

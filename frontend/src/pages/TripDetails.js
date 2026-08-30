@@ -2,7 +2,7 @@ import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Gauge, Upload, Loader2, FileText, ArrowLeft } from "lucide-react";
+import { ArrowLeft, Gauge, Upload, FileText, Loader2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TripAPI } from "@/lib/apiClient";
@@ -11,12 +11,15 @@ import { LoadingState, ErrorState } from "@/components/common/StateViews";
 import { Disclaimer, SyntheticBadge } from "@/components/common/Disclaimer";
 import { RouteStrip } from "@/components/common/PageHeader";
 import { fmtDate, fmtCurrency } from "@/lib/riskMeta";
+import { DriverPassModal } from "@/components/trips/DriverPassModal";
 
-function Field({ label, value, mono }) {
+function Field({ label, value, mono = false }) {
   return (
-    <div className="rounded-lg bg-slate-50 border border-slate-100 p-3.5">
-      <div className="text-xs text-slate-500 font-medium">{label}</div>
-      <div className={`mt-1 text-sm font-semibold text-slate-900 ${mono ? "font-mono" : ""}`}>{value ?? "—"}</div>
+    <div>
+      <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500">{label}</div>
+      <div className={`mt-1 text-sm font-semibold text-slate-900 ${mono ? "font-mono" : ""}`}>
+        {value || "—"}
+      </div>
     </div>
   );
 }
@@ -25,28 +28,32 @@ export default function TripDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const qc = useQueryClient();
+
   const { data: trip, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ["trip", id], queryFn: () => TripAPI.get(id),
+    queryKey: ["trip", id],
+    queryFn: () => TripAPI.get(id),
   });
 
   const analyze = useMutation({
     mutationFn: () => TripAPI.analyze(id),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["trip", id] });
-      toast.success("Risk analysis updated");
+      qc.invalidateQueries({ queryKey: ["dashboard"] });
+      toast.success("Risk analysis complete");
       navigate(`/trips/${id}/risk`);
     },
     onError: (e) => toast.error(e.message || "Analysis failed"),
   });
 
-  if (isLoading) return <LoadingState label="Loading trip parameters…" />;
-  if (isError) return <ErrorState message={error?.message} onRetry={refetch} />;
+  if (isLoading) return <LoadingState label="Loading trip record…" />;
+  if (isError || !trip) return <ErrorState message={error?.message || "Trip not found"} onRetry={refetch} />;
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
+    <div className="space-y-6">
       <Button 
         variant="ghost" 
         size="sm" 
+        data-testid="trip-back"
         className="text-xs text-slate-500 hover:text-slate-900" 
         onClick={() => navigate("/trips")}
       >
@@ -83,7 +90,7 @@ export default function TripDetails() {
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-3 border-t border-slate-100 p-6 bg-slate-50/30">
+        <div className="flex flex-wrap items-center gap-3 border-t border-slate-100 p-6 bg-slate-50/30">
           <Button 
             onClick={() => navigate(`/trips/${id}/risk`)} 
             data-testid="trip-view-risk"
@@ -108,6 +115,9 @@ export default function TripDetails() {
           >
             <Upload className="mr-1.5 h-3.5 w-3.5" />Upload document
           </Button>
+
+          {/* Driver 1-Tap Fast-Pass QR */}
+          <DriverPassModal trip={trip} />
         </div>
       </Card>
 

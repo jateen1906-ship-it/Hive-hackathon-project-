@@ -1,50 +1,53 @@
 import axios from "axios";
 
-const RAW_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8001";
-const BACKEND_URL = RAW_URL.replace(/\/+$/, "");
-export const API_BASE = `${BACKEND_URL}/api/v1`;
+export const API_BASE =
+  process.env.REACT_APP_API_BASE_URL ||
+  (window.location.hostname === "localhost"
+    ? "http://localhost:8000/api/v1"
+    : "https://hive-hackathon-project.onrender.com/api/v1");
 
-const TOKEN_KEY = "ts_token";
-
-export const tokenStore = {
-  get: () => localStorage.getItem(TOKEN_KEY),
-  set: (t) => localStorage.setItem(TOKEN_KEY, t),
-  clear: () => localStorage.removeItem(TOKEN_KEY),
-};
-
-const client = axios.create({ baseURL: API_BASE });
-
-client.interceptors.request.use((config) => {
-  const token = tokenStore.get();
-  if (token) config.headers.Authorization = `Bearer ${token}`;
-  return config;
+export const client = axios.create({
+  baseURL: API_BASE,
+  headers: { "Content-Type": "application/json" },
 });
 
-client.interceptors.response.use(
-  (res) => res,
-  (error) => {
-    const data = error?.response?.data;
-    const message =
-      data?.error?.message || error?.message || "Network error. Please try again.";
-    const code = data?.error?.code || "NETWORK_ERROR";
-    if (error?.response?.status === 401 && tokenStore.get()) {
-      // token invalid/expired -> clear so guards redirect
-      tokenStore.clear();
-    }
-    return Promise.reject({ message, code, status: error?.response?.status });
-  }
-);
+// Attach bearer token from localStorage
+client.interceptors.request.use((cfg) => {
+  const t = localStorage.getItem("token");
+  if (t) cfg.headers.Authorization = `Bearer ${t}`;
+  return cfg;
+});
 
-// Unwrap the {success,data,error} envelope
-async function unwrap(promise) {
-  const res = await promise;
-  return res.data?.data;
+// Unwrap envelope { data: ... } or throw standard AppError
+export async function unwrap(promise) {
+  try {
+    const res = await promise;
+    if (res.data && typeof res.data === "object" && "data" in res.data) {
+      return res.data.data;
+    }
+    return res.data;
+  } catch (err) {
+    const data = err.response?.data;
+    const msg = data?.error?.message || data?.detail || err.message || "Request failed";
+    const code = data?.error?.code || "APP_ERROR";
+    const status = err.response?.status;
+    const e = new Error(msg);
+    e.code = code;
+    e.status = status;
+    e.details = data?.error?.details;
+    throw e;
+  }
 }
 
-// Fetch a file (with auth header) as a blob and trigger a browser download.
-export async function downloadFile(url, filename) {
-  const res = await client.get(url, { responseType: "blob" });
-  const blobUrl = window.URL.createObjectURL(res.data);
+// Download helper for binary files (e.g., PDF reports)
+export async function downloadFile(urlPath, filename) {
+  const t = localStorage.getItem("token");
+  const res = await fetch(`${API_BASE}${urlPath}`, {
+    headers: t ? { Authorization: `Bearer ${t}` } : {},
+  });
+  if (!res.ok) throw new Error("Failed to download file");
+  const blob = await res.blob();
+  const blobUrl = window.URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = blobUrl;
   a.download = filename;
@@ -55,7 +58,6 @@ export async function downloadFile(url, filename) {
 }
 
 export const api = {
-  raw: client,
   get: (url, config) => unwrap(client.get(url, config)),
   post: (url, body, config) => unwrap(client.post(url, body, config)),
   put: (url, body, config) => unwrap(client.put(url, body, config)),
@@ -125,6 +127,11 @@ export const ShareAPI = {
   create: (tripId, expiry_days) => api.post(`/trips/${tripId}/share`, { expiry_days }),
   revoke: (shareId) => api.del(`/shares/${shareId}`),
   publicReport: (token) => api.get(`/public/report/${token}`),
+};
+
+export const DriverSosAPI = {
+  getTripInfo: (tripId) => api.get(`/public/trips/${tripId}/driver-info`),
+  reportIncident: (tripId, payload) => api.post(`/public/trips/${tripId}/driver-incident`, payload),
 };
 
 // Dynamically load the Razorpay Checkout script once.
