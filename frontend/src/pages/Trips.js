@@ -19,72 +19,72 @@ export default function Trips() {
   return (
     <div className="space-y-6">
       <PageHeader 
-        title="Fleet Trips" 
-        subtitle="Manage and analyze pre-dispatch routes, cargo suitability, and regulatory compliance."
+        title="Fleet Dispatches" 
+        subtitle="Manage pre-dispatch routes, cargo suitability, and statutory compliance status."
         actions={
           <Button 
             onClick={() => navigate("/trips/new")} 
             data-testid="trips-new-button"
-            className="btn-executive-primary font-semibold rounded-lg text-xs"
+            className="btn-cyber-cyan font-bold rounded-xl text-xs px-4"
           >
-            <Plus className="mr-2 h-3.5 w-3.5" />
-            New Trip
+            <Plus className="mr-1.5 h-3.5 w-3.5 stroke-[3]" />
+            New Dispatch
           </Button>
         } 
       />
 
-      {isLoading && <LoadingState label="Loading fleet trips…" />}
+      {isLoading && <LoadingState label="Loading fleet dispatches…" />}
       {isError && <ErrorState message={error?.message} onRetry={refetch} />}
 
       {data && (data.length === 0 ? (
         <EmptyState 
-          title="No trips recorded yet" 
-          description="Create a trip to generate an explainable compliance-risk report."
+          title="No dispatches recorded yet" 
+          description="Create a dispatch entry to generate an explainable compliance-risk report."
           action={
-            <Button onClick={() => navigate("/trips/new")} className="btn-executive-primary font-semibold rounded-lg text-xs">
-              Create your first trip
+            <Button onClick={() => navigate("/trips/new")} className="btn-cyber-cyan font-bold rounded-xl text-xs">
+              Create your first dispatch
             </Button>
           } 
         />
       ) : (
-        <Card className="executive-card overflow-hidden">
+        <Card className="rich-card overflow-hidden">
           <div className="hidden md:block">
             <Table>
-              <TableHeader className="bg-slate-50/70 border-b border-slate-100">
-                <TableRow className="border-slate-100 hover:bg-transparent">
-                  <TableHead className="text-xs font-bold uppercase tracking-wider text-slate-500 py-3.5 pl-6">Route</TableHead>
-                  <TableHead className="text-xs font-bold uppercase tracking-wider text-slate-500 py-3.5">Travel date</TableHead>
-                  <TableHead className="text-xs font-bold uppercase tracking-wider text-slate-500 py-3.5">Vehicle</TableHead>
-                  <TableHead className="text-xs font-bold uppercase tracking-wider text-slate-500 py-3.5">Status</TableHead>
-                  <TableHead className="text-xs font-bold uppercase tracking-wider text-slate-500 py-3.5 pr-6 text-right">Risk Score</TableHead>
+              <TableHeader className="bg-white/[0.02] border-b border-white/[0.08]">
+                <TableRow className="border-white/[0.08] hover:bg-transparent">
+                  <TableHead className="text-xs font-bold uppercase tracking-wider text-slate-400 py-4 pl-6">Corridor Route</TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wider text-slate-400 py-4">Dispatch Date</TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wider text-slate-400 py-4">Assigned Fleet</TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wider text-slate-400 py-4">Status</TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wider text-slate-400 py-4 pr-6 text-right">Risk Assessment</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody className="divide-y divide-slate-100">
+              <TableBody className="divide-y divide-white/[0.06]">
                 {data.map((t) => (
                   <TableRow 
                     key={t.id} 
-                    className="cursor-pointer border-slate-100 hover:bg-slate-50/80 transition-colors" 
+                    className="cursor-pointer border-white/[0.06] hover:bg-white/[0.04] transition-all" 
                     data-testid={`trip-row-${t.id}`} 
                     onClick={() => navigate(`/trips/${t.id}`)}
                   >
-                    <TableCell className="py-3.5 pl-6">
+                    <TableCell className="py-4 pl-6">
                       <div className="flex items-center gap-2.5">
-                        <RouteStrip origin={t.origin} destination={t.destination} className="text-sm font-semibold" />
+                        <RouteStrip origin={t.origin} destination={t.destination} className="text-sm font-bold" />
                         {t.is_demo && <SyntheticBadge />}
                       </div>
                     </TableCell>
-                    <TableCell className="text-xs text-slate-500 py-3.5">{fmtDate(t.travel_date)}</TableCell>
-                    <TableCell className="font-mono text-xs text-slate-700 py-3.5">{t.vehicle_number || "—"}</TableCell>
-                    <TableCell className="text-xs py-3.5">
-                      <span className="capitalize px-2.5 py-0.5 rounded-full bg-slate-100 text-xs font-medium text-slate-700">
+                    <TableCell className="text-xs text-slate-300 font-medium py-4">{fmtDate(t.travel_date)}</TableCell>
+                    <TableCell className="font-mono text-xs text-sky-300 py-4">{t.vehicle_number || "—"}</TableCell>
+                    <TableCell className="text-xs py-4">
+                      <span className="capitalize px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-bold text-slate-200">
                         {t.status}
                       </span>
                     </TableCell>
-                    <TableCell className="text-right py-3.5 pr-6">
+                    <TableCell className="text-right py-4 pr-6">
                       {t.risk_level ? (
                         <RiskBadge level={t.risk_level} score={t.risk_score} />
                       ) : (
-                        <span className="text-xs text-slate-400">Not analyzed</span>
+                        <span className="text-xs text-slate-500">Not evaluated</span>
                       )}
                     </TableCell>
                   </TableRow>
@@ -94,21 +94,21 @@ export default function Trips() {
           </div>
 
           {/* Mobile list view */}
-          <div className="divide-y divide-slate-100 md:hidden">
+          <div className="divide-y divide-white/[0.06] md:hidden">
             {data.map((t) => (
               <button 
                 key={t.id} 
                 onClick={() => navigate(`/trips/${t.id}`)} 
-                className="flex w-full flex-col gap-1.5 p-4 text-left hover:bg-slate-50 transition-colors"
+                className="flex w-full flex-col gap-2 p-4 text-left hover:bg-white/[0.04] transition-colors"
               >
                 <div className="flex items-center justify-between">
-                  <RouteStrip origin={t.origin} destination={t.destination} className="text-sm font-semibold" />
+                  <RouteStrip origin={t.origin} destination={t.destination} className="text-sm font-bold" />
                   {t.risk_level && <RiskBadge level={t.risk_level} score={t.risk_score} />}
                 </div>
-                <div className="flex items-center gap-2 text-xs text-slate-500">
+                <div className="flex items-center gap-2 text-xs text-slate-400">
                   <span>{fmtDate(t.travel_date)}</span>
                   <span>•</span>
-                  <span className="font-mono text-slate-700">{t.vehicle_number || "no vehicle"}</span>
+                  <span className="font-mono text-sky-300">{t.vehicle_number || "no vehicle"}</span>
                 </div>
               </button>
             ))}

@@ -27,28 +27,39 @@ const FACTOR_LABELS = {
   historical_incidents: "Historical Corridor Incidents",
 };
 
+const FACTOR_COLORS = {
+  low: "#10b981",
+  medium: "#f59e0b",
+  high: "#f97316",
+  critical: "#ef4444",
+};
+
 function FactorCard({ f }) {
-  const sev = SEVERITY_META[f.severity] || SEVERITY_META.medium;
+  const sevColor = FACTOR_COLORS[f.severity] || "#f59e0b";
   return (
     <Card 
-      className="executive-card p-5 border-l-4" 
-      style={{ borderLeftColor: sev.color }} 
+      className="rich-card p-5 border-l-4" 
+      style={{ borderLeftColor: sevColor }} 
       data-testid={`risk-factor-${f.factor_type}`}
     >
       <div className="flex items-center justify-between">
-        <div className="text-sm font-bold text-slate-900">{f.title}</div>
+        <div className="text-sm font-bold text-white">{f.title}</div>
         <span 
-          className="rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider" 
-          style={{ color: sev.color, backgroundColor: sev.color + "15" }}
+          className="rounded-full px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider border" 
+          style={{ 
+            color: sevColor, 
+            backgroundColor: `${sevColor}15`,
+            borderColor: `${sevColor}35`
+          }}
         >
-          {sev.label}
+          {f.severity}
         </span>
       </div>
-      <div className="mt-1 text-[11px] uppercase tracking-wider text-slate-500 font-semibold">{FACTOR_LABELS[f.factor_type] || f.factor_type}</div>
-      <p className="mt-2 text-xs text-slate-600 leading-relaxed">{f.description}</p>
-      <div className="mt-3.5 flex items-start gap-2 rounded-lg bg-slate-50 border border-slate-100 p-3 text-xs">
-        <span className="font-bold text-slate-900 shrink-0">Action:</span>
-        <span className="text-slate-600">{f.recommendation}</span>
+      <div className="mt-1 text-[10px] uppercase tracking-wider text-slate-400 font-bold">{FACTOR_LABELS[f.factor_type] || f.factor_type}</div>
+      <p className="mt-2 text-xs text-slate-300 leading-relaxed">{f.description}</p>
+      <div className="mt-3.5 flex items-start gap-2 rounded-xl bg-white/[0.03] border border-white/[0.06] p-3 text-xs">
+        <span className="font-bold text-sky-400 shrink-0">Action:</span>
+        <span className="text-slate-300 font-medium">{f.recommendation}</span>
       </div>
     </Card>
   );
@@ -81,7 +92,7 @@ export default function RiskReport() {
     }
   };
 
-  if (isLoading) return <LoadingState label="Loading risk intelligence report…" />;
+  if (isLoading) return <LoadingState label="Synthesizing multi-factor statutory risk intelligence…" />;
   if (isError) return <ErrorState message={error?.message} onRetry={refetch} />;
 
   const trip = data.trip;
@@ -92,33 +103,35 @@ export default function RiskReport() {
       <Button 
         variant="ghost" 
         size="sm" 
-        className="text-xs text-slate-500 hover:text-slate-900" 
+        className="text-xs text-slate-400 hover:text-white" 
         onClick={() => navigate(`/trips/${id}`)}
       >
-        <ArrowLeft className="mr-1.5 h-3.5 w-3.5" /> Back to trip details
+        <ArrowLeft className="mr-1.5 h-3.5 w-3.5" /> Back to dispatch details
       </Button>
 
       {!ev ? (
         <EmptyState 
           title="Trip Not Analyzed Yet" 
-          description="Run the risk engine to generate an explainable multi-factor report."
+          description="Execute the risk engine to generate an explainable multi-factor evaluation."
           action={
-            <Button onClick={() => analyze.mutate()} disabled={analyze.isPending} data-testid="risk-run-analysis" className="btn-executive-primary font-semibold rounded-lg text-xs">
-              {analyze.isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Running Engine…</> : <><Gauge className="mr-2 h-4 w-4" />Analyze Now</>}
+            <Button onClick={() => analyze.mutate()} disabled={analyze.isPending} data-testid="risk-run-analysis" className="btn-cyber-cyan font-bold rounded-xl text-xs">
+              {analyze.isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Analyzing…</> : <><Gauge className="mr-2 h-4 w-4" />Analyze Now</>}
             </Button>
           } 
         />
       ) : (
-        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className="space-y-6">
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className="space-y-6">
           {/* Main Risk Gauge Card */}
-          <Card className="executive-card p-6 sm:p-8">
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="h-4 w-4 text-sky-600" />
-                <span className="text-xs font-bold uppercase tracking-widest text-slate-500">Pre-Departure Risk Evaluation</span>
+          <Card className="rich-card p-6 sm:p-8">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] pb-4">
+              <div className="flex items-center gap-2.5">
+                <div className="h-8 w-8 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
+                  <ShieldCheck className="h-4 w-4" />
+                </div>
+                <span className="text-xs font-bold uppercase tracking-widest text-white">Pre-Departure Risk Evaluation</span>
                 {trip.is_demo && <SyntheticBadge />}
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2.5">
                 <ShareControls tripId={id} />
                 <Button 
                   size="sm" 
@@ -126,7 +139,7 @@ export default function RiskReport() {
                   onClick={exportPdf} 
                   disabled={exporting} 
                   data-testid="risk-export-pdf"
-                  className="border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                  className="border-white/[0.1] hover:bg-white/[0.05] text-xs font-semibold text-white rounded-xl"
                 >
                   {exporting ? <><Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />Exporting…</> : <><Download className="mr-1.5 h-3.5 w-3.5" />Export PDF</>}
                 </Button>
@@ -134,19 +147,21 @@ export default function RiskReport() {
             </div>
 
             <div className="grid items-center gap-8 sm:grid-cols-2">
-              <div className="space-y-3">
+              <div className="space-y-3.5">
                 <RouteStrip origin={trip.origin} destination={trip.destination} className="text-2xl font-extrabold" />
-                <div className="text-xs text-slate-500">Dispatch Date: <span className="text-slate-900 font-semibold">{fmtDate(trip.travel_date)}</span></div>
-                <div className="font-mono text-xs text-slate-600">{trip.vehicle_number || "No vehicle registered"} · {trip.vehicle_type || "Commercial Truck"}</div>
+                <div className="text-xs text-slate-400">Dispatch Date: <span className="text-white font-semibold">{fmtDate(trip.travel_date)}</span></div>
+                <div className="font-mono text-xs text-sky-300 bg-white/[0.03] p-2 rounded-lg border border-white/[0.05] inline-block">
+                  {trip.vehicle_number || "No vehicle registered"} · {trip.vehicle_type || "Commercial Truck"}
+                </div>
                 
-                <div className="mt-4 grid grid-cols-2 gap-3 rounded-lg bg-slate-50 border border-slate-100 p-3 text-xs">
+                <div className="mt-4 grid grid-cols-2 gap-3 rounded-xl bg-white/[0.02] border border-white/[0.06] p-3 text-xs">
                   <div>
-                    <div className="text-slate-500 font-medium">Declared Distance</div>
-                    <div className="font-mono font-bold text-slate-900 text-sm mt-0.5">{trip.declared_distance_km ? `${trip.declared_distance_km} km` : "—"}</div>
+                    <div className="text-slate-400 font-medium text-[11px]">Declared Distance</div>
+                    <div className="font-mono font-bold text-white text-sm mt-0.5">{trip.declared_distance_km ? `${trip.declared_distance_km} km` : "—"}</div>
                   </div>
                   <div>
-                    <div className="text-slate-500 font-medium">Estimated Route</div>
-                    <div className="font-mono font-bold text-sky-700 text-sm mt-0.5">{trip.estimated_distance_km ? `${trip.estimated_distance_km} km` : "—"}</div>
+                    <div className="text-slate-400 font-medium text-[11px]">Estimated Highway Route</div>
+                    <div className="font-mono font-bold text-sky-400 text-sm mt-0.5">{trip.estimated_distance_km ? `${trip.estimated_distance_km} km` : "—"}</div>
                   </div>
                 </div>
               </div>
@@ -159,41 +174,41 @@ export default function RiskReport() {
 
           {/* Detailed Findings */}
           <div>
-            <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-500">
-              Detailed Factor Risk Breakdown
+            <h2 className="mb-3 text-xs font-extrabold uppercase tracking-wider text-slate-400">
+              Evaluated Factor Breakdown ({ev.factors?.length || 0})
             </h2>
             <div className="grid gap-4 md:grid-cols-2">
               {(ev.factors || []).map((f, i) => <FactorCard key={i} f={f} />)}
             </div>
           </div>
 
-          {/* Recommendations Checklist */}
-          <Card className="executive-card p-6">
-            <h2 className="mb-4 text-xs font-bold uppercase tracking-wider text-slate-900 flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+          {/* Checklist */}
+          <Card className="rich-card p-6">
+            <h2 className="mb-4 text-xs font-extrabold uppercase tracking-wider text-white flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-emerald-400" />
               Actionable Pre-Departure Checklist
             </h2>
-            <ol className="space-y-2.5">
+            <ol className="space-y-3">
               {(ev.recommendations || []).map((r, i) => (
-                <li key={i} className="flex items-start gap-3 rounded-lg bg-slate-50 p-3 text-xs border border-slate-100">
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
-                  <span className="text-slate-800 leading-relaxed font-medium">{r}</span>
+                <li key={i} className="flex items-start gap-3 rounded-xl bg-white/[0.03] p-3.5 text-xs border border-white/[0.06]">
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
+                  <span className="text-slate-200 leading-relaxed font-medium">{r}</span>
                 </li>
               ))}
             </ol>
           </Card>
 
-          <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500 border-t border-slate-200/80 pt-4">
-            <span>Engine: <code className="text-slate-900 font-mono font-semibold">{ev.engine_version}</code> · Dynamic Corridor Intelligence</span>
+          <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400 border-t border-white/[0.08] pt-4">
+            <span>Engine: <code className="text-sky-300 font-mono font-bold">{ev.engine_version}</code> · Corridor AI Matrix</span>
             <Button 
               variant="outline" 
               size="sm" 
               onClick={() => analyze.mutate()} 
               disabled={analyze.isPending} 
               data-testid="risk-reanalyze"
-              className="border-slate-200 text-xs font-semibold text-slate-700"
+              className="border-white/[0.1] hover:bg-white/[0.05] text-xs font-semibold text-white rounded-xl"
             >
-              {analyze.isPending ? "Running Engine…" : "Re-evaluate Trip"}
+              {analyze.isPending ? "Evaluating…" : "Re-evaluate Dispatch"}
             </Button>
           </div>
 
@@ -225,8 +240,8 @@ function ShareControls({ tripId }) {
 
   if (!canShare) {
     return (
-      <Button size="sm" variant="outline" onClick={() => (window.location.href = "/pricing")} data-testid="risk-share-locked" className="border-slate-200 text-xs">
-        <Lock className="mr-1.5 h-3.5 w-3.5 text-slate-500" />Share (Upgrade)
+      <Button size="sm" variant="outline" onClick={() => (window.location.href = "/pricing")} data-testid="risk-share-locked" className="border-white/[0.1] text-xs text-slate-300 rounded-xl">
+        <Lock className="mr-1.5 h-3.5 w-3.5 text-amber-400" />Share (Upgrade)
       </Button>
     );
   }
@@ -236,32 +251,32 @@ function ShareControls({ tripId }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" variant="outline" data-testid="risk-share-button" className="border-slate-200 text-xs">
-          <Share2 className="mr-1.5 h-3.5 w-3.5 text-slate-600" />Share
+        <Button size="sm" variant="outline" data-testid="risk-share-button" className="border-white/[0.1] text-xs text-white rounded-xl">
+          <Share2 className="mr-1.5 h-3.5 w-3.5 text-sky-400" />Share Link
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-white text-slate-900 border-slate-200">
-        <DialogHeader><DialogTitle className="text-slate-900">Share Read-Only Report</DialogTitle></DialogHeader>
-        <p className="text-xs text-slate-500">Anyone with this secure link can view this compliance assessment (no login needed).</p>
+      <DialogContent className="bg-[#0f172a] text-slate-100 border-white/[0.1] rounded-2xl">
+        <DialogHeader><DialogTitle className="text-white">Share Read-Only Report</DialogTitle></DialogHeader>
+        <p className="text-xs text-slate-400">Anyone with this secure link can view this compliance assessment (no login needed).</p>
         <div className="flex items-end gap-2 mt-2">
           {isPro && (
             <div className="w-28">
-              <label className="text-xs text-slate-500">Expiry (days)</label>
-              <Input type="number" min={1} value={days} onChange={(e) => setDays(e.target.value)} data-testid="share-expiry-input" className="bg-white border-slate-200" />
+              <label className="text-xs text-slate-400">Expiry (days)</label>
+              <Input type="number" min={1} value={days} onChange={(e) => setDays(e.target.value)} data-testid="share-expiry-input" className="bg-white/[0.04] border-white/[0.1] text-white" />
             </div>
           )}
-          <Button onClick={() => create.mutate()} disabled={create.isPending} data-testid="share-create-button" className="btn-executive-primary font-semibold text-xs">
+          <Button onClick={() => create.mutate()} disabled={create.isPending} data-testid="share-create-button" className="btn-cyber-cyan text-xs font-bold rounded-xl">
             {create.isPending ? "Creating…" : "Generate Link"}
           </Button>
         </div>
         <div className="mt-3 max-h-64 space-y-2 overflow-auto">
-          {(links || []).filter((l) => l.active).length === 0 && <p className="text-xs text-slate-500">No active share links yet.</p>}
+          {(links || []).filter((l) => l.active).length === 0 && <p className="text-xs text-slate-400">No active share links yet.</p>}
           {(links || []).map((l) => (
-            <div key={l.id} className={`flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 p-2.5 ${l.active ? "" : "opacity-40"}`}>
-              <code className="flex-1 truncate text-xs text-slate-700 font-mono">{shareUrl(l.token)}</code>
+            <div key={l.id} className={`flex items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.03] p-2.5 ${l.active ? "" : "opacity-40"}`}>
+              <code className="flex-1 truncate text-xs text-sky-300 font-mono">{shareUrl(l.token)}</code>
               {l.active && <>
-                <Button size="icon" variant="ghost" onClick={() => { navigator.clipboard.writeText(shareUrl(l.token)); toast.success("Link copied"); }} data-testid="share-copy-button" className="h-7 w-7 text-slate-500 hover:text-slate-900"><Copy className="h-3.5 w-3.5" /></Button>
-                <Button size="icon" variant="ghost" onClick={() => revoke.mutate(l.id)} data-testid="share-revoke-button" className="h-7 w-7 text-red-600 hover:text-red-700"><Trash2 className="h-3.5 w-3.5" /></Button>
+                <Button size="icon" variant="ghost" onClick={() => { navigator.clipboard.writeText(shareUrl(l.token)); toast.success("Link copied"); }} data-testid="share-copy-button" className="h-7 w-7 text-slate-400 hover:text-white"><Copy className="h-3.5 w-3.5" /></Button>
+                <Button size="icon" variant="ghost" onClick={() => revoke.mutate(l.id)} data-testid="share-revoke-button" className="h-7 w-7 text-rose-400 hover:text-rose-300"><Trash2 className="h-3.5 w-3.5" /></Button>
               </>}
             </div>
           ))}

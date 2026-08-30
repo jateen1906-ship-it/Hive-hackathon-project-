@@ -71,16 +71,16 @@ export default function ReportIncident() {
   if (created) {
     return (
       <div className="mx-auto max-w-md text-center pt-8">
-        <Card className="executive-card p-8">
-          <div className="mx-auto mb-4 h-14 w-14 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 border border-emerald-200">
+        <Card className="rich-card p-8">
+          <div className="mx-auto mb-4 h-14 w-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20">
             <CheckCircle2 className="h-8 w-8" />
           </div>
-          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Incident Recorded</h1>
-          <p className="mt-1.5 text-xs text-slate-500">Thank you. This data immediately feeds your corridor safety signals.</p>
-          <div className="mt-4 rounded-lg bg-slate-50 border border-slate-200 p-3 font-mono text-xs text-slate-700" data-testid="incident-created-id">ID: {created.id}</div>
+          <h1 className="text-xl font-bold text-white tracking-tight">Incident Recorded</h1>
+          <p className="mt-1.5 text-xs text-slate-400">Thank you. This data immediately feeds your corridor safety signals.</p>
+          <div className="mt-4 rounded-xl bg-white/[0.04] border border-white/[0.08] p-3 font-mono text-xs text-sky-300" data-testid="incident-created-id">ID: {created.id}</div>
           <div className="mt-6 flex justify-center gap-3">
-            <Button onClick={() => navigate("/incidents")} data-testid="incident-view-all" className="btn-executive-primary text-xs font-semibold">View Incidents</Button>
-            <Button variant="outline" onClick={() => { setCreated(null); setDocs([]); setForm((f) => ({ ...f, location_name: "", reason: "", notes: "" })); }} className="border-slate-200 text-xs font-semibold text-slate-700">Report Another</Button>
+            <Button onClick={() => navigate("/incidents")} data-testid="incident-view-all" className="btn-cyber-cyan text-xs font-bold rounded-xl">View Incidents</Button>
+            <Button variant="outline" onClick={() => { setCreated(null); setDocs([]); setForm((f) => ({ ...f, location_name: "", reason: "", notes: "" })); }} className="border-white/[0.1] text-xs font-semibold text-white rounded-xl">Report Another</Button>
           </div>
         </Card>
       </div>
@@ -89,29 +89,29 @@ export default function ReportIncident() {
 
   return (
     <div className="mx-auto max-w-lg space-y-6">
-      <PageHeader title="Report Route Incident" subtitle="Quick to submit from the field — updates corridor intelligence." />
+      <PageHeader title="Report Route Incident" subtitle="Quick to submit from the field — feeds real-time corridor intelligence." />
       <form onSubmit={submit} className="space-y-4">
-        <Card className="executive-card space-y-4 p-6">
+        <Card className="rich-card space-y-4 p-6">
           <div className="space-y-1.5">
-            <Label htmlFor="loc" className="text-xs text-slate-700">Location / Toll Plaza / Border</Label>
-            <Input id="loc" value={form.location_name} onChange={set("location_name")} className="bg-white border-slate-200 text-slate-900" data-testid="incident-location-input" placeholder="e.g. Surat → Indore Highway Checkpoint" />
+            <Label htmlFor="loc" className="text-xs text-slate-300 font-semibold">Location / Toll Plaza / Border</Label>
+            <Input id="loc" value={form.location_name} onChange={set("location_name")} className="bg-white/[0.04] border-white/[0.08] text-white rounded-xl" data-testid="incident-location-input" placeholder="e.g. Surat → Indore Highway Checkpoint" />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs text-slate-700">Incident Type</Label>
+            <Label className="text-xs text-slate-300 font-semibold">Incident Type</Label>
             <Select value={form.incident_type} onValueChange={(v) => setForm((f) => ({ ...f, incident_type: v }))}>
-              <SelectTrigger className="bg-white border-slate-200 text-slate-900" data-testid="incident-type-select"><SelectValue /></SelectTrigger>
-              <SelectContent className="bg-white border-slate-200 text-slate-900">{TYPES.map((t) => <SelectItem key={t.v} value={t.v}>{t.l}</SelectItem>)}</SelectContent>
+              <SelectTrigger className="bg-white/[0.04] border-white/[0.08] text-white rounded-xl" data-testid="incident-type-select"><SelectValue /></SelectTrigger>
+              <SelectContent className="bg-[#0f172a] border-white/[0.1] text-white">{TYPES.map((t) => <SelectItem key={t.v} value={t.v}>{t.l}</SelectItem>)}</SelectContent>
             </Select>
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="reason" className="text-xs text-slate-700">Reason Provided by Authority</Label>
-            <Input id="reason" value={form.reason} onChange={set("reason")} className="bg-white border-slate-200 text-slate-900" data-testid="incident-reason-input" placeholder="e.g. E-way bill distance inspection" />
+            <Label htmlFor="reason" className="text-xs text-slate-300 font-semibold">Reason Provided by Authority</Label>
+            <Input id="reason" value={form.reason} onChange={set("reason")} className="bg-white/[0.04] border-white/[0.08] text-white rounded-xl" data-testid="incident-reason-input" placeholder="e.g. E-way bill distance inspection" />
           </div>
           <div className="space-y-2">
-            <Label className="text-xs text-slate-700">Documents Demanded</Label>
+            <Label className="text-xs text-slate-300 font-semibold">Documents Demanded</Label>
             <div className="grid grid-cols-2 gap-2">
               {DOC_OPTIONS.map((d) => (
-                <label key={d} className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50/50 px-3 py-2.5 text-xs text-slate-700 cursor-pointer hover:bg-slate-100">
+                <label key={d} className="flex items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.02] px-3 py-2.5 text-xs text-slate-300 cursor-pointer hover:bg-white/[0.05]">
                   <Checkbox checked={docs.includes(d)} onCheckedChange={() => toggleDoc(d)} data-testid={`incident-doc-${d}`} />
                   <span>{d}</span>
                 </label>
@@ -119,29 +119,29 @@ export default function ReportIncident() {
             </div>
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs text-slate-700">Inspection Outcome</Label>
+            <Label className="text-xs text-slate-300 font-semibold">Inspection Outcome</Label>
             <Select value={form.outcome} onValueChange={(v) => setForm((f) => ({ ...f, outcome: v }))}>
-              <SelectTrigger className="bg-white border-slate-200 text-slate-900" data-testid="incident-outcome-select"><SelectValue /></SelectTrigger>
-              <SelectContent className="bg-white border-slate-200 text-slate-900">{OUTCOMES.map((o) => <SelectItem key={o.v} value={o.v}>{o.l}</SelectItem>)}</SelectContent>
+              <SelectTrigger className="bg-white/[0.04] border-white/[0.08] text-white rounded-xl" data-testid="incident-outcome-select"><SelectValue /></SelectTrigger>
+              <SelectContent className="bg-[#0f172a] border-white/[0.1] text-white">{OUTCOMES.map((o) => <SelectItem key={o.v} value={o.v}>{o.l}</SelectItem>)}</SelectContent>
             </Select>
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs text-slate-700">Link to Active Trip (Optional)</Label>
+            <Label className="text-xs text-slate-300 font-semibold">Link to Active Trip (Optional)</Label>
             <Select value={form.trip_id} onValueChange={(v) => setForm((f) => ({ ...f, trip_id: v }))}>
-              <SelectTrigger className="bg-white border-slate-200 text-slate-900" data-testid="incident-trip-select"><SelectValue placeholder="No trip" /></SelectTrigger>
-              <SelectContent className="bg-white border-slate-200 text-slate-900">
+              <SelectTrigger className="bg-white/[0.04] border-white/[0.08] text-white rounded-xl" data-testid="incident-trip-select"><SelectValue placeholder="No trip" /></SelectTrigger>
+              <SelectContent className="bg-[#0f172a] border-white/[0.1] text-white">
                 <SelectItem value="none">No trip</SelectItem>
                 {(trips || []).map((t) => <SelectItem key={t.id} value={t.id}>{t.origin} → {t.destination}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="notes" className="text-xs text-slate-700">Additional Field Notes</Label>
-            <Textarea id="notes" value={form.notes} onChange={set("notes")} data-testid="incident-notes-input" rows={3} placeholder="Provide details regarding the officer, delay time, or challan number…" className="bg-white border-slate-200 text-slate-900" />
+            <Label htmlFor="notes" className="text-xs text-slate-300 font-semibold">Additional Field Notes</Label>
+            <Textarea id="notes" value={form.notes} onChange={set("notes")} data-testid="incident-notes-input" rows={3} placeholder="Provide details regarding the officer, delay time, or challan number…" className="bg-white/[0.04] border-white/[0.08] text-white rounded-xl" />
           </div>
         </Card>
-        <Button type="submit" size="lg" className="btn-executive-primary w-full font-bold rounded-xl h-11 shadow-sm text-sm" disabled={busy} data-testid="incident-submit-button">
-          {busy ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Submitting…</> : <><Send className="mr-2 h-4 w-4" />Submit Incident</>}
+        <Button type="submit" size="lg" className="btn-cyber-cyan w-full font-bold rounded-2xl h-12 shadow-lg text-sm" disabled={busy} data-testid="incident-submit-button">
+          {busy ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Submitting…</> : <><Send className="mr-2 h-4 w-4" />Submit Route Incident</>}
         </Button>
       </form>
     </div>
