@@ -38,50 +38,50 @@ export default function Login() {
   };
 
   return (
-    <div className="grid min-h-screen lg:grid-cols-2 bg-[#f1f5f9] text-slate-900">
-      {/* Left Hero */}
-      <div className="relative hidden flex-col justify-between p-12 lg:flex border-r border-slate-200 bg-white">
+    <div className="grid min-h-screen lg:grid-cols-2 bg-[#f2fcfb] text-[#0c333a]">
+      {/* Left Hero - Dark / Black Background */}
+      <div className="relative hidden flex-col justify-between p-12 lg:flex bg-[#090d16] text-white border-r border-slate-800">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#85d1db] text-[#05262c] font-bold shadow-md">
             <ShieldCheck className="h-6 w-6" />
           </div>
-          <span className="text-xl font-bold tracking-tight text-slate-900">TruckShield</span>
+          <span className="text-xl font-bold tracking-tight text-white">TruckShield</span>
         </div>
         <div className="max-w-md">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold mb-4">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#85d1db]/20 border border-[#85d1db]/40 text-[#85d1db] text-xs font-bold mb-5">
             <Sparkles className="h-3.5 w-3.5" /> Fleet Pre-Dispatch Intelligence
           </div>
-          <h2 className="text-4xl font-extrabold leading-tight text-slate-900">
-            Pre-departure compliance, in seconds.
+          <h2 className="text-4xl font-extrabold leading-tight text-white sm:text-5xl">
+            Protect every dispatch across India.
           </h2>
-          <p className="mt-4 text-base text-slate-600 leading-relaxed">
-            Instant explainable risk signals so your logistics fleet knows exact regulatory, route, and cargo checks before dispatch.
+          <p className="mt-5 text-base text-slate-300 leading-relaxed font-medium">
+            Automate statutory E-Way bill pre-checks, route anomalies, and cargo compliance in one unified portal.
           </p>
         </div>
-        <div className="text-xs text-slate-500 border-t border-slate-200 pt-4">
+        <div className="text-xs text-slate-500 border-t border-slate-800 pt-4">
           Informational compliance pre-checks only — not legal advice.
         </div>
       </div>
 
       {/* Right Form */}
       <div className="flex items-center justify-center p-6 sm:p-12">
-        <Card className="w-full max-w-md p-8 bg-white border border-slate-200 shadow-sm">
+        <Card className="w-full max-w-md p-8 bg-white border border-[#b3ebf2] shadow-sm">
           <div className="mb-6">
             <div className="lg:hidden flex items-center gap-2.5 mb-6">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-white">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#85d1db] text-[#05262c] font-bold">
                 <ShieldCheck className="h-5 w-5" />
               </div>
-              <span className="text-lg font-bold text-slate-900">TruckShield</span>
+              <span className="text-lg font-bold text-[#0c333a]">TruckShield</span>
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Welcome back</h1>
-            <p className="mt-1 text-xs text-slate-500">Sign in to your fleet compliance dashboard.</p>
+            <h1 className="text-2xl font-bold text-[#0c333a] tracking-tight">Welcome back</h1>
+            <p className="mt-1 text-xs text-[#507e86]">Sign in to your fleet compliance dashboard.</p>
           </div>
 
           <form onSubmit={submit} className="space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="email" className="text-xs font-semibold text-slate-700">Email Address</Label>
+              <Label htmlFor="email" className="text-xs font-semibold text-[#0c333a]">Email Address</Label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#507e86]" />
                 <Input 
                   id="email" 
                   type="email" 
@@ -90,20 +90,20 @@ export default function Login() {
                   data-testid="login-email-input"
                   onChange={(e) => setEmail(e.target.value)} 
                   placeholder="operator@fleet.in"
-                  className="pl-10 bg-white border-slate-200 text-slate-900 rounded-lg h-10 text-xs"
+                  className="pl-10 bg-white border-[#b3ebf2] text-[#0c333a] rounded-lg h-10 text-xs"
                 />
               </div>
             </div>
 
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password" className="text-xs font-semibold text-slate-700">Password</Label>
-                <Link to="/forgot-password" className="text-xs text-blue-600 hover:text-blue-700 font-semibold">
+                <Label htmlFor="password" className="text-xs font-semibold text-[#0c333a]">Password</Label>
+                <Link to="/forgot-password" className="text-xs text-[#094751] hover:text-[#0c333a] font-bold">
                   Forgot password?
                 </Link>
               </div>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#507e86]" />
                 <Input 
                   id="password" 
                   type="password" 
@@ -112,14 +112,14 @@ export default function Login() {
                   data-testid="login-password-input"
                   onChange={(e) => setPassword(e.target.value)} 
                   placeholder="••••••••" 
-                  className="pl-10 bg-white border-slate-200 text-slate-900 rounded-lg h-10 text-xs"
+                  className="pl-10 bg-white border-[#b3ebf2] text-[#0c333a] rounded-lg h-10 text-xs"
                 />
               </div>
             </div>
 
             <Button 
               type="submit" 
-              className="btn-primary-blue w-full font-semibold rounded-lg h-10 text-xs shadow-2xs" 
+              className="btn-primary-blue w-full font-bold rounded-lg h-10 text-xs shadow-2xs text-[#05262c]" 
               disabled={loading} 
               data-testid="login-form-submit-button"
             >
@@ -131,15 +131,15 @@ export default function Login() {
             onClick={useDemo} 
             data-testid="login-demo-fill"
             type="button"
-            className="mt-4 w-full rounded-lg border border-dashed border-blue-300 bg-blue-50/70 px-4 py-2.5 text-xs font-semibold text-blue-700 hover:bg-blue-100 transition-colors flex items-center justify-center gap-1.5"
+            className="mt-4 w-full rounded-lg border border-dashed border-[#85d1db] bg-[#c9fdf2]/50 px-4 py-2.5 text-xs font-bold text-[#094751] hover:bg-[#c9fdf2] transition-colors flex items-center justify-center gap-1.5"
           >
             <Sparkles className="h-3.5 w-3.5" />
             <span>Use Demo Account (demo@truckshield.app)</span>
           </button>
 
-          <p className="mt-6 text-center text-xs text-slate-500">
+          <p className="mt-6 text-center text-xs text-[#507e86]">
             Don't have an account?{" "}
-            <Link to="/register" className="font-semibold text-blue-600 hover:underline">
+            <Link to="/register" className="font-bold text-[#094751] hover:underline">
               Create one now
             </Link>
           </p>
