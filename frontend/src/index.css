@@ -8,7 +8,7 @@ body {
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #f1f5f9;
+    background-color: #f8fafc;
     color: #0f172a;
 }
 
@@ -18,8 +18,8 @@ code, .font-mono {
 
 @layer base {
     :root {
-        /* Professional Light Palette */
-        --background: 210 40% 96%;        /* #f1f5f9 */
+        /* Modern Clean Light SaaS Palette */
+        --background: 210 40% 98%;        /* #f8fafc */
         --foreground: 222 47% 11%;        /* #0f172a */
         
         --card: 0 0% 100%;                /* #ffffff */
@@ -28,16 +28,16 @@ code, .font-mono {
         --popover: 0 0% 100%;             /* #ffffff */
         --popover-foreground: 222 47% 11%;
         
-        --primary: 221 83% 53%;           /* #2563eb - Royal Blue */
+        --primary: 226 70% 55%;           /* #4f46e5 - Modern Indigo */
         --primary-foreground: 0 0% 100%;
         
-        --secondary: 210 40% 93%;         /* #e2e8f0 */
+        --secondary: 214 32% 91%;         /* #e2e8f0 */
         --secondary-foreground: 222 47% 11%;
         
-        --muted: 210 40% 93%;
+        --muted: 210 40% 96%;             /* #f1f5f9 */
         --muted-foreground: 215 16% 47%;  /* #64748b */
         
-        --accent: 217 91% 60%;            /* #3b82f6 */
+        --accent: 226 70% 55%;            /* #4f46e5 */
         --accent-foreground: 0 0% 100%;
         
         --destructive: 0 84% 60%;         /* #ef4444 */
@@ -45,17 +45,7 @@ code, .font-mono {
         
         --border: 214 32% 91%;            /* #e2e8f0 */
         --input: 214 32% 91%;             /* #e2e8f0 */
-        --ring: 221 83% 53%;              /* #2563eb */
-        
-        --risk-low: 152 69% 38%;          /* #059669 */
-        --risk-medium: 38 92% 45%;        /* #d97706 */
-        --risk-high: 14 90% 50%;          /* #ea580c */
-        --risk-critical: 0 84% 55%;       /* #dc2626 */
-        
-        --risk-low-bg: 142 71% 95%;       /* #ecfdf5 */
-        --risk-medium-bg: 45 93% 95%;     /* #fffbeb */
-        --risk-high-bg: 24 95% 95%;       /* #fff7ed */
-        --risk-critical-bg: 0 84% 96%;    /* #fef2f2 */
+        --ring: 226 70% 55%;              /* #4f46e5 */
         
         --radius: 0.75rem;
     }
@@ -70,13 +60,13 @@ code, .font-mono {
     }
 }
 
-/* Crisp Clean Scrollbars */
+/* Subtle Light Scrollbars */
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
 }
 ::-webkit-scrollbar-track {
-    background: #f1f5f9;
+    background: #f8fafc;
 }
 ::-webkit-scrollbar-thumb {
     background: #cbd5e1;

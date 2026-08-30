@@ -30,8 +30,8 @@ function NavItems({ onNavigate }) {
           className={({ isActive }) =>
             `flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-semibold transition-colors ${
               isActive
-                ? "bg-blue-600 text-white font-bold"
-                : "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+                ? "bg-indigo-50 text-indigo-700 font-bold border border-indigo-200/60 shadow-2xs"
+                : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
             }`
           }
         >
@@ -45,13 +45,13 @@ function NavItems({ onNavigate }) {
 
 function Brand() {
   return (
-    <div className="flex items-center gap-3 px-5 py-4 border-b border-slate-800">
-      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-white">
+    <div className="flex items-center gap-3 px-5 py-4 border-b border-slate-200 bg-white">
+      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-600 text-white shadow-xs">
         <ShieldCheck className="h-5 w-5" />
       </div>
       <div>
-        <div className="text-sm font-bold tracking-tight text-white">TruckShield</div>
-        <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Compliance Engine</div>
+        <div className="text-sm font-bold tracking-tight text-slate-900">TruckShield</div>
+        <div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Compliance Engine</div>
       </div>
     </div>
   );
@@ -72,26 +72,26 @@ export function AppShell({ children }) {
   const currentTitle = currentNav ? currentNav.label : "Dashboard";
 
   const SidebarInner = (
-    <div className="flex h-full flex-col bg-[#0f172a] text-slate-100">
+    <div className="flex h-full flex-col bg-white text-slate-900 border-r border-slate-200">
       <Brand />
-      <div className="mt-3 flex-1 overflow-y-auto"><NavItems onNavigate={() => setOpen(false)} /></div>
+      <div className="mt-3 flex-1 overflow-y-auto bg-white"><NavItems onNavigate={() => setOpen(false)} /></div>
       
       {/* User profile footer */}
-      <div className="border-t border-slate-800 p-3.5 bg-[#0b1329]">
-        <div className="flex items-center gap-2.5 p-2 rounded-lg bg-slate-800/60 border border-slate-700/50">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white text-xs font-bold shrink-0">
+      <div className="border-t border-slate-200 p-3.5 bg-slate-50">
+        <div className="flex items-center gap-2.5 p-2 rounded-lg bg-white border border-slate-200 shadow-2xs">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 text-white text-xs font-bold shrink-0">
             {user?.full_name ? user.full_name.charAt(0).toUpperCase() : <User className="h-4 w-4" />}
           </div>
           <div className="min-w-0 flex-1">
-            <div className="text-xs font-bold text-slate-200 truncate">{user?.full_name || "Fleet Operator"}</div>
-            <div className="text-[11px] text-slate-400 truncate">{user?.company_name || user?.email}</div>
+            <div className="text-xs font-bold text-slate-900 truncate">{user?.full_name || "Fleet Operator"}</div>
+            <div className="text-[11px] text-slate-500 truncate">{user?.company_name || user?.email}</div>
           </div>
         </div>
         <Button
           variant="ghost"
           onClick={handleLogout}
           data-testid="logout-button"
-          className="mt-2 w-full justify-start text-xs text-slate-400 hover:bg-slate-800 hover:text-red-400 rounded-lg h-8"
+          className="mt-2 w-full justify-start text-xs text-slate-600 hover:bg-slate-100 hover:text-red-600 rounded-lg h-8 font-medium"
         >
           <LogOut className="mr-2 h-3.5 w-3.5" /> Sign out
         </Button>
@@ -100,9 +100,9 @@ export function AppShell({ children }) {
   );
 
   return (
-    <div className="min-h-screen bg-[#f1f5f9] text-slate-900 flex">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 flex">
       {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 hidden w-[240px] lg:block z-40 shadow-sm border-r border-slate-800">
+      <aside className="fixed inset-y-0 left-0 hidden w-[240px] lg:block z-40 shadow-xs border-r border-slate-200">
         {SidebarInner}
       </aside>
 
@@ -117,7 +117,7 @@ export function AppShell({ children }) {
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-[240px] border-0 p-0">{SidebarInner}</SheetContent>
+              <SheetContent side="left" className="w-[240px] border-0 p-0 bg-white">{SidebarInner}</SheetContent>
             </Sheet>
 
             {/* Title Header */}

@@ -61,7 +61,7 @@ export default function Dashboard() {
               label="Active Trips" 
               value={data.kpis.active_trips} 
               testId="dashboard-kpi-active" 
-              accent="#2563eb" 
+              accent="#4f46e5" 
               hint={`${data.kpis.total_trips} total recorded`} 
             />
             <KpiCard 
@@ -100,22 +100,22 @@ export default function Dashboard() {
             <div className="fleet-card-slate p-6 flex flex-col justify-between min-h-[190px]">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-lg bg-blue-600 flex items-center justify-center text-white">
+                  <div className="h-8 w-8 rounded-lg bg-indigo-500 flex items-center justify-center text-white">
                     <ShieldCheck className="h-4 w-4" />
                   </div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-200">TruckShield Fleet Intelligence</span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-indigo-200">Fleet Intelligence</span>
                 </div>
-                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30">
+                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-500/30 text-indigo-200 border border-indigo-400/30">
                   {billing.plan.toUpperCase()} ACTIVE
                 </span>
               </div>
               <div className="my-2">
-                <div className="text-[11px] text-slate-400 font-medium mb-1">Company Fleet Identifier</div>
+                <div className="text-[11px] text-indigo-300 font-medium mb-1">Company Fleet Identifier</div>
                 <div className="font-mono text-xl sm:text-2xl font-bold tracking-widest text-white">
                   TS-{user?.id ? String(user.id).slice(0, 8).toUpperCase() : "FLEET-001"}
                 </div>
               </div>
-              <div className="flex items-center justify-between text-xs text-slate-300 border-t border-slate-700/80 pt-3">
+              <div className="flex items-center justify-between text-xs text-indigo-200 border-t border-indigo-700/60 pt-3">
                 <span className="truncate max-w-[170px]">Fleet: {user?.company_name || "Logistics Network"}</span>
                 <span className="text-emerald-400 font-semibold text-xs">Live Engine Online</span>
               </div>
@@ -149,19 +149,19 @@ export default function Dashboard() {
             <Card className="p-6 flex flex-col justify-between">
               <div className="flex items-center justify-between">
                 <div className="text-xs font-bold uppercase tracking-wider text-slate-500">Quick Actions</div>
-                <Zap className="h-4 w-4 text-blue-600" />
+                <Zap className="h-4 w-4 text-indigo-600" />
               </div>
               <div className="grid grid-cols-2 gap-2.5 my-2">
                 <button 
                   onClick={() => navigate("/trips/new")}
-                  className="flex flex-col items-center justify-center p-3 rounded-lg bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-200 transition-colors text-xs font-semibold text-slate-700 hover:text-blue-700"
+                  className="flex flex-col items-center justify-center p-3 rounded-lg bg-slate-50 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-200 transition-colors text-xs font-semibold text-slate-700 hover:text-indigo-700"
                 >
-                  <Truck className="h-4 w-4 mb-1 text-blue-600" />
+                  <Truck className="h-4 w-4 mb-1 text-indigo-600" />
                   <span>Analyze Trip</span>
                 </button>
                 <button 
                   onClick={() => navigate("/documents")}
-                  className="flex flex-col items-center justify-center p-3 rounded-lg bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-200 transition-colors text-xs font-semibold text-slate-700 hover:text-blue-700"
+                  className="flex flex-col items-center justify-center p-3 rounded-lg bg-slate-50 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-200 transition-colors text-xs font-semibold text-slate-700 hover:text-indigo-700"
                 >
                   <ShieldCheck className="h-4 w-4 mb-1 text-emerald-600" />
                   <span>OCR Check</span>
@@ -184,14 +184,14 @@ export default function Dashboard() {
             <Card className="lg:col-span-2 overflow-hidden">
               <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4 bg-slate-50/50">
                 <div className="flex items-center gap-2">
-                  <Activity className="h-4 w-4 text-blue-600" />
+                  <Activity className="h-4 w-4 text-indigo-600" />
                   <h2 className="text-sm font-bold text-slate-900">Recent Fleet Trips</h2>
                 </div>
                 <Button 
                   variant="ghost" 
                   size="sm" 
                   onClick={() => navigate("/trips")}
-                  className="text-xs text-blue-600 hover:text-blue-700 p-0 h-auto font-semibold"
+                  className="text-xs text-indigo-600 hover:text-indigo-700 p-0 h-auto font-semibold"
                 >
                   View all <ArrowRight className="ml-1 h-3 w-3" />
                 </Button>
@@ -220,7 +220,7 @@ export default function Dashboard() {
                     >
                       <div className="min-w-0 flex-1 pr-4">
                         <div className="flex items-center gap-2.5">
-                          <RouteStrip origin={t.origin} destination={t.destination} className="text-sm group-hover:text-blue-600 transition-colors" />
+                          <RouteStrip origin={t.origin} destination={t.destination} className="text-sm group-hover:text-indigo-600 transition-colors" />
                           {t.is_demo && <SyntheticBadge />}
                         </div>
                         <div className="mt-1 flex items-center gap-3 text-xs text-slate-500 font-medium">
@@ -269,7 +269,7 @@ export default function Dashboard() {
                         ) : a.type === "document" ? (
                           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-red-600" />
                         ) : (
-                          <Truck className="mt-0.5 h-4 w-4 shrink-0 text-blue-600" />
+                          <Truck className="mt-0.5 h-4 w-4 shrink-0 text-indigo-600" />
                         )}
                         <span className="text-slate-800 font-medium">{a.message}</span>
                       </li>
