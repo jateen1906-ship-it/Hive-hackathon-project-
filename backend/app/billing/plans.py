@@ -4,7 +4,7 @@ FREE = "free"
 GROWTH = "growth"
 PRO = "pro"
 
-# amount in paise (INR)
+# amount in paise (INR) -> 100 paise = ₹1, 200 paise = ₹2 for testing
 PLANS = {
     FREE: {
         "tier": FREE, "name": "Free", "price": 0, "price_label": "\u20b90",
@@ -19,7 +19,7 @@ PLANS = {
         ],
     },
     GROWTH: {
-        "tier": GROWTH, "name": "Growth", "price": 199900, "price_label": "\u20b91,999",
+        "tier": GROWTH, "name": "Growth", "price": 100, "price_label": "\u20b91",
         "checks_per_month": 100, "live_distance": True, "field_correction": True,
         "share_links": 10, "custom_expiry": False, "corridor": "view",
         "corridor_drilldown": False, "api_access": False, "support": "Email support",
@@ -33,7 +33,7 @@ PLANS = {
         ],
     },
     PRO: {
-        "tier": PRO, "name": "Pro", "price": 499900, "price_label": "\u20b94,999",
+        "tier": PRO, "name": "Pro", "price": 200, "price_label": "\u20b92",
         "checks_per_month": None, "live_distance": True, "field_correction": True,
         "share_links": None, "custom_expiry": True, "corridor": "full",
         "corridor_drilldown": True, "api_access": True, "support": "Priority support",
