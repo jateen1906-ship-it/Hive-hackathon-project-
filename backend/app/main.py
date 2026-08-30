@@ -1,5 +1,6 @@
 """FastAPI application factory for TruckShield."""
 import logging
+import re
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from starlette.middleware.cors import CORSMiddleware
@@ -16,10 +17,38 @@ logger = logging.getLogger("truckshield")
 
 app = FastAPI(title="TruckShield API", version="1.0.0")
 
+# Clean and normalize configured CORS origins
+raw_origins = [o.strip().rstrip("/") for o in settings.CORS_ORIGINS.split(",") if o.strip()]
+cleaned_origins = []
+for o in raw_origins:
+    if o == "*":
+        cleaned_origins.append("*")
+    else:
+        # Strip any accidental path from origin (e.g. https://domain.vercel.app/pricing -> https://domain.vercel.app)
+        match = re.match(r"^(https?://[^/]+)", o)
+        if match:
+            cleaned_origins.append(match.group(1))
+        else:
+            cleaned_origins.append(o)
+
+# Default origins for local development and common hosts
+default_origins = [
+    "http://localhost:3000",
+    "http://localhost:8000",
+    "http://localhost:8001",
+    "https://hive-hackathon-project.vercel.app",
+]
+
+for d in default_origins:
+    if d not in cleaned_origins and "*" not in cleaned_origins:
+        cleaned_origins.append(d)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=settings.CORS_ORIGINS.split(",") if settings.CORS_ORIGINS != "*" else ["*"],
+    allow_origins=cleaned_origins if "*" not in cleaned_origins else ["*"],
+    # Allow any vercel deployment preview URL dynamically
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_methods=["*"],
     allow_headers=["*"],
 )
