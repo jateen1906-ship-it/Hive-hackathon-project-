@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, UploadFile, File, Form
+from fastapi import APIRouter, Depends, UploadFile, File, Form, Body
 from fastapi.responses import Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional
@@ -55,3 +55,15 @@ async def download_(document_id: str, user=Depends(get_current_user), db: AsyncS
     if data is None:
         raise NotFound("Document file not found")
     return Response(content=data, media_type=mime or "application/octet-stream")
+
+
+@router.put("/{document_id}/fields")
+async def correct_fields_(document_id: str, payload: dict = Body(...),
+                          user=Depends(get_current_user), db: AsyncSession = Depends(get_db)):
+    corrections = (payload or {}).get("fields") or {}
+    if not corrections:
+        raise NotFound("No field corrections supplied", code="NO_CORRECTIONS")
+    d = await svc.correct_fields(db, user["id"], document_id, corrections)
+    if not d:
+        raise NotFound("Document not found")
+    return ok(d)

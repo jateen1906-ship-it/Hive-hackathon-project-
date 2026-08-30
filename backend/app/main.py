@@ -57,3 +57,11 @@ async def on_startup():
         await ensure_seed()
     except Exception as e:
         logger.exception("Seed failed: %s", e)
+    try:
+        from .billing.service import ensure_plans
+        from .database import AsyncSessionLocal
+        async with AsyncSessionLocal() as db:
+            await ensure_plans(db)
+        logger.info("Razorpay plans ensured.")
+    except Exception as e:
+        logger.exception("Plan bootstrap failed: %s", e)

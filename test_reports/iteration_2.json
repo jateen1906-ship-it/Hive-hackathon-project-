@@ -1,0 +1,61 @@
+{
+  "summary": "Completed comprehensive testing of TruckShield billing & gating features. Backend API tests: 25/26 passed (96%). Frontend tests: All critical features verified. Server-side gating working correctly for FREE tier. Field correction, Razorpay integration, and corridor locking all functional.",
+  "backend_issues": {
+    "critical_bugs": [],
+    "minor_bugs": [
+      {
+        "endpoint": "/api/v1/billing/me",
+        "issue": "Demo user subscription status shows 'created' instead of 'active'",
+        "impact": "Settings page displays 'Free · created' instead of 'Free · active'. Functionally works but status label is incorrect.",
+        "fix_priority": "LOW"
+      }
+    ],
+    "flaky_endpoints": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "untested_features": [
+      {
+        "feature": "Risk Report share button gating",
+        "reason": "Could not test because demo trips are not analyzed and analyzing would exceed FREE tier 5-check limit. Backend API for share gating (400 UPGRADE_REQUIRED) verified working.",
+        "workaround": "Backend gating confirmed working via API test"
+      }
+    ]
+  },
+  "passed_tests": [
+    "Auth: Login with demo@truckshield.app / Demo@12345",
+    "GET /api/v1/billing/plans returns 3 tiers (Free ₹0, Growth ₹1,999, Pro ₹4,999)",
+    "GET /api/v1/billing/me returns FREE tier with checks_limit=5, corridor='hidden'",
+    "POST /api/v1/billing/subscribe creates Razorpay order with amount=199900 paise",
+    "Server-side gating: Report sharing blocked on FREE (400 UPGRADE_REQUIRED)",
+    "Server-side gating: Corridor drill-down blocked on FREE (400 UPGRADE_REQUIRED)",
+    "Server-side gating: API key creation blocked on FREE (400 UPGRADE_REQUIRED)",
+    "Server-side gating: Monthly check limit enforced (402 LIMIT_REACHED after 5 checks)",
+    "Field correction: PUT /api/v1/documents/{id}/fields updates field with corrected=true, confidence=1.0",
+    "Frontend: Pricing page displays all 3 tiers with correct pricing",
+    "Frontend: FREE tier shows 'Current plan' indicator",
+    "Frontend: Growth tier shows 'Upgrade' button",
+    "Frontend: Razorpay checkout modal initiates (not completed as instructed)",
+    "Frontend: Settings page shows current plan and usage (5/5 checks used)",
+    "Frontend: API keys section correctly hidden for FREE tier",
+    "Frontend: Analytics corridor heatmap locked for FREE with upgrade button",
+    "Frontend: Public shared report /r/invalidtoken shows graceful error message",
+    "Frontend: Document field correction UI - edit mode, save, and corrected flag working",
+    "Frontend: Document field correction persists to backend (verified via API)"
+  ],
+  "test_report_links": [
+    "/app/backend_test.py"
+  ],
+  "success_percentage": {
+    "backend": "96% (25/26 tests passed)",
+    "frontend": "95% (19/20 features tested, 1 untested due to tier limit)"
+  },
+  "action_item_for_main_agent": "MINOR FIX: Update demo user's subscription status from 'created' to 'active' in the database seed/migration. The subscription is functionally active but the status field shows 'created'. This is cosmetic but should be corrected for consistency.",
+  "updated_files": [
+    "/app/backend_test.py"
+  ],
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_test_itself": true
+}

@@ -1,26 +1,34 @@
 [
   {
-    "content": "Feature 1: Multi-page PDF e-way bill OCR",
+    "content": "Billing infra + service + endpoints (Orders flow; Subscriptions not enabled on account)",
     "status": "completed"
   },
   {
-    "content": "Feature 2: One-tap PDF risk report export",
+    "content": "Gating: check limit (402), tiered distance, share cap, corridor/drilldown/api gates",
     "status": "completed"
   },
   {
-    "content": "Feature 3: Corridor heatmap live map",
+    "content": "Feature: Live distance provider (OSRM) + fallback",
     "status": "completed"
   },
   {
-    "content": "Feature 4: README + docs/ + pytest test suite (22 tests pass)",
+    "content": "Feature: Field correction (editable low-confidence fields, re-run pre-check)",
     "status": "completed"
   },
   {
-    "content": "Testing: new features verified (API + in-browser)",
+    "content": "Feature: Report sharing (public link, cap, expiry, revoke, public page)",
     "status": "completed"
   },
   {
-    "content": "GitHub: guide safe push via platform integration",
+    "content": "Feature: Map drill-down (Pro-gated corridor detail)",
+    "status": "completed"
+  },
+  {
+    "content": "Frontend: Pricing, Settings billing + API keys, checkout, gating UI",
+    "status": "completed"
+  },
+  {
+    "content": "Testing: comprehensive via testing_agent_v3",
     "status": "in_progress"
   }
 ]

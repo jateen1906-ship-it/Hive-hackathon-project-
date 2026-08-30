@@ -14,7 +14,7 @@ function radiusFor(count) {
   return Math.max(8, Math.min(28, 8 + count * 1.2));
 }
 
-export function CorridorMap({ corridors = [], incidentPoints = [] }) {
+export function CorridorMap({ corridors = [], incidentPoints = [], onCorridorClick }) {
   const center = [22.5, 79.0];
   return (
     <div className="overflow-hidden rounded-xl border border-border" data-testid="corridor-map">
@@ -26,6 +26,7 @@ export function CorridorMap({ corridors = [], incidentPoints = [] }) {
         {corridors.map((c, i) => {
           const color = colorForRisk(c.risk_score);
           const totalIncidents = (c.incident_count || 0) + (c.user_incident_count || 0);
+          const clickable = !!onCorridorClick;
           return (
             <React.Fragment key={i}>
               <Polyline positions={[c.origin_coord, c.destination_coord]} pathOptions={{ color, weight: 3, opacity: 0.55 }} />
@@ -33,6 +34,7 @@ export function CorridorMap({ corridors = [], incidentPoints = [] }) {
                 center={c.midpoint}
                 radius={radiusFor(totalIncidents)}
                 pathOptions={{ color, fillColor: color, fillOpacity: 0.35, weight: 2 }}
+                eventHandlers={clickable ? { click: () => onCorridorClick(c) } : {}}
               >
                 <Tooltip direction="top" offset={[0, -4]}>
                   <div style={{ fontSize: 12 }}>
@@ -41,6 +43,7 @@ export function CorridorMap({ corridors = [], incidentPoints = [] }) {
                     Checks/incidents: {c.incident_count}
                     {c.user_incident_count ? ` (+${c.user_incident_count} yours)` : ""}<br />
                     Distance issues: {c.distance_issue_count}
+                    {clickable ? <><br /><em>Click to drill down</em></> : null}
                     {c.is_demo ? <><br /><em>Synthetic demo data</em></> : null}
                   </div>
                 </Tooltip>

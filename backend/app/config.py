@@ -24,6 +24,12 @@ class Settings:
 
     # Distance provider
     DISTANCE_PROVIDER: str = os.environ.get("DISTANCE_PROVIDER", "demo")
+    OSRM_BASE_URL: str = os.environ.get("OSRM_BASE_URL", "https://router.project-osrm.org")
+
+    # Razorpay (backend only)
+    RAZORPAY_KEY_ID: str = os.environ.get("RAZORPAY_KEY_ID", "")
+    RAZORPAY_KEY_SECRET: str = os.environ.get("RAZORPAY_KEY_SECRET", "")
+    RAZORPAY_WEBHOOK_SECRET: str = os.environ.get("RAZORPAY_WEBHOOK_SECRET", "")
 
     CORS_ORIGINS: str = os.environ.get("CORS_ORIGINS", "*")
 

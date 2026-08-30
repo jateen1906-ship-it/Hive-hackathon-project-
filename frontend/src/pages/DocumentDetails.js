@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ArrowLeft, Download, RefreshCw, CheckCircle2, AlertTriangle, Loader2 } from "lucide-react";
+import { ArrowLeft, Download, RefreshCw, CheckCircle2, AlertTriangle, Loader2, Pencil, Save, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { DocumentAPI } from "@/lib/apiClient";
 import { LoadingState, ErrorState } from "@/components/common/StateViews";
 import { Disclaimer } from "@/components/common/Disclaimer";
@@ -34,6 +35,18 @@ export default function DocumentDetails() {
     mutationFn: () => DocumentAPI.validate(id),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["document", id] }); toast.success("Re-checked"); },
     onError: (e) => toast.error(e.message || "Validation failed"),
+  });
+
+  const [editing, setEditing] = useState(false);
+  const [edits, setEdits] = useState({});
+  const save = useMutation({
+    mutationFn: () => DocumentAPI.correctFields(id, edits),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["document", id] });
+      toast.success("Fields corrected & pre-check re-run");
+      setEditing(false); setEdits({});
+    },
+    onError: (e) => toast.error(e.message || "Could not save corrections"),
   });
 
   if (isLoading) return <LoadingState label="Loading document…" />;
@@ -69,20 +82,40 @@ export default function DocumentDetails() {
       <div className="grid gap-5 lg:grid-cols-2">
         {/* Extracted fields */}
         <Card>
-          <div className="border-b border-border p-4"><h2 className="text-sm font-semibold">Extracted fields</h2></div>
+          <div className="flex items-center justify-between border-b border-border p-4">
+            <h2 className="text-sm font-semibold">Extracted fields</h2>
+            {!ocrError && (editing ? (
+              <div className="flex gap-1">
+                <Button size="sm" onClick={() => save.mutate()} disabled={save.isPending || Object.keys(edits).length === 0} data-testid="document-fields-save">
+                  {save.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Save className="mr-1 h-4 w-4" />Save</>}
+                </Button>
+                <Button size="sm" variant="ghost" onClick={() => { setEditing(false); setEdits({}); }}><X className="h-4 w-4" /></Button>
+              </div>
+            ) : (
+              <Button size="sm" variant="outline" onClick={() => setEditing(true)} data-testid="document-fields-edit"><Pencil className="mr-1 h-4 w-4" />Correct fields</Button>
+            ))}
+          </div>
           <div className="divide-y divide-border">
             {Object.keys(FIELD_LABELS).map((k) => {
               const f = fields[k] || {};
               const conf = f.confidence != null ? Math.round(f.confidence * 100) : null;
+              const low = conf != null && conf < 60 && !f.corrected;
+              const curVal = edits[k] !== undefined ? edits[k] : (f.value || "");
               return (
-                <div key={k} className="flex items-center justify-between gap-3 px-4 py-2.5">
+                <div key={k} className={`flex items-center justify-between gap-3 px-4 py-2.5 ${low ? "bg-amber-50/60" : ""}`}>
                   <span className="text-xs text-muted-foreground">{FIELD_LABELS[k]}</span>
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-sm">{f.value || "—"}</span>
-                    {conf != null && f.value && (
-                      <span data-testid="document-ocr-confidence-pill" className="rounded-full bg-secondary px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">{conf}%</span>
-                    )}
-                  </div>
+                  {editing ? (
+                    <Input value={curVal} onChange={(e) => setEdits((p) => ({ ...p, [k]: e.target.value }))}
+                           className="h-8 w-48 text-sm" data-testid={`document-field-input-${k}`} />
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-sm">{f.value || "—"}</span>
+                      {f.corrected && <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-700" data-testid={`document-field-corrected-${k}`}>Corrected</span>}
+                      {conf != null && f.value && !f.corrected && (
+                        <span data-testid="document-ocr-confidence-pill" className={`rounded-full px-1.5 py-0.5 font-mono text-[10px] ${low ? "bg-amber-200 text-amber-800" : "bg-secondary text-muted-foreground"}`}>{conf}%</span>
+                      )}
+                    </div>
+                  )}
                 </div>
               );
             })}

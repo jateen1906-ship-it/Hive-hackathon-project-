@@ -114,3 +114,32 @@ async def load_bytes(db, user_id, doc_id):
     storage = get_storage()
     data = await storage.load(db, str(doc_id))
     return data, r.mime_type
+
+
+async def correct_fields(db, user_id, doc_id, corrections: dict):
+    """Apply user corrections to extracted fields and re-run the pre-check."""
+    r = await _get_doc_row(db, user_id, doc_id)
+    if not r:
+        return None
+    extracted = dict(r.extracted_data or {})
+    fields = dict(extracted.get("fields") or {})
+    for k, v in (corrections or {}).items():
+        val = (v or "").strip() if isinstance(v, str) else v
+        fields[k] = {"value": val or None, "confidence": 1.0, "corrected": True}
+    extracted["fields"] = fields
+
+    trip = None
+    if r.trip_id:
+        row = (await db.execute(text(
+            "SELECT origin, destination, vehicle_number, declared_distance_km FROM trips WHERE id = :t"),
+            {"t": str(r.trip_id)})).first()
+        if row:
+            trip = {"origin": row[0], "destination": row[1],
+                    "vehicle_number": row[2], "declared_distance_km": row[3]}
+    validation = validate_document(extracted, trip)
+    r.extracted_data = extracted
+    r.validation_result = validation
+    r.status = "processed"
+    await db.commit()
+    await db.refresh(r)
+    return to_dict(r)

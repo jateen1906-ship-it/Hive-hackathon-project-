@@ -159,3 +159,37 @@ async def corridors(db, user_id):
     } for r in inc_rows]
 
     return {"corridors": corridors_out, "incident_points": incident_points}
+
+
+async def corridor_detail(db, user_id, origin, destination):
+    o, d = (origin or "").strip().lower(), (destination or "").strip().lower()
+    trips = (await db.execute(text("""
+        SELECT id, origin, destination, travel_date, risk_score, risk_level, status, is_demo
+        FROM trips WHERE user_id = :u
+          AND ((lower(origin) = :o AND lower(destination) = :d)
+            OR (lower(origin) = :d AND lower(destination) = :o))
+        ORDER BY created_at DESC
+    """), {"u": user_id, "o": o, "d": d})).mappings().all()
+    incidents = (await db.execute(text("""
+        SELECT id, location_name, incident_type, outcome, reason, occurred_at, is_demo
+        FROM incidents WHERE user_id = :u
+          AND (lower(coalesce(location_name,'')) LIKE :op OR lower(coalesce(location_name,'')) LIKE :dp)
+        ORDER BY occurred_at DESC
+    """), {"u": user_id, "op": f"%{o}%", "dp": f"%{d}%"})).mappings().all()
+
+    def norm(rows):
+        out = []
+        for r in rows:
+            row = dict(r)
+            for k, v in row.items():
+                if hasattr(v, "isoformat"):
+                    row[k] = v.isoformat()
+                elif k == "id":
+                    row[k] = str(v)
+                elif k == "risk_score" and v is not None:
+                    row[k] = float(v)
+            out.append(row)
+        return out
+
+    return {"origin": origin, "destination": destination,
+            "trips": norm(trips), "incidents": norm(incidents)}

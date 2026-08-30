@@ -67,7 +67,52 @@ class DemoDistanceProvider(DistanceProvider):
         return DistanceResult(est, "demo-estimator", True, self.NOTE)
 
 
-def get_distance_provider() -> DistanceProvider:
+# Approx coordinates [lat, lng] for common Indian cities (for OSRM live routing).
+_CITY_COORDS = {
+    "surat": (21.1702, 72.8311), "indore": (22.7196, 75.8577),
+    "delhi": (28.6139, 77.2090), "jaipur": (26.9124, 75.7873),
+    "mumbai": (19.0760, 72.8777), "pune": (18.5204, 73.8567),
+    "ahmedabad": (23.0225, 72.5714), "udaipur": (24.5854, 73.7125),
+    "chennai": (13.0827, 80.2707), "bengaluru": (12.9716, 77.5946),
+    "bangalore": (12.9716, 77.5946), "agra": (27.1767, 78.0081),
+    "nashik": (19.9975, 73.7898), "hyderabad": (17.3850, 78.4867),
+    "vijayawada": (16.5062, 80.6480), "kolkata": (22.5726, 88.3639),
+    "ranchi": (23.3441, 85.3096), "nagpur": (21.1458, 79.0882),
+    "lucknow": (26.8467, 80.9462), "bhopal": (23.2599, 77.4126),
+}
+
+
+class LiveOSRMProvider(DistanceProvider):
+    """Live road distance via the public OSRM API. Falls back to demo on any failure."""
+
+    def __init__(self):
+        from ..config import settings
+        self.base = settings.OSRM_BASE_URL.rstrip("/")
+        self._fallback = DemoDistanceProvider()
+
+    def estimate_distance(self, origin: str, destination: str) -> DistanceResult:
+        oc = _CITY_COORDS.get((origin or "").strip().lower())
+        dc = _CITY_COORDS.get((destination or "").strip().lower())
+        if not oc or not dc:
+            return self._fallback.estimate_distance(origin, destination)
+        try:
+            import httpx
+            url = f"{self.base}/route/v1/driving/{oc[1]},{oc[0]};{dc[1]},{dc[0]}"
+            r = httpx.get(url, params={"overview": "false"}, timeout=5.0)
+            data = r.json()
+            if data.get("code") == "Ok" and data.get("routes"):
+                meters = data["routes"][0]["distance"]
+                return DistanceResult(meters / 1000.0, "osrm-live", False,
+                                      "Live road distance (OSRM).")
+        except Exception:
+            pass
+        # graceful fallback, clearly labelled estimated
+        return self._fallback.estimate_distance(origin, destination)
+
+
+def get_distance_provider(live: bool = False) -> DistanceProvider:
+    if live:
+        return LiveOSRMProvider()
     return DemoDistanceProvider()
 
 

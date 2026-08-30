@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, Truck, FileText, AlertTriangle, BarChart3, Settings,
-  Menu, LogOut, ShieldCheck, Plus,
+  Menu, LogOut, ShieldCheck, Plus, CreditCard,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -14,6 +14,7 @@ const NAV = [
   { to: "/documents", label: "Documents", icon: FileText, testId: "nav-documents" },
   { to: "/incidents", label: "Incidents", icon: AlertTriangle, testId: "nav-incidents" },
   { to: "/analytics", label: "Analytics", icon: BarChart3, testId: "nav-analytics" },
+  { to: "/pricing", label: "Plans & Billing", icon: CreditCard, testId: "nav-pricing" },
   { to: "/settings", label: "Settings", icon: Settings, testId: "nav-settings" },
 ];
 

@@ -3,9 +3,10 @@ import uuid
 from sqlalchemy import select, text
 from ..models import Trip, Vehicle, TripRiskFactor, RiskEvaluation, Document
 from ..engines import risk_engine
+from ..engines.distance_engine import get_distance_provider
 from .serialize import to_dict
 from .historical import corridor_signals
-from ..envelope import NotFound
+from ..envelope import NotFound, AppError
 
 
 async def _resolve_vehicle_number(db, user_id, payload):
@@ -86,10 +87,22 @@ async def delete_trip(db, user_id, trip_id):
 
 
 async def analyze_trip(db, user_id, trip_id):
+    from ..billing import service as billing
     r = await _get_trip_row(db, user_id, trip_id)
     if not r:
         raise NotFound("Trip not found")
     trip = to_dict(r)
+
+    # ---- server-side plan gating: monthly check limit ----
+    ent = await billing.entitlements(db, user_id)
+    if not billing.can_run_check(ent):
+        limit = ent["config"]["checks_per_month"]
+        raise AppError(
+            "LIMIT_REACHED",
+            f"You've used all {limit} pre-dispatch checks this month on the {ent['config']['name']} plan. "
+            "Upgrade to run more.",
+            402,
+        )
 
     # latest validated document summary for this trip (if any)
     doc = (await db.execute(text("""
@@ -100,7 +113,9 @@ async def analyze_trip(db, user_id, trip_id):
     document_summary = doc[0] if doc and doc[0] else None
 
     historical = await corridor_signals(db, user_id, trip.get("origin"), trip.get("destination"))
-    result = risk_engine.analyze_trip(trip, document_summary, historical)
+    # tier decides live vs demo distance provider
+    provider = get_distance_provider(live=bool(ent["config"]["live_distance"]))
+    result = risk_engine.analyze_trip(trip, document_summary, historical, distance_provider=provider)
 
     # persist on trip
     r.risk_score = result["score"]
@@ -124,6 +139,8 @@ async def analyze_trip(db, user_id, trip_id):
     )
     db.add(ev)
     await db.commit()
+
+    await billing.increment_usage(db, user_id)
 
     result["trip_id"] = str(trip_id)
     result["trip"] = await get_trip(db, user_id, trip_id)

@@ -20,6 +20,8 @@ import Incidents from "@/pages/Incidents";
 import ReportIncident from "@/pages/ReportIncident";
 import Analytics from "@/pages/Analytics";
 import Settings from "@/pages/Settings";
+import Pricing from "@/pages/Pricing";
+import PublicReport from "@/pages/PublicReport";
 
 const Shell = ({ children }) => (
   <ProtectedRoute>
@@ -36,6 +38,8 @@ function App() {
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/r/:token" element={<PublicReport />} />
             <Route path="/dashboard" element={<Shell><Dashboard /></Shell>} />
             <Route path="/trips" element={<Shell><Trips /></Shell>} />
             <Route path="/trips/new" element={<Shell><CreateTrip /></Shell>} />

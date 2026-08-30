@@ -86,6 +86,7 @@ export const DocumentAPI = {
   list: () => api.get("/documents"),
   get: (id) => api.get(`/documents/${id}`),
   validate: (id) => api.post(`/documents/${id}/validate`),
+  correctFields: (id, fields) => api.put(`/documents/${id}/fields`, { fields }),
   upload: (formData) =>
     api.post("/documents", formData, { headers: { "Content-Type": "multipart/form-data" } }),
   download: (id, filename) => downloadFile(`/documents/${id}/download`, filename || `document-${String(id).slice(0, 8)}`),
@@ -99,7 +100,39 @@ export const IncidentAPI = {
 export const AnalyticsAPI = {
   dashboard: () => api.get("/analytics/dashboard"),
   corridors: () => api.get("/analytics/corridors"),
+  corridorDetail: (origin, destination) =>
+    api.get(`/analytics/corridors/detail`, { params: { origin, destination } }),
 };
+
+export const BillingAPI = {
+  plans: () => api.get("/billing/plans"),
+  me: () => api.get("/billing/me"),
+  subscribe: (tier) => api.post("/billing/subscribe", { tier }),
+  verify: (payload) => api.post("/billing/verify", payload),
+  cancel: () => api.post("/billing/cancel"),
+  listKeys: () => api.get("/billing/api-keys"),
+  createKey: (label) => api.post("/billing/api-keys", { label }),
+  revokeKey: (id) => api.del(`/billing/api-keys/${id}`),
+};
+
+export const ShareAPI = {
+  list: (tripId) => api.get(`/trips/${tripId}/shares`),
+  create: (tripId, expiry_days) => api.post(`/trips/${tripId}/share`, { expiry_days }),
+  revoke: (shareId) => api.del(`/shares/${shareId}`),
+  publicReport: (token) => api.get(`/public/report/${token}`),
+};
+
+// Dynamically load the Razorpay Checkout script once.
+export function loadRazorpay() {
+  return new Promise((resolve) => {
+    if (window.Razorpay) return resolve(true);
+    const s = document.createElement("script");
+    s.src = "https://checkout.razorpay.com/v1/checkout.js";
+    s.onload = () => resolve(true);
+    s.onerror = () => resolve(false);
+    document.body.appendChild(s);
+  });
+}
 export const RouteAPI = {
   analyze: (payload) => api.post("/routes/analyze", payload),
 };

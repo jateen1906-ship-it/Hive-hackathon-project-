@@ -33,7 +33,7 @@ def _sev_from_score(s: float) -> str:
 
 
 def analyze_trip(trip: dict, document_summary: dict | None = None,
-                 historical: dict | None = None) -> dict:
+                 historical: dict | None = None, distance_provider=None) -> dict:
     """Compute the full explainable evaluation for a trip dict.
 
     Returns { score, level, engine_version, estimated_distance_km,
@@ -43,7 +43,7 @@ def analyze_trip(trip: dict, document_summary: dict | None = None,
     recommendations = []
 
     # ---- Distance / route ----
-    dp = get_distance_provider()
+    dp = distance_provider or get_distance_provider()
     dist = dp.estimate_distance(trip.get("origin", ""), trip.get("destination", ""))
     anomaly = distance_anomaly(trip.get("declared_distance_km"), dist.distance_km)
     distance_score = anomaly["score"]

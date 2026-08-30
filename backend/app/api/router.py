@@ -1,7 +1,7 @@
 """Aggregate all v1 routers under /api/v1 (+ compatibility /api/health)."""
 from fastapi import APIRouter
 
-from .v1 import health, auth, vehicles, trips, routes, documents, incidents, analytics
+from .v1 import health, auth, vehicles, trips, routes, documents, incidents, analytics, billing, sharing
 
 api_router = APIRouter(prefix="/api")
 
@@ -17,5 +17,7 @@ v1.include_router(routes.router)
 v1.include_router(documents.router)
 v1.include_router(incidents.router)
 v1.include_router(analytics.router)
+v1.include_router(billing.router)
+v1.include_router(sharing.router)
 
 api_router.include_router(v1)

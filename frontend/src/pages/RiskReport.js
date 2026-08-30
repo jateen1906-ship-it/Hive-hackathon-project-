@@ -3,10 +3,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { ArrowLeft, Gauge, Loader2, CheckCircle2, AlertTriangle, Download } from "lucide-react";
+import { ArrowLeft, Gauge, Loader2, CheckCircle2, AlertTriangle, Download, Share2, Copy, Trash2, Lock } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { TripAPI } from "@/lib/apiClient";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { TripAPI, ShareAPI } from "@/lib/apiClient";
+import { useBilling } from "@/hooks/useBilling";
 import { RiskGauge } from "@/components/common/RiskGauge";
 import { LoadingState, ErrorState, EmptyState } from "@/components/common/StateViews";
 import { Disclaimer, SyntheticBadge } from "@/components/common/Disclaimer";
@@ -88,6 +91,7 @@ export default function RiskReport() {
               <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Pre-departure risk report</span>
               <div className="flex items-center gap-2">
                 {trip.is_demo && <SyntheticBadge />}
+                <ShareControls tripId={id} />
                 <Button size="sm" variant="outline" onClick={exportPdf} disabled={exporting} data-testid="risk-export-pdf">
                   {exporting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Preparing…</> : <><Download className="mr-2 h-4 w-4" />Export PDF</>}
                 </Button>
@@ -137,5 +141,71 @@ export default function RiskReport() {
         </motion.div>
       )}
     </div>
+  );
+}
+
+
+function ShareControls({ tripId }) {
+  const billing = useBilling();
+  const qc = useQueryClient();
+  const [open, setOpen] = React.useState(false);
+  const canShare = billing.can.share;
+  const isPro = billing.plan === "pro";
+  const { data: links } = useQuery({ queryKey: ["shares", tripId], queryFn: () => ShareAPI.list(tripId), enabled: open && canShare });
+  const [days, setDays] = React.useState(7);
+
+  const create = useMutation({
+    mutationFn: () => ShareAPI.create(tripId, isPro ? Number(days) : undefined),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["shares", tripId] }); qc.invalidateQueries({ queryKey: ["billing-me"] }); toast.success("Share link created"); },
+    onError: (e) => toast.error(e.message || "Could not create link"),
+  });
+  const revoke = useMutation({
+    mutationFn: (id) => ShareAPI.revoke(id),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["shares", tripId] }); qc.invalidateQueries({ queryKey: ["billing-me"] }); },
+  });
+
+  if (!canShare) {
+    return (
+      <Button size="sm" variant="outline" onClick={() => (window.location.href = "/pricing")} data-testid="risk-share-locked">
+        <Lock className="mr-2 h-4 w-4" />Share (upgrade)
+      </Button>
+    );
+  }
+
+  const shareUrl = (tok) => `${window.location.origin}/r/${tok}`;
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button size="sm" variant="outline" data-testid="risk-share-button"><Share2 className="mr-2 h-4 w-4" />Share</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader><DialogTitle>Share this report</DialogTitle></DialogHeader>
+        <p className="text-sm text-muted-foreground">Anyone with the link can view a read-only report (no login needed).</p>
+        <div className="flex items-end gap-2">
+          {isPro && (
+            <div className="w-28">
+              <label className="text-xs text-muted-foreground">Expiry (days)</label>
+              <Input type="number" min={1} value={days} onChange={(e) => setDays(e.target.value)} data-testid="share-expiry-input" />
+            </div>
+          )}
+          <Button onClick={() => create.mutate()} disabled={create.isPending} data-testid="share-create-button">
+            {create.isPending ? "Creating…" : "Create link"}
+          </Button>
+        </div>
+        <div className="mt-2 max-h-64 space-y-2 overflow-auto">
+          {(links || []).filter((l) => l.active).length === 0 && <p className="text-sm text-muted-foreground">No active links yet.</p>}
+          {(links || []).map((l) => (
+            <div key={l.id} className={`flex items-center gap-2 rounded-lg border border-border p-2 ${l.active ? "" : "opacity-50"}`}>
+              <code className="flex-1 truncate text-xs">{shareUrl(l.token)}</code>
+              {l.active && <>
+                <Button size="icon" variant="ghost" onClick={() => { navigator.clipboard.writeText(shareUrl(l.token)); toast.success("Copied"); }} data-testid="share-copy-button"><Copy className="h-4 w-4" /></Button>
+                <Button size="icon" variant="ghost" onClick={() => revoke.mutate(l.id)} data-testid="share-revoke-button"><Trash2 className="h-4 w-4 text-red-600" /></Button>
+              </>}
+            </div>
+          ))}
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
