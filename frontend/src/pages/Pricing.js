@@ -10,9 +10,9 @@ import { useBilling, startCheckout } from "@/hooks/useBilling";
 import { LoadingState } from "@/components/common/StateViews";
 
 const TIER_ACCENT = { 
-  free: "#94a3b8", 
-  growth: "#38bdf8", 
-  pro: "#f59e0b" 
+  free: "#64748b", 
+  growth: "#2563eb", 
+  pro: "#0f172a" 
 };
 
 export default function Pricing() {
@@ -36,43 +36,40 @@ export default function Pricing() {
   };
 
   return (
-    <div className="min-h-screen bg-[#07090e] text-slate-100 relative overflow-hidden aurora-bg">
-      <div className="cyber-orb-1" />
-      <div className="cyber-orb-2" />
-
-      <header className="border-b border-white/[0.08] bg-[#07090e]/80 backdrop-blur-xl px-4 py-4 sm:px-8 relative z-10">
+    <div className="min-h-screen bg-[#f1f5f9] text-slate-900">
+      <header className="border-b border-slate-200 bg-white px-4 py-4 sm:px-8">
         <div className="mx-auto flex max-w-6xl items-center justify-between">
-          <button onClick={() => navigate(user ? "/dashboard" : "/")} className="flex items-center gap-3 text-white">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-500/20 border border-sky-500/30 text-sky-400">
+          <button onClick={() => navigate(user ? "/dashboard" : "/")} className="flex items-center gap-2.5 text-slate-900">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-white">
               <ShieldCheck className="h-5 w-5" />
             </div>
-            <span className="font-extrabold text-lg tracking-tight">TruckShield AI</span>
+            <span className="font-bold text-lg tracking-tight">TruckShield</span>
           </button>
           {user ? (
-            <Button variant="outline" className="border-white/[0.1] hover:bg-white/[0.05] text-xs font-semibold text-white rounded-xl" onClick={() => navigate("/dashboard")}>
+            <Button variant="outline" className="border-slate-200 hover:bg-slate-50 text-xs font-semibold h-8.5" onClick={() => navigate("/dashboard")}>
               <ArrowLeft className="mr-1.5 h-3.5 w-3.5" /> Back to Dashboard
             </Button>
           ) : (
-            <Button className="btn-cyber-cyan font-bold text-xs rounded-xl" onClick={() => navigate("/login")}>Sign in</Button>
+            <Button className="btn-primary-blue text-xs font-semibold h-8.5 px-4" onClick={() => navigate("/login")}>Sign in</Button>
           )}
         </div>
       </header>
 
-      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 relative z-10">
+      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <div className="text-center max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-bold mb-4 shadow-sm">
-            <Sparkles className="h-3.5 w-3.5" /> Scalable Fleet Intelligence
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold mb-4">
+            <Sparkles className="h-3.5 w-3.5" /> Simple, Transparent Pricing
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
-            Transparent, Enterprise Tiers
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
+            Choose the right tier for your fleet
           </h1>
-          <p className="mt-4 text-base text-slate-400">
+          <p className="mt-4 text-base text-slate-600">
             Full pre-dispatch intelligence, live OSRM distance engine, and verified statutory checks. Upgrade or cancel anytime.
           </p>
         </div>
 
         {isLoading ? (
-          <div className="mx-auto mt-12 max-w-md"><LoadingState label="Loading subscription tiers…" /></div>
+          <div className="mx-auto mt-12 max-w-md"><LoadingState label="Loading available tiers…" /></div>
         ) : (
           <div className="mt-12 grid gap-6 lg:grid-cols-3 items-stretch">
             {data?.plans?.map((p) => {
@@ -82,53 +79,50 @@ export default function Pricing() {
                 <Card 
                   key={p.tier} 
                   data-testid={`pricing-card-${p.tier}`}
-                  className={`rich-card relative flex flex-col p-7 transition-all duration-300 ${
+                  className={`relative flex flex-col p-7 transition-shadow bg-white ${
                     highlight 
-                      ? "border-sky-500/50 shadow-2xl shadow-sky-500/20 bg-gradient-to-b from-[#111827] to-[#0b0f19]" 
-                      : "bg-[#0b0f19]"
+                      ? "ring-2 ring-blue-600 shadow-md" 
+                      : "shadow-2xs"
                   }`}
                   style={{ borderTop: `4px solid ${TIER_ACCENT[p.tier]}` }}
                 >
                   {highlight && (
-                    <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-sky-500 to-indigo-600 px-4 py-1 text-[11px] font-extrabold uppercase tracking-wider text-white shadow-lg">
+                    <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-blue-600 px-3.5 py-0.5 text-xs font-bold text-white shadow-xs">
                       Most Popular
                     </span>
                   )}
                   
                   <div className="flex items-center justify-between">
-                    <div className="text-xl font-extrabold text-white">{p.name}</div>
+                    <div className="text-xl font-bold text-slate-900">{p.name}</div>
                     <div 
-                      className="h-3 w-3 rounded-full" 
-                      style={{ 
-                        backgroundColor: TIER_ACCENT[p.tier],
-                        boxShadow: `0 0 10px ${TIER_ACCENT[p.tier]}` 
-                      }} 
+                      className="h-2.5 w-2.5 rounded-full" 
+                      style={{ backgroundColor: TIER_ACCENT[p.tier] }} 
                     />
                   </div>
 
-                  <div className="mt-4 flex items-baseline gap-1.5 border-b border-white/[0.08] pb-5">
-                    <span className="font-mono text-4xl font-extrabold text-white">{p.price_label}</span>
-                    <span className="text-xs font-semibold text-slate-400">/month</span>
+                  <div className="mt-4 flex items-baseline gap-1.5 border-b border-slate-100 pb-5">
+                    <span className="font-mono text-4xl font-extrabold text-slate-900">{p.price_label}</span>
+                    <span className="text-sm font-medium text-slate-500">/month</span>
                   </div>
 
                   <ul className="mt-6 flex-1 space-y-3.5">
                     {p.features.map((f, i) => (
-                      <li key={i} className="flex items-start gap-2.5 text-xs text-slate-300">
-                        <div className="h-4 w-4 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 mt-0.5 shrink-0 border border-emerald-500/30">
+                      <li key={i} className="flex items-start gap-2.5 text-sm text-slate-700">
+                        <div className="h-4 w-4 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 mt-0.5 shrink-0">
                           <Check className="h-3 w-3 stroke-[3]" />
                         </div>
-                        <span className="font-medium">{f}</span>
+                        <span>{f}</span>
                       </li>
                     ))}
                   </ul>
 
                   <Button 
-                    className={`mt-8 w-full font-bold rounded-xl h-11 text-xs ${
+                    className={`mt-8 w-full font-semibold rounded-lg h-10 ${
                       isCurrent 
-                        ? "border border-white/[0.1] bg-white/[0.04] text-slate-400 hover:bg-white/[0.04] cursor-default" 
+                        ? "border border-slate-200 bg-slate-100 text-slate-500 hover:bg-slate-100 cursor-default" 
                         : highlight 
-                          ? "btn-cyber-cyan text-white" 
-                          : "btn-cyber-amber text-slate-900"
+                          ? "btn-primary-blue text-white" 
+                          : "bg-slate-900 text-white hover:bg-slate-800"
                     }`}
                     disabled={isCurrent || busy === p.tier} 
                     onClick={() => choose(p.tier)}
@@ -150,7 +144,7 @@ export default function Pricing() {
           </div>
         )}
 
-        <div className="mt-12 text-center text-xs text-slate-500 max-w-xl mx-auto border-t border-white/[0.08] pt-6">
+        <div className="mt-12 text-center text-xs text-slate-500 max-w-xl mx-auto border-t border-slate-200 pt-6">
           Payments processed securely via Razorpay. TruckShield provides informational
           compliance pre-checks and risk signals — not legal advice.
         </div>

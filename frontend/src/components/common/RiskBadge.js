@@ -1,40 +1,31 @@
 import React from "react";
 import { riskMeta } from "@/lib/riskMeta";
 
-const GLOW_COLORS = {
-  LOW: "#10b981",
-  MEDIUM: "#f59e0b",
-  HIGH: "#f97316",
-  CRITICAL: "#ef4444",
+const BADGE_COLORS = {
+  LOW: { text: "#059669", bg: "#ecfdf5", border: "#a7f3d0" },
+  MEDIUM: { text: "#d97706", bg: "#fffbeb", border: "#fde68a" },
+  HIGH: { text: "#ea580c", bg: "#fff7ed", border: "#fed7aa" },
+  CRITICAL: { text: "#dc2626", bg: "#fef2f2", border: "#fecaca" },
 };
 
 export function RiskBadge({ level, score, className = "", testId }) {
   const meta = riskMeta(level);
-  const color = GLOW_COLORS[(level || "").toUpperCase()] || "#94a3b8";
+  const theme = BADGE_COLORS[(level || "").toUpperCase()] || { text: "#475569", bg: "#f1f5f9", border: "#cbd5e1" };
 
   return (
     <span
       data-testid={testId}
-      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-bold border transition-all duration-200 ${className}`}
+      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold border ${className}`}
       style={{ 
-        color: color, 
-        backgroundColor: `${color}18`,
-        borderColor: `${color}40`,
-        boxShadow: `0 0 10px -2px ${color}30`
+        color: theme.text, 
+        backgroundColor: theme.bg,
+        borderColor: theme.border
       }}
     >
-      <span 
-        className="h-1.5 w-1.5 rounded-full animate-pulse" 
-        style={{ 
-          backgroundColor: color,
-          boxShadow: `0 0 6px ${color}`
-        }} 
-      />
+      <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: theme.text }} />
       <span>{meta.label}</span>
       {score != null && (
-        <span className="font-mono tabular-nums font-extrabold opacity-95">
-          {Number(score).toFixed(0)}/100
-        </span>
+        <span className="font-mono tabular-nums font-bold opacity-90">{Number(score).toFixed(0)}/100</span>
       )}
     </span>
   );

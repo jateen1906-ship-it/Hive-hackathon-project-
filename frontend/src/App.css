@@ -1,227 +1,55 @@
 .App {
   min-height: 100vh;
-  background-color: #07090e;
-  color: #f1f5f9;
-}
-
-/* Aurora Live Animated Background Mesh */
-.aurora-bg {
-  position: relative;
-  background-color: #07090e;
-  background-image: 
-    radial-gradient(at 15% 15%, rgba(14, 165, 233, 0.12) 0px, transparent 50%),
-    radial-gradient(at 85% 20%, rgba(245, 158, 11, 0.08) 0px, transparent 45%),
-    radial-gradient(at 50% 80%, rgba(99, 102, 241, 0.10) 0px, transparent 55%),
-    radial-gradient(at 80% 85%, rgba(16, 185, 129, 0.07) 0px, transparent 40%);
-}
-
-.aurora-bg::before {
-  content: '';
-  position: fixed;
-  top: -40%;
-  left: -40%;
-  width: 180vw;
-  height: 180vh;
-  background: 
-    radial-gradient(ellipse at 25% 25%, rgba(14, 165, 233, 0.06) 0%, transparent 45%),
-    radial-gradient(ellipse at 75% 35%, rgba(245, 158, 11, 0.05) 0%, transparent 40%),
-    radial-gradient(ellipse at 40% 80%, rgba(59, 130, 246, 0.07) 0%, transparent 50%);
-  animation: auroraMesh 20s ease-in-out infinite alternate;
-  pointer-events: none;
-  z-index: 0;
-}
-
-@keyframes auroraMesh {
-  0% { transform: rotate(0deg) scale(1) translate(0, 0); }
-  50% { transform: rotate(4deg) scale(1.05) translate(-20px, 25px); }
-  100% { transform: rotate(-3deg) scale(0.98) translate(25px, -20px); }
-}
-
-/* Floating Ambient Orbs */
-.cyber-orb-1 {
-  position: fixed;
-  top: 10%;
-  right: 12%;
-  width: 420px;
-  height: 420px;
-  background: radial-gradient(circle, rgba(14, 165, 233, 0.14) 0%, rgba(2, 132, 199, 0) 70%);
-  border-radius: 50%;
-  filter: blur(60px);
-  animation: floatCyber1 16s ease-in-out infinite alternate;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.cyber-orb-2 {
-  position: fixed;
-  bottom: 15%;
-  left: 8%;
-  width: 480px;
-  height: 480px;
-  background: radial-gradient(circle, rgba(245, 158, 11, 0.10) 0%, rgba(217, 119, 6, 0) 70%);
-  border-radius: 50%;
-  filter: blur(70px);
-  animation: floatCyber2 20s ease-in-out infinite alternate;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.cyber-orb-3 {
-  position: fixed;
-  top: 50%;
-  left: 45%;
-  width: 350px;
-  height: 350px;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.09) 0%, rgba(79, 70, 229, 0) 70%);
-  border-radius: 50%;
-  filter: blur(55px);
-  animation: floatCyber3 18s ease-in-out infinite alternate;
-  pointer-events: none;
-  z-index: 0;
-}
-
-@keyframes floatCyber1 {
-  0% { transform: translateY(0px) translateX(0px); }
-  50% { transform: translateY(-40px) translateX(30px); }
-  100% { transform: translateY(20px) translateX(-35px); }
-}
-
-@keyframes floatCyber2 {
-  0% { transform: translateY(0px) translateX(0px); }
-  50% { transform: translateY(35px) translateX(-25px); }
-  100% { transform: translateY(-25px) translateX(35px); }
-}
-
-@keyframes floatCyber3 {
-  0% { transform: scale(1) translateY(0px); }
-  50% { transform: scale(1.15) translateY(-30px); }
-  100% { transform: scale(0.9) translateY(20px); }
-}
-
-/* Rich Glassmorphic Cards with Glow Highlights */
-.rich-card {
-  background: linear-gradient(145deg, rgba(16, 23, 38, 0.85) 0%, rgba(11, 16, 27, 0.92) 100%);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 1rem;
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  position: relative;
-  overflow: hidden;
-}
-
-.rich-card:hover {
-  border-color: rgba(56, 189, 248, 0.35);
-  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.6), 0 0 20px -2px rgba(14, 165, 233, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
-  transform: translateY(-2px);
-}
-
-/* Master Fleet Card with Multi-Color Gradient */
-.fleet-card-cyber {
-  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 40%, #0c4a6e 80%, #0369a1 100%);
-  border: 1px solid rgba(56, 189, 248, 0.3);
-  box-shadow: 0 12px 36px -4px rgba(14, 165, 233, 0.25), inset 0 1px 0 0 rgba(255, 255, 255, 0.18);
-  border-radius: 1rem;
-  position: relative;
-  overflow: hidden;
-}
-
-.fleet-card-cyber::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 250px;
-  height: 250px;
-  background: radial-gradient(circle at 100% 0%, rgba(245, 158, 11, 0.2) 0%, transparent 60%);
-  pointer-events: none;
-}
-
-/* Animated Shimmer Buttons */
-.btn-cyber-cyan {
-  background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 50%, #38bdf8 100%);
-  color: #ffffff;
-  font-weight: 700;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 16px -2px rgba(14, 165, 233, 0.4), inset 0 1px 0 0 rgba(255, 255, 255, 0.3);
-  position: relative;
-  overflow: hidden;
-  transition: all 0.2s ease;
-}
-
-.btn-cyber-cyan:hover {
-  background: linear-gradient(135deg, #0369a1 0%, #0284c7 50%, #0ea5e9 100%);
-  box-shadow: 0 6px 22px 0px rgba(14, 165, 233, 0.6), inset 0 1px 0 0 rgba(255, 255, 255, 0.4);
-  transform: translateY(-1.5px);
-}
-
-.btn-cyber-cyan::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 60%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-  transform: skewX(-25deg);
-  transition: all 0.75s ease;
-}
-
-.btn-cyber-cyan:hover::before {
-  left: 140%;
-}
-
-.btn-cyber-amber {
-  background: linear-gradient(135deg, #d97706 0%, #f59e0b 50%, #fbbf24 100%);
+  background-color: #f1f5f9;
   color: #0f172a;
-  font-weight: 700;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 4px 16px -2px rgba(245, 158, 11, 0.45);
-  transition: all 0.2s ease;
 }
 
-.btn-cyber-amber:hover {
-  box-shadow: 0 6px 22px 0px rgba(245, 158, 11, 0.65);
-  transform: translateY(-1.5px);
+/* Executive Clean Light Card */
+.pro-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* Glowing Neon Active Nav Pill */
-.nav-pill-active-cyber {
-  background: linear-gradient(135deg, rgba(14, 165, 233, 0.25) 0%, rgba(2, 132, 199, 0.35) 100%) !important;
-  color: #38bdf8 !important;
-  border: 1px solid rgba(56, 189, 248, 0.4) !important;
-  box-shadow: 0 0 15px -2px rgba(14, 165, 233, 0.3), inset 0 0 10px rgba(14, 165, 233, 0.15) !important;
+.pro-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
 }
 
-/* Micro-Pulse Status Dot */
-.pulse-beacon-cyan {
-  position: relative;
+/* Crisp Primary Button */
+.btn-primary-blue {
+  background-color: #2563eb;
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  transition: background-color 0.15s ease, transform 0.1s ease;
 }
 
-.pulse-beacon-cyan::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: inherit;
-  animation: beaconPing 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+.btn-primary-blue:hover {
+  background-color: #1d4ed8;
 }
 
-@keyframes beaconPing {
-  0% { transform: scale(1); opacity: 0.8; }
-  75%, 100% { transform: scale(2.4); opacity: 0; }
+.btn-primary-blue:active {
+  transform: scale(0.99);
 }
 
-/* Input Fields Dark Cyber Glass */
+/* Dark Slate Header Banner Card */
+.fleet-card-slate {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.12);
+}
+
+/* Clean Input Styling */
 input, textarea, select {
-  transition: all 0.2s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 input:focus, textarea:focus, select:focus {
-  border-color: #38bdf8 !important;
-  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.25) !important;
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 1px #2563eb !important;
 }

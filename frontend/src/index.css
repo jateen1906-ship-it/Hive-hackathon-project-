@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,9 +8,8 @@ body {
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #07090e;
-    color: #f1f5f9;
-    overflow-x: hidden;
+    background-color: #f1f5f9;
+    color: #0f172a;
 }
 
 code, .font-mono {
@@ -19,46 +18,46 @@ code, .font-mono {
 
 @layer base {
     :root {
-        /* Deep Cyber Sapphire & Neon Gold Palette */
-        --background: 224 45% 4%;         /* #07090e */
-        --foreground: 210 40% 98%;        /* #f8fafc */
+        /* Professional Light Palette */
+        --background: 210 40% 96%;        /* #f1f5f9 */
+        --foreground: 222 47% 11%;        /* #0f172a */
         
-        --card: 222 47% 8%;               /* #0d121f */
-        --card-foreground: 210 40% 98%;
+        --card: 0 0% 100%;                /* #ffffff */
+        --card-foreground: 222 47% 11%;   /* #0f172a */
         
-        --popover: 222 47% 8%;
-        --popover-foreground: 210 40% 98%;
+        --popover: 0 0% 100%;             /* #ffffff */
+        --popover-foreground: 222 47% 11%;
         
-        --primary: 199 89% 48%;           /* #0ea5e9 Electric Cyan */
-        --primary-foreground: 224 45% 4%;
+        --primary: 221 83% 53%;           /* #2563eb - Royal Blue */
+        --primary-foreground: 0 0% 100%;
         
-        --secondary: 222 40% 13%;         /* #131b2e */
-        --secondary-foreground: 210 40% 98%;
+        --secondary: 210 40% 93%;         /* #e2e8f0 */
+        --secondary-foreground: 222 47% 11%;
         
-        --muted: 222 35% 15%;
-        --muted-foreground: 217 20% 65%;  /* #94a3b8 */
+        --muted: 210 40% 93%;
+        --muted-foreground: 215 16% 47%;  /* #64748b */
         
-        --accent: 38 92% 50%;             /* #f59e0b Glowing Amber */
-        --accent-foreground: 224 45% 4%;
+        --accent: 217 91% 60%;            /* #3b82f6 */
+        --accent-foreground: 0 0% 100%;
         
-        --destructive: 0 84% 60%;
-        --destructive-foreground: 0 0% 98%;
+        --destructive: 0 84% 60%;         /* #ef4444 */
+        --destructive-foreground: 0 0% 100%;
         
-        --border: 222 35% 18%;            /* rgba(255, 255, 255, 0.08) */
-        --input: 222 35% 18%;
-        --ring: 199 89% 48%;
+        --border: 214 32% 91%;            /* #e2e8f0 */
+        --input: 214 32% 91%;             /* #e2e8f0 */
+        --ring: 221 83% 53%;              /* #2563eb */
         
-        --risk-low: 152 69% 48%;          /* #10b981 */
-        --risk-medium: 38 92% 50%;        /* #f59e0b */
-        --risk-high: 14 90% 55%;          /* #f97316 */
-        --risk-critical: 0 84% 60%;       /* #ef4444 */
+        --risk-low: 152 69% 38%;          /* #059669 */
+        --risk-medium: 38 92% 45%;        /* #d97706 */
+        --risk-high: 14 90% 50%;          /* #ea580c */
+        --risk-critical: 0 84% 55%;       /* #dc2626 */
         
-        --risk-low-bg: 152 69% 10%;
-        --risk-medium-bg: 38 92% 10%;
-        --risk-high-bg: 14 90% 10%;
-        --risk-critical-bg: 0 84% 10%;
+        --risk-low-bg: 142 71% 95%;       /* #ecfdf5 */
+        --risk-medium-bg: 45 93% 95%;     /* #fffbeb */
+        --risk-high-bg: 24 95% 95%;       /* #fff7ed */
+        --risk-critical-bg: 0 84% 96%;    /* #fef2f2 */
         
-        --radius: 1rem;
+        --radius: 0.75rem;
     }
 }
 
@@ -71,20 +70,20 @@ code, .font-mono {
     }
 }
 
-/* Glass Scrollbars */
+/* Crisp Clean Scrollbars */
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
 }
 ::-webkit-scrollbar-track {
-    background: #0b0f19;
+    background: #f1f5f9;
 }
 ::-webkit-scrollbar-thumb {
-    background: #1e293b;
+    background: #cbd5e1;
     border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #0284c7;
+    background: #94a3b8;
 }
 
 @layer base {

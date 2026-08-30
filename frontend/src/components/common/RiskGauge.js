@@ -1,5 +1,4 @@
 import React from "react";
-import { motion } from "framer-motion";
 import { riskMeta } from "@/lib/riskMeta";
 
 export function RiskGauge({ score = 0, level, size = 260 }) {
@@ -13,10 +12,9 @@ export function RiskGauge({ score = 0, level, size = 260 }) {
   const segs = [
     { to: 30, color: "#10b981" },
     { to: 60, color: "#f59e0b" },
-    { to: 80, color: "#f97316" },
-    { to: 100, color: "#ef4444" },
+    { to: 80, color: "#ea580c" },
+    { to: 100, color: "#dc2626" },
   ];
-
   let prev = 0;
   const arcs = segs.map((seg, i) => {
     const len = ((seg.to - prev) / 100) * circumference;
@@ -41,52 +39,28 @@ export function RiskGauge({ score = 0, level, size = 260 }) {
   });
 
   const progressLen = (s / 100) * circumference;
-  const gaugeColor = segs.find(seg => s <= seg.to)?.color || "#ef4444";
+  const activeColor = segs.find(seg => s <= seg.to)?.color || "#dc2626";
 
   return (
     <div className="relative flex flex-col items-center" style={{ width: size, height: size / 2 + 44 }}
          role="img" aria-label={`Trip risk score ${s.toFixed(0)} out of 100, ${meta.label} risk`}>
       <svg width={size} height={size / 2 + 10} viewBox={`0 0 ${size} ${size / 2 + 10}`}>
-        <defs>
-          <filter id="gaugeGlow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="3" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-          </filter>
-        </defs>
-        <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgba(255, 255, 255, 0.07)" strokeWidth={12}
+        <circle cx={cx} cy={cy} r={r} fill="none" stroke="#e2e8f0" strokeWidth={12}
                 strokeDasharray={`${circumference} ${circumference * 2}`} transform={`rotate(180 ${cx} ${cy})`} />
         {arcs}
-        <motion.circle
-          cx={cx} cy={cy} r={r} fill="none" stroke={gaugeColor} strokeWidth={12} strokeLinecap="round"
-          filter="url(#gaugeGlow)"
+        <circle
+          cx={cx} cy={cy} r={r} fill="none" stroke={activeColor} strokeWidth={12} strokeLinecap="round"
           transform={`rotate(180 ${cx} ${cy})`}
-          initial={{ strokeDasharray: `0 ${circumference * 2}` }}
-          animate={{ strokeDasharray: `${progressLen} ${circumference * 2}` }}
-          transition={{ duration: 0.9, ease: "easeOut" }}
+          strokeDasharray={`${progressLen} ${circumference * 2}`}
         />
       </svg>
       <div className="absolute inset-x-0 flex flex-col items-center" style={{ top: size / 2 - 54 }}>
-        <div 
-          className="font-mono text-5xl font-extrabold tabular-nums tracking-tight" 
-          style={{ 
-            color: gaugeColor,
-            textShadow: `0 0 20px ${gaugeColor}60`
-          }}
-          data-testid="risk-report-score"
-        >
+        <div className="font-mono text-4xl font-extrabold tabular-nums" style={{ color: activeColor }}
+             data-testid="risk-report-score">
           {s.toFixed(0)}
         </div>
-        <div className="text-[11px] text-slate-400 font-bold uppercase tracking-widest">/ 100 Risk Index</div>
-        <div 
-          className="mt-1 text-xs font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full border" 
-          style={{ 
-            color: gaugeColor,
-            backgroundColor: `${gaugeColor}15`,
-            borderColor: `${gaugeColor}35`
-          }}
-        >
-          {meta.label} Risk
-        </div>
+        <div className="text-xs text-slate-400 font-semibold">/ 100</div>
+        <div className="mt-1 text-xs font-bold uppercase tracking-wider" style={{ color: activeColor }}>{meta.label} risk</div>
       </div>
     </div>
   );
