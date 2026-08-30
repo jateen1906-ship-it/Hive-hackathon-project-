@@ -27,6 +27,18 @@ app.add_middleware(
 app.include_router(api_router)
 
 
+@app.get("/")
+@app.head("/")
+async def root():
+    return {
+        "status": "ok",
+        "service": "TruckShield API",
+        "version": "1.0.0",
+        "docs": "/docs",
+        "health": "/api/v1/health"
+    }
+
+
 @app.exception_handler(AppError)
 async def app_error_handler(request: Request, exc: AppError):
     return err(exc.code, exc.message, exc.status_code)
