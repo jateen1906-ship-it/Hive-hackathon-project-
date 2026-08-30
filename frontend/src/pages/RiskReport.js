@@ -8,17 +8,13 @@ import {
   Loader2, 
   CheckCircle2, 
   AlertTriangle, 
-  AlertCircle,
   Download, 
   Share2, 
   Copy, 
   Trash2, 
   Lock, 
   ShieldCheck, 
-  MapPin, 
-  Truck,
-  Zap,
-  Check
+  Zap
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -33,20 +29,62 @@ import { RouteStrip } from "@/components/common/PageHeader";
 import { fmtDate, SEVERITY_META } from "@/lib/riskMeta";
 import { DriverPassModal } from "@/components/trips/DriverPassModal";
 
-function formatBullets(text) {
+function extractMetrics(text) {
   if (!text) return [];
-  // Split into scannable clean bullet points
-  const clean = text.replace(/\(([^\)]+)\)/g, "\n$1");
-  const parts = clean
-    .split(/[\.\n]+/)
-    .map((s) => s.trim())
-    .filter((s) => s.length > 2);
-  return parts.length > 0 ? parts : [text];
+  const metrics = [];
+
+  // Declared distance
+  const declMatch = text.match(/Declared distance\s*\(?([\d,]+\s*km)\)?/i);
+  if (declMatch) metrics.push({ label: "Declared", value: declMatch[1] });
+
+  // Estimated highway route
+  const estMatch = text.match(/(?:standard highway path|estimated highway route|estimated route)\s*\(?([\d,]+\s*km)\)?/i);
+  if (estMatch) metrics.push({ label: "Standard Route", value: estMatch[1] });
+
+  // Variance / Divergence percentage
+  const devMatch = text.match(/(?:diverges by|variance|deviation)\s*([+-]?\d+(?:\.\d+)?%)/i);
+  if (devMatch) metrics.push({ label: "Divergence", value: devMatch[1], alert: true });
+
+  // Driving duration
+  const durMatch = text.match(/(?:duration|driving duration):\s*~?([\d\.]+\s*(?:hrs|hours|days))/i);
+  if (durMatch) metrics.push({ label: "Est. Transit", value: durMatch[1] });
+
+  // Invoice value
+  const valMatch = text.match(/consignment\s*\(?(₹[\d,]+)\)?/i) || text.match(/(₹[\d,]+)/);
+  if (valMatch) metrics.push({ label: "Consignment Value", value: valMatch[1] });
+
+  // E-Way validity
+  const ewayMatch = text.match(/(?:E-Way Bill Validity|Validity):\s*(\d+\s*day\(?s?\)?)/i);
+  if (ewayMatch) metrics.push({ label: "E-Way Validity", value: ewayMatch[1] });
+
+  // Vehicle RTO & State
+  const vehMatch = text.match(/\(([A-Z]{2}\d{1,2}[A-Z]{1,3}\d{4}),\s*registered in ([A-Z]{2})\)/i);
+  if (vehMatch) {
+    metrics.push({ label: "Vehicle RTO", value: vehMatch[1] });
+    metrics.push({ label: "State Reg.", value: vehMatch[2] });
+  }
+
+  // Corridor route (e.g. WB → GJ)
+  const corrMatch = text.match(/\(([A-Z]{2}\s*→\s*[A-Z]{2})\)/i);
+  if (corrMatch) metrics.push({ label: "Corridor Path", value: corrMatch[1] });
+
+  return metrics;
+}
+
+function cleanSummary(text) {
+  if (!text) return "";
+  // Remove parenthetical details that are already displayed in tiles
+  return text
+    .replace(/\([^\)]+\)/g, "")
+    .replace(/Declared distance diverges by \d+%/i, "Significant distance divergence")
+    .replace(/\s{2,}/g, " ")
+    .trim();
 }
 
 function FactorCard({ f }) {
   const sev = SEVERITY_META[f.severity] || SEVERITY_META.medium;
-  const bullets = formatBullets(f.description);
+  const metrics = extractMetrics(f.description);
+  const summary = cleanSummary(f.description);
   const isSafe = (f.severity || "").toLowerCase() === "low";
 
   return (
@@ -56,6 +94,7 @@ function FactorCard({ f }) {
       data-testid={`risk-factor-${f.factor_type}`}
     >
       <div>
+        {/* Title and Severity Badge */}
         <div className="flex items-center justify-between gap-2">
           <div className="text-sm font-bold text-slate-900 leading-snug">{f.title}</div>
           <span 
@@ -67,21 +106,29 @@ function FactorCard({ f }) {
           </span>
         </div>
 
-        <ul className="mt-3.5 space-y-2">
-          {bullets.map((bullet, idx) => (
-            <li key={idx} className="flex items-start gap-2.5 text-xs text-slate-700 leading-relaxed">
-              <span 
-                className="mt-1.5 h-1.5 w-1.5 rounded-full shrink-0" 
-                style={{ backgroundColor: sev.color }} 
-              />
-              <span className="font-medium">{bullet}</span>
-            </li>
-          ))}
-        </ul>
+        {/* Organized Data Metric Tiles (Blink of an eye stats) */}
+        {metrics.length > 0 && (
+          <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2 p-2.5 rounded-lg bg-slate-50 border border-slate-200/80">
+            {metrics.map((m, idx) => (
+              <div key={idx} className="bg-white px-2.5 py-1.5 rounded border border-slate-200/60 shadow-2xs">
+                <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider truncate">{m.label}</div>
+                <div className={`font-mono text-xs font-bold mt-0.5 truncate ${m.alert ? "text-red-600" : "text-slate-900"}`}>
+                  {m.value}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Clean Context Takeaway */}
+        <p className="mt-3 text-xs text-slate-600 font-medium leading-relaxed">
+          {summary || f.description}
+        </p>
       </div>
 
+      {/* Structured Action Recommendation */}
       {f.recommendation && (
-        <div className="mt-4 pt-3 border-t border-slate-100 flex items-start gap-2 text-xs bg-slate-50/60 p-2.5 rounded-lg">
+        <div className="mt-4 pt-2.5 border-t border-slate-100 flex items-start gap-2 text-xs bg-slate-50/70 p-2.5 rounded-lg">
           <span className="font-bold text-slate-900 shrink-0 flex items-center gap-1">
             <Zap className="h-3.5 w-3.5 text-[#cca25a]" />
             Action:
