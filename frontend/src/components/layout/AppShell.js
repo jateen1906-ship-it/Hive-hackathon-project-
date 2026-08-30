@@ -60,16 +60,12 @@ function Brand() {
 export function AppShell({ children }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
   const [open, setOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
-
-  const currentNav = NAV.find((n) => n.to === location.pathname);
-  const currentTitle = currentNav ? currentNav.label : "Dashboard";
 
   const SidebarInner = (
     <div className="flex h-full flex-col bg-white text-slate-900 border-r border-slate-200">
@@ -108,37 +104,27 @@ export function AppShell({ children }) {
 
       {/* Main Content Area */}
       <div className="lg:pl-[240px] flex flex-col min-h-screen flex-1">
-        {/* Top Header */}
-        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-slate-200 bg-white px-4 sm:px-8 shadow-2xs">
-          <div className="flex items-center gap-3">
+        {/* Mobile-only menu bar */}
+        <div className="lg:hidden flex h-12 items-center justify-between border-b border-slate-200 bg-white px-4">
+          <div className="flex items-center gap-2">
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="lg:hidden text-slate-700 hover:bg-slate-100" data-testid="app-shell-open-nav">
-                  <Menu className="h-5 w-5" />
+                <Button variant="ghost" size="icon" className="text-slate-700 hover:bg-slate-100 h-8 w-8" data-testid="app-shell-open-nav">
+                  <Menu className="h-4 w-4" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="w-[240px] border-0 p-0 bg-white">{SidebarInner}</SheetContent>
             </Sheet>
-
-            {/* Title Header */}
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs text-slate-400 hidden sm:inline">TruckShield /</span>
-              <span className="font-bold text-slate-900 text-sm sm:text-base">{currentTitle}</span>
-            </div>
+            <span className="font-bold text-xs text-slate-900">TruckShield</span>
           </div>
-
-          <div className="flex items-center gap-3">
-            <Button
-              onClick={() => navigate("/trips/new")}
-              data-testid="header-new-trip"
-              size="sm"
-              className="btn-primary-blue rounded-lg px-3.5 h-8.5 flex items-center gap-1.5 text-xs shadow-2xs"
-            >
-              <Plus className="h-3.5 w-3.5" />
-              <span>New Trip</span>
-            </Button>
-          </div>
-        </header>
+          <Button
+            onClick={() => navigate("/trips/new")}
+            size="sm"
+            className="btn-primary-blue rounded-lg px-2.5 h-7 text-[11px] flex items-center gap-1"
+          >
+            <Plus className="h-3 w-3" /> New Trip
+          </Button>
+        </div>
 
         {/* Page Content */}
         <main className="flex-1 px-4 py-6 sm:px-8 max-w-7xl w-full mx-auto">
