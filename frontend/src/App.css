@@ -1,47 +1,54 @@
 .App {
   min-height: 100vh;
-  background-color: #f8fafc;
-  color: #0f172a;
+  background-color: #fff8f9;
+  color: #26161b;
 }
 
-/* Crisp Clean Light Card */
+/* Crisp Clean Cherry Blossom Card */
 .pro-card {
   background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #f2c7c7;
   border-radius: 0.75rem;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 3px 0 rgba(242, 199, 199, 0.2), 0 1px 2px -1px rgba(242, 199, 199, 0.15);
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .pro-card:hover {
-  border-color: #cbd5e1;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  border-color: #ffb7c5;
+  box-shadow: 0 4px 6px -1px rgba(242, 199, 199, 0.35), 0 2px 4px -2px rgba(242, 199, 199, 0.2);
 }
 
-/* Modern Indigo Primary Button */
+/* Cherry Blossom Primary Button */
 .btn-primary-blue {
-  background-color: #4f46e5;
+  background: linear-gradient(135deg, #f46a85 0%, #e6526e 100%);
   color: #ffffff;
   font-weight: 600;
   border-radius: 0.5rem;
-  box-shadow: 0 1px 2px 0 rgba(79, 70, 229, 0.2);
-  transition: background-color 0.15s ease, transform 0.1s ease;
+  box-shadow: 0 2px 4px 0 rgba(244, 106, 133, 0.25);
+  transition: opacity 0.15s ease, transform 0.1s ease;
 }
 
 .btn-primary-blue:hover {
-  background-color: #4338ca;
+  opacity: 0.92;
 }
 
 .btn-primary-blue:active {
   transform: scale(0.99);
 }
 
-/* Clean Fleet Identifier Card */
+/* Cherry Blossom Mint Accent Badge / Box */
+.cherry-mint-badge {
+  background-color: #d5f3d8;
+  color: #17421f;
+  border: 1px solid #bceac1;
+}
+
+/* Cherry Blossom Master Identifier Card */
 .fleet-card-slate {
-  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+  background: linear-gradient(135deg, #591929 0%, #380d17 100%);
   color: #ffffff;
   border-radius: 0.75rem;
-  box-shadow: 0 4px 6px -1px rgba(30, 27, 75, 0.15);
+  box-shadow: 0 4px 6px -1px rgba(89, 25, 41, 0.2);
 }
 
 /* Clean Input Styling */
@@ -50,6 +57,6 @@ input, textarea, select {
 }
 
 input:focus, textarea:focus, select:focus {
-  border-color: #4f46e5 !important;
-  box-shadow: 0 0 0 1px #4f46e5 !important;
+  border-color: #f46a85 !important;
+  box-shadow: 0 0 0 1px #f46a85 !important;
 }

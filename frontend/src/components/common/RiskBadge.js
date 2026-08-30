@@ -2,15 +2,15 @@ import React from "react";
 import { riskMeta } from "@/lib/riskMeta";
 
 const BADGE_COLORS = {
-  LOW: { text: "#059669", bg: "#ecfdf5", border: "#a7f3d0" },
-  MEDIUM: { text: "#d97706", bg: "#fffbeb", border: "#fde68a" },
-  HIGH: { text: "#ea580c", bg: "#fff7ed", border: "#fed7aa" },
-  CRITICAL: { text: "#dc2626", bg: "#fef2f2", border: "#fecaca" },
+  LOW: { text: "#17421f", bg: "#d5f3d8", border: "#bceac1" }, // Mint blossom (#D5F3D8)
+  MEDIUM: { text: "#9a4907", bg: "#fef3c7", border: "#fde68a" },
+  HIGH: { text: "#9f1239", bg: "#ffe4e9", border: "#fecdd3" },
+  CRITICAL: { text: "#881337", bg: "#ffebf0", border: "#f2c7c7" },
 };
 
 export function RiskBadge({ level, score, className = "", testId }) {
   const meta = riskMeta(level);
-  const theme = BADGE_COLORS[(level || "").toUpperCase()] || { text: "#475569", bg: "#f1f5f9", border: "#cbd5e1" };
+  const theme = BADGE_COLORS[(level || "").toUpperCase()] || { text: "#6b4f57", bg: "#faf0f2", border: "#f2c7c7" };
 
   return (
     <span

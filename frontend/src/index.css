@@ -8,8 +8,8 @@ body {
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #f8fafc;
-    color: #0f172a;
+    background-color: #fff8f9;
+    color: #26161b;
 }
 
 code, .font-mono {
@@ -18,34 +18,36 @@ code, .font-mono {
 
 @layer base {
     :root {
-        /* Modern Clean Light SaaS Palette */
-        --background: 210 40% 98%;        /* #f8fafc */
-        --foreground: 222 47% 11%;        /* #0f172a */
+        /* Cherry Blossom Color Palette */
+        /* #F2C7C7, #FFFFFF, #D5F3D8, #FFB7C5 */
         
-        --card: 0 0% 100%;                /* #ffffff */
-        --card-foreground: 222 47% 11%;   /* #0f172a */
+        --background: 350 100% 99%;        /* #fff8f9 */
+        --foreground: 340 30% 12%;         /* #26161b */
         
-        --popover: 0 0% 100%;             /* #ffffff */
-        --popover-foreground: 222 47% 11%;
+        --card: 0 0% 100%;                 /* #ffffff */
+        --card-foreground: 340 30% 12%;    /* #26161b */
         
-        --primary: 226 70% 55%;           /* #4f46e5 - Modern Indigo */
+        --popover: 0 0% 100%;              /* #ffffff */
+        --popover-foreground: 340 30% 12%;
+        
+        --primary: 348 85% 65%;            /* #f46a85 - Cherry Blossom Action Pink */
         --primary-foreground: 0 0% 100%;
         
-        --secondary: 214 32% 91%;         /* #e2e8f0 */
-        --secondary-foreground: 222 47% 11%;
+        --secondary: 350 50% 92%;          /* #f8e5e8 */
+        --secondary-foreground: 340 30% 15%;
         
-        --muted: 210 40% 96%;             /* #f1f5f9 */
-        --muted-foreground: 215 16% 47%;  /* #64748b */
+        --muted: 350 40% 95%;              /* #faf0f2 */
+        --muted-foreground: 340 15% 45%;   /* #7d656c */
         
-        --accent: 226 70% 55%;            /* #4f46e5 */
-        --accent-foreground: 0 0% 100%;
+        --accent: 126 52% 89%;             /* #D5F3D8 - Mint Blossom Accent */
+        --accent-foreground: 135 60% 18%;  /* #17421f */
         
-        --destructive: 0 84% 60%;         /* #ef4444 */
+        --destructive: 350 84% 60%;        /* #f43f5e */
         --destructive-foreground: 0 0% 100%;
         
-        --border: 214 32% 91%;            /* #e2e8f0 */
-        --input: 214 32% 91%;             /* #e2e8f0 */
-        --ring: 226 70% 55%;              /* #4f46e5 */
+        --border: 350 45% 88%;             /* #F2C7C7 tint */
+        --input: 350 45% 88%;
+        --ring: 348 85% 65%;
         
         --radius: 0.75rem;
     }
@@ -60,20 +62,20 @@ code, .font-mono {
     }
 }
 
-/* Subtle Light Scrollbars */
+/* Subtle Cherry Blossom Scrollbars */
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
 }
 ::-webkit-scrollbar-track {
-    background: #f8fafc;
+    background: #fff8f9;
 }
 ::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
+    background: #F2C7C7;
     border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
+    background: #FFB7C5;
 }
 
 @layer base {
