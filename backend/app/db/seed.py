@@ -96,6 +96,7 @@ async def ensure_seed():
                 is_demo=True
             )
             db.add(vehicle)
+            await db.flush()
 
             trip_id = uuid.uuid4()
             travel = date.today() + timedelta(days=3)
