@@ -1,30 +1,35 @@
 """Analytics / dashboard aggregation service."""
-from sqlalchemy import text
+from sqlalchemy import text, select
+from ..models import Document
 
 
 async def dashboard(db, user_id):
-    p = {"u": user_id}
+    p = {"u": str(user_id)}
 
     counts = (await db.execute(text("""
         SELECT
-          count(*) FILTER (WHERE status != 'analyzed' OR status IS NULL) AS active,
-          count(*) FILTER (WHERE risk_level = 'LOW') AS low,
-          count(*) FILTER (WHERE risk_level = 'MEDIUM') AS medium,
-          count(*) FILTER (WHERE risk_level = 'HIGH') AS high,
-          count(*) FILTER (WHERE risk_level = 'CRITICAL') AS critical,
+          count(CASE WHEN status != 'analyzed' OR status IS NULL THEN 1 END) AS active,
+          count(CASE WHEN risk_level = 'LOW' THEN 1 END) AS low,
+          count(CASE WHEN risk_level = 'MEDIUM' THEN 1 END) AS medium,
+          count(CASE WHEN risk_level = 'HIGH' THEN 1 END) AS high,
+          count(CASE WHEN risk_level = 'CRITICAL' THEN 1 END) AS critical,
           count(*) AS total,
-          coalesce(round(avg(risk_score)::numeric, 1), 0) AS avg_score
+          coalesce(round(avg(risk_score), 1), 0) AS avg_score
         FROM trips WHERE user_id = :u
     """), p)).mappings().first()
 
     incident_count = (await db.execute(text(
         "SELECT count(*) FROM incidents WHERE user_id = :u"), p)).scalar() or 0
 
-    doc_warnings = (await db.execute(text("""
-        SELECT count(*) FROM documents
-        WHERE user_id = :u AND validation_result IS NOT NULL
-          AND (validation_result->>'status') IN ('review_recommended','attention_needed')
-    """), p)).scalar() or 0
+    # Fetch document warnings safely across database types
+    docs = (await db.execute(
+        select(Document.validation_result).where(Document.user_id == user_id)
+    )).scalars().all()
+    
+    doc_warnings = sum(
+        1 for vr in docs
+        if vr and isinstance(vr, dict) and vr.get("status") in ("review_recommended", "attention_needed")
+    )
 
     recent_trips = (await db.execute(text("""
         SELECT id, origin, destination, travel_date, risk_score, risk_level, status, is_demo, created_at
@@ -119,7 +124,7 @@ async def corridors(db, user_id):
     rows = (await db.execute(text("""
         SELECT origin_region, destination_region, corridor_name, incident_count,
                document_check_count, distance_issue_count, risk_score, is_demo
-        FROM route_risk_data ORDER BY risk_score DESC NULLS LAST
+        FROM route_risk_data ORDER BY risk_score DESC
     """))).mappings().all()
 
     corridors_out = []
@@ -132,7 +137,7 @@ async def corridors(db, user_id):
         own = (await db.execute(text("""
             SELECT count(*) FROM incidents WHERE user_id = :u
               AND (lower(coalesce(location_name,'')) LIKE :o OR lower(coalesce(location_name,'')) LIKE :d)
-        """), {"u": user_id, "o": f"%{r['origin_region'].lower()}%", "d": f"%{r['destination_region'].lower()}%"})).scalar() or 0
+        """), {"u": str(user_id), "o": f"%{r['origin_region'].lower()}%", "d": f"%{r['destination_region'].lower()}%"})).scalar() or 0
         corridors_out.append({
             "corridor_name": r["corridor_name"],
             "origin": r["origin_region"],
@@ -152,7 +157,7 @@ async def corridors(db, user_id):
     inc_rows = (await db.execute(text("""
         SELECT location_name, latitude, longitude, incident_type, outcome
         FROM incidents WHERE user_id = :u AND latitude IS NOT NULL AND longitude IS NOT NULL
-    """), {"u": user_id})).mappings().all()
+    """), {"u": str(user_id)})).mappings().all()
     incident_points = [{
         "location_name": r["location_name"], "lat": float(r["latitude"]), "lng": float(r["longitude"]),
         "incident_type": r["incident_type"], "outcome": r["outcome"],
@@ -169,13 +174,13 @@ async def corridor_detail(db, user_id, origin, destination):
           AND ((lower(origin) = :o AND lower(destination) = :d)
             OR (lower(origin) = :d AND lower(destination) = :o))
         ORDER BY created_at DESC
-    """), {"u": user_id, "o": o, "d": d})).mappings().all()
+    """), {"u": str(user_id), "o": o, "d": d})).mappings().all()
     incidents = (await db.execute(text("""
         SELECT id, location_name, incident_type, outcome, reason, occurred_at, is_demo
         FROM incidents WHERE user_id = :u
           AND (lower(coalesce(location_name,'')) LIKE :op OR lower(coalesce(location_name,'')) LIKE :dp)
         ORDER BY occurred_at DESC
-    """), {"u": user_id, "op": f"%{o}%", "dp": f"%{d}%"})).mappings().all()
+    """), {"u": str(user_id), "op": f"%{o}%", "dp": f"%{d}%"})).mappings().all()
 
     def norm(rows):
         out = []

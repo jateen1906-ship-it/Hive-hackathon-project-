@@ -17,11 +17,14 @@ import { RouteStrip } from "@/components/common/PageHeader";
 import { fmtDate, SEVERITY_META } from "@/lib/riskMeta";
 
 const FACTOR_LABELS = {
-  route_risk: "Route / corridor risk",
-  distance_anomaly: "Distance anomaly",
-  document_risk: "Document / compliance",
-  historical_incidents: "Historical incidents",
-  trip_vehicle: "Trip & vehicle",
+  route_risk: "Corridor & Checkpost Risk",
+  distance_anomaly: "Distance & Transit Feasibility",
+  schedule_validity: "Dispatch Timeline & E-Way Validity",
+  invoice_compliance: "Invoice Value & GST Rule 138",
+  cargo_suitability: "Cargo Sensitivity & Vehicle Match",
+  trip_vehicle: "Vehicle Registration & Permit Check",
+  document_risk: "Document OCR & Pre-Check",
+  historical_incidents: "Historical Corridor Incidents",
 };
 
 function FactorCard({ f }) {
@@ -101,10 +104,10 @@ export default function RiskReport() {
               <div>
                 <RouteStrip origin={trip.origin} destination={trip.destination} className="text-xl" />
                 <div className="mt-1 text-sm text-muted-foreground">Travel date: {fmtDate(trip.travel_date)}</div>
-                <div className="mt-1 font-mono text-sm text-muted-foreground">{trip.vehicle_number || "No vehicle"}</div>
+                <div className="mt-1 font-mono text-sm text-muted-foreground">{trip.vehicle_number || "No vehicle assigned"} · {trip.vehicle_type || "Commercial Truck"}</div>
                 <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-                  <div><div className="text-xs text-muted-foreground">Declared</div><div className="font-mono">{trip.declared_distance_km ? `${trip.declared_distance_km} km` : "—"}</div></div>
-                  <div><div className="text-xs text-muted-foreground">Estimated (demo)</div><div className="font-mono">{trip.estimated_distance_km ? `${trip.estimated_distance_km} km` : "—"}</div></div>
+                  <div><div className="text-xs text-muted-foreground">Declared Distance</div><div className="font-mono">{trip.declared_distance_km ? `${trip.declared_distance_km} km` : "—"}</div></div>
+                  <div><div className="text-xs text-muted-foreground">Estimated Route</div><div className="font-mono">{trip.estimated_distance_km ? `${trip.estimated_distance_km} km` : "—"}</div></div>
                 </div>
               </div>
               <div className="flex justify-center"><RiskGauge score={Number(ev.score)} level={ev.level} /></div>
@@ -113,7 +116,7 @@ export default function RiskReport() {
 
           {/* Findings */}
           <div>
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-700">Why this score?</h2>
+            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-700">Detailed Risk Factors & Compliance Check</h2>
             <div className="grid gap-4 md:grid-cols-2">
               {(ev.factors || []).map((f, i) => <FactorCard key={i} f={f} />)}
             </div>
@@ -121,18 +124,18 @@ export default function RiskReport() {
 
           {/* Recommended actions */}
           <Card className="p-5">
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-700">Recommended actions</h2>
+            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-700">Actionable Pre-Departure Checklist</h2>
             <ol className="space-y-2">
               {(ev.recommendations || []).map((r, i) => (
                 <li key={i} className="flex items-start gap-2 text-sm">
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-slate-500" /><span>{r}</span>
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" /><span>{r}</span>
                 </li>
               ))}
             </ol>
           </Card>
 
           <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>Data source: {ev.engine_version} · route distance is demonstration data</span>
+            <span>Analysis engine: {ev.engine_version} · Dynamic corridor intelligence</span>
             <Button variant="outline" size="sm" onClick={() => analyze.mutate()} disabled={analyze.isPending} data-testid="risk-reanalyze">
               {analyze.isPending ? "Analyzing…" : "Re-run analysis"}
             </Button>

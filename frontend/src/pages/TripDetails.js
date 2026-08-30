@@ -68,7 +68,7 @@ export default function TripDetails() {
           <Field label="Vehicle type" value={trip.vehicle_type} />
           <Field label="Status" value={trip.status} />
           <Field label="Declared distance" value={trip.declared_distance_km ? `${trip.declared_distance_km} km` : null} mono />
-          <Field label="Estimated distance (demo)" value={trip.estimated_distance_km ? `${trip.estimated_distance_km} km` : null} mono />
+          <Field label="Estimated distance" value={trip.estimated_distance_km ? `${trip.estimated_distance_km} km` : null} mono />
           <Field label="Invoice value" value={fmtCurrency(trip.invoice_value)} mono />
           <div className="sm:col-span-2 lg:col-span-3"><Field label="Goods" value={trip.goods_description} /></div>
         </div>

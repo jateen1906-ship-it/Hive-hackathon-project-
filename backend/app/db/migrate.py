@@ -4,14 +4,23 @@ from pathlib import Path
 from sqlalchemy import create_engine, text
 
 from ..config import settings
+from ..database import Base
 
 logger = logging.getLogger("truckshield.migrate")
 MIGRATIONS_DIR = Path(__file__).parent / "migrations"
 
 
 def run_migrations() -> None:
-    """Apply all *.sql migration files in order (idempotent)."""
-    engine = create_engine(settings.sync_database_url(), pool_pre_ping=True)
+    """Apply migrations or create schema."""
+    sync_url = settings.sync_database_url()
+    if settings.DATABASE_URL.startswith("sqlite"):
+        sync_engine = create_engine(sync_url)
+        Base.metadata.create_all(bind=sync_engine)
+        sync_engine.dispose()
+        logger.info("SQLite schema initialized.")
+        return
+
+    engine = create_engine(sync_url, pool_pre_ping=True)
     try:
         files = sorted(MIGRATIONS_DIR.glob("*.sql"))
         with engine.begin() as conn:

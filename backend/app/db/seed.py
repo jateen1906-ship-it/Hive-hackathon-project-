@@ -7,10 +7,13 @@ Demo corridor intelligence is explicitly NOT derived from live enforcement.
 import uuid
 import logging
 from datetime import datetime, timezone, timedelta, date
-from sqlalchemy import text
+from sqlalchemy import select
 
-from .migrate import MIGRATIONS_DIR  # noqa
 from ..database import AsyncSessionLocal
+from ..models import (
+    Profile, Vehicle, Trip, TripRiskFactor, RiskEvaluation,
+    Incident, RouteRiskData, ComplianceRule
+)
 from ..security import hash_password
 from ..engines import risk_engine
 from ..services.historical import corridor_signals
@@ -57,21 +60,26 @@ async def ensure_seed():
     async with AsyncSessionLocal() as db:
         # already seeded?
         existing = (await db.execute(
-            text("SELECT id FROM profiles WHERE email = :e"), {"e": DEMO_EMAIL})).first()
+            select(Profile).where(Profile.email == DEMO_EMAIL)
+        )).scalar_one_or_none()
+
         if existing:
-            # still ensure corridor + rules exist (idempotent top-up)
             await _seed_corridors(db)
             await _seed_rules(db)
             await db.commit()
             return
 
         user_id = uuid.uuid4()
-        db.add_all([])
-        await db.execute(text("""
-            INSERT INTO profiles (id, email, password_hash, full_name, company_name, role)
-            VALUES (:id, :e, :p, :n, :c, 'operator')
-        """), {"id": str(user_id), "e": DEMO_EMAIL, "p": hash_password(DEMO_PASSWORD),
-                "n": "Demo Operator", "c": "Bharat Freight Movers (DEMO)"})
+        demo_profile = Profile(
+            id=user_id,
+            email=DEMO_EMAIL,
+            password_hash=hash_password(DEMO_PASSWORD),
+            full_name="Demo Operator",
+            company_name="Bharat Freight Movers (DEMO)",
+            role="operator"
+        )
+        db.add(demo_profile)
+        await db.flush()
 
         await _seed_corridors(db)
         await _seed_rules(db)
@@ -79,58 +87,86 @@ async def ensure_seed():
         # vehicles + trips
         for (origin, dest, veh, vtype, goods, inv, dist) in DEMO_TRIPS:
             vehicle_id = uuid.uuid4()
-            await db.execute(text("""
-                INSERT INTO vehicles (id, user_id, vehicle_number, vehicle_type, status, is_demo)
-                VALUES (:id, :u, :vn, :vt, 'active', true)
-            """), {"id": str(vehicle_id), "u": str(user_id), "vn": veh, "vt": vtype})
+            vehicle = Vehicle(
+                id=vehicle_id,
+                user_id=user_id,
+                vehicle_number=veh,
+                vehicle_type=vtype,
+                status="active",
+                is_demo=True
+            )
+            db.add(vehicle)
 
             trip_id = uuid.uuid4()
             travel = date.today() + timedelta(days=3)
-            await db.execute(text("""
-                INSERT INTO trips (id, user_id, vehicle_id, origin, destination, travel_date,
-                                   goods_description, invoice_value, declared_distance_km,
-                                   vehicle_number, vehicle_type, status, is_demo)
-                VALUES (:id, :u, :veh, :o, :d, :td, :g, :iv, :dd, :vn, :vt, 'created', true)
-            """), {"id": str(trip_id), "u": str(user_id), "veh": str(vehicle_id),
-                    "o": origin, "d": dest, "td": travel, "g": goods, "iv": inv,
-                    "dd": dist, "vn": veh, "vt": vtype})
+            trip_model = Trip(
+                id=trip_id,
+                user_id=user_id,
+                vehicle_id=vehicle_id,
+                origin=origin,
+                destination=dest,
+                travel_date=travel,
+                goods_description=goods,
+                invoice_value=inv,
+                declared_distance_km=dist,
+                vehicle_number=veh,
+                vehicle_type=vtype,
+                status="created",
+                is_demo=True
+            )
+            db.add(trip_model)
+            await db.flush()
 
             # analyze so dashboard has risk data
-            trip = {"origin": origin, "destination": dest, "declared_distance_km": dist,
-                    "invoice_value": inv, "goods_description": goods, "vehicle_number": veh}
+            trip_data = {"origin": origin, "destination": dest, "declared_distance_km": dist,
+                         "invoice_value": inv, "goods_description": goods, "vehicle_number": veh}
             hist = await corridor_signals(db, str(user_id), origin, dest)
-            result = risk_engine.analyze_trip(trip, None, hist)
-            await db.execute(text("""
-                UPDATE trips SET risk_score = :s, risk_level = :l,
-                    estimated_distance_km = :e, status = 'analyzed' WHERE id = :id
-            """), {"s": result["score"], "l": result["level"],
-                    "e": result["estimated_distance_km"], "id": str(trip_id)})
+            result = risk_engine.analyze_trip(trip_data, None, hist)
+
+            trip_model.risk_score = result["score"]
+            trip_model.risk_level = result["level"]
+            trip_model.estimated_distance_km = result["estimated_distance_km"]
+            trip_model.status = "analyzed"
+
             for f in result["factors"]:
-                await db.execute(text("""
-                    INSERT INTO trip_risk_factors (id, trip_id, factor_type, severity, score,
-                        title, description, recommendation)
-                    VALUES (:id, :t, :ft, :sv, :sc, :ti, :de, :re)
-                """), {"id": str(uuid.uuid4()), "t": str(trip_id), "ft": f["factor_type"],
-                        "sv": f["severity"], "sc": f["score"], "ti": f["title"],
-                        "de": f["description"], "re": f["recommendation"]})
-            import json as _json
-            await db.execute(text("""
-                INSERT INTO risk_evaluations (id, trip_id, score, level, engine_version, factors, recommendations)
-                VALUES (:id, :t, :s, :l, :ev, CAST(:fa AS JSONB), CAST(:rc AS JSONB))
-            """), {"id": str(uuid.uuid4()), "t": str(trip_id), "s": result["score"],
-                    "l": result["level"], "ev": result["engine_version"],
-                    "fa": _json.dumps(result["factors"]), "rc": _json.dumps(result["recommendations"])})
+                factor = TripRiskFactor(
+                    id=uuid.uuid4(),
+                    trip_id=trip_id,
+                    factor_type=f["factor_type"],
+                    severity=f["severity"],
+                    score=f["score"],
+                    title=f["title"],
+                    description=f["description"],
+                    recommendation=f["recommendation"]
+                )
+                db.add(factor)
+
+            evaluation = RiskEvaluation(
+                id=uuid.uuid4(),
+                trip_id=trip_id,
+                score=result["score"],
+                level=result["level"],
+                engine_version=result["engine_version"],
+                factors=result["factors"],
+                recommendations=result["recommendations"]
+            )
+            db.add(evaluation)
 
         # incidents
         for (loc, itype, reason, reqs, outcome, notes) in DEMO_INCIDENTS:
-            import json as _json
-            await db.execute(text("""
-                INSERT INTO incidents (id, user_id, location_name, incident_type, reason,
-                    documents_requested, outcome, notes, occurred_at, is_demo)
-                VALUES (:id, :u, :loc, :it, :re, CAST(:dr AS JSONB), :oc, :no, :oa, true)
-            """), {"id": str(uuid.uuid4()), "u": str(user_id), "loc": loc, "it": itype,
-                    "re": reason, "dr": _json.dumps(reqs), "oc": outcome, "no": notes,
-                    "oa": datetime.now(timezone.utc) - timedelta(days=2)})
+            incident = Incident(
+                id=uuid.uuid4(),
+                user_id=user_id,
+                location_name=loc,
+                incident_type=itype,
+                reason=reason,
+                documents_requested=reqs,
+                outcome=outcome,
+                notes=notes,
+                occurred_at=datetime.now(timezone.utc) - timedelta(days=2),
+                is_demo=True
+            )
+            db.add(incident)
 
         await db.commit()
         logger.info("Seeded SYNTHETIC demo data for %s", DEMO_EMAIL)
@@ -138,27 +174,41 @@ async def ensure_seed():
 
 async def _seed_corridors(db):
     for (o, d, name, inc, doc, dist, score) in CORRIDORS:
-        exists = (await db.execute(text(
-            "SELECT 1 FROM route_risk_data WHERE corridor_name = :n"), {"n": name})).first()
+        exists = (await db.execute(
+            select(RouteRiskData).where(RouteRiskData.corridor_name == name)
+        )).scalar_one_or_none()
         if exists:
             continue
-        await db.execute(text("""
-            INSERT INTO route_risk_data (id, origin_region, destination_region, corridor_name,
-                incident_count, document_check_count, distance_issue_count, risk_score,
-                is_demo, period_start, period_end)
-            VALUES (:id, :o, :d, :n, :ic, :dc, :di, :rs, true, :ps, :pe)
-        """), {"id": str(uuid.uuid4()), "o": o, "d": d, "n": name, "ic": inc, "dc": doc,
-                "di": dist, "rs": score, "ps": date.today() - timedelta(days=90),
-                "pe": date.today()})
+        corr = RouteRiskData(
+            id=uuid.uuid4(),
+            origin_region=o,
+            destination_region=d,
+            corridor_name=name,
+            incident_count=inc,
+            document_check_count=doc,
+            distance_issue_count=dist,
+            risk_score=score,
+            is_demo=True,
+            period_start=date.today() - timedelta(days=90),
+            period_end=date.today()
+        )
+        db.add(corr)
 
 
 async def _seed_rules(db):
     for (code, title, desc, cat, sev) in RULES:
-        exists = (await db.execute(text(
-            "SELECT 1 FROM compliance_rules WHERE rule_code = :c"), {"c": code})).first()
+        exists = (await db.execute(
+            select(ComplianceRule).where(ComplianceRule.rule_code == code)
+        )).scalar_one_or_none()
         if exists:
             continue
-        await db.execute(text("""
-            INSERT INTO compliance_rules (id, rule_code, title, description, category, severity, active)
-            VALUES (:id, :c, :t, :d, :cat, :s, true)
-        """), {"id": str(uuid.uuid4()), "c": code, "t": title, "d": desc, "cat": cat, "s": sev})
+        rule = ComplianceRule(
+            id=uuid.uuid4(),
+            rule_code=code,
+            title=title,
+            description=desc,
+            category=cat,
+            severity=sev,
+            active=True
+        )
+        db.add(rule)

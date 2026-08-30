@@ -9,11 +9,12 @@ load_dotenv(ROOT_DIR / ".env")
 
 
 class Settings:
-    # Database (Neon PostgreSQL)
-    DATABASE_URL: str = os.environ["DATABASE_URL"]
+    # Database: SQLite local fallback or PostgreSQL
+    DATABASE_URL: str = os.environ.get("DATABASE_URL", "sqlite:///./truckshield.db")
 
     # Auth
-    JWT_SECRET: str = os.environ.get("JWT_SECRET", "change-me")
+    DEMO_USER_EMAIL: str = os.environ.get("DEMO_USER_EMAIL", "demo@truckshield.app")
+    JWT_SECRET: str = os.environ.get("JWT_SECRET", "truckshield-secret-jwt-key-2026")
     JWT_ALGORITHM: str = os.environ.get("JWT_ALGORITHM", "HS256")
     JWT_EXPIRE_MINUTES: int = int(os.environ.get("JWT_EXPIRE_MINUTES", "10080"))
 
@@ -36,11 +37,14 @@ class Settings:
     ENGINE_VERSION: str = "risk-engine-1.0"
 
     def async_database_url(self) -> str:
+        if self.DATABASE_URL.startswith("sqlite"):
+            return self.DATABASE_URL.replace("sqlite://", "sqlite+aiosqlite://")
         base = self.DATABASE_URL.split("?", 1)[0]
         return base.replace("postgresql://", "postgresql+asyncpg://")
 
     def sync_database_url(self) -> str:
-        # keep sslmode for psycopg2; drop channel_binding for broad compat
+        if self.DATABASE_URL.startswith("sqlite"):
+            return self.DATABASE_URL
         raw = self.DATABASE_URL
         base = raw.split("?", 1)[0]
         return base.replace("postgresql://", "postgresql+psycopg2://") + "?sslmode=require"

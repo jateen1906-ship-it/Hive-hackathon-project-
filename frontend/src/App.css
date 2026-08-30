@@ -1,4 +1,53 @@
-.App { min-height: 100vh; }
+
+.App {
+  min-height: 100vh;
+}
+
+/* Cinematic Dark Hero Background matching Reference Images */
+.cinematic-hero-bg {
+  background-color: #08090d;
+  background-image: 
+    radial-gradient(circle at 50% 25%, rgba(30, 41, 59, 0.45) 0%, transparent 60%),
+    radial-gradient(circle at 10% 80%, rgba(2, 132, 199, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 90% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 50%);
+  position: relative;
+}
+
+.cinematic-hero-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.2) 0%, rgba(8, 9, 13, 0.85) 100%);
+  pointer-events: none;
+}
+
+/* Subtle micro-dot pattern for white content sections */
+.bg-dot-pattern {
+  background-color: #fbfcfd;
+  background-image: radial-gradient(#d1d5db 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.bg-dot-pattern-dense {
+  background-color: #ffffff;
+  background-image: radial-gradient(#cbd5e1 1.2px, transparent 1.2px);
+  background-size: 20px 20px;
+}
+
+/* Mac Browser Window Mockup */
+.mac-mockup-shadow {
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(226, 232, 240, 0.8),
+    0 10px 15px -3px rgba(0, 0, 0, 0.05);
+}
+
+/* Card Glow Effect */
+.card-featured-glow {
+  box-shadow: 
+    0 0 0 1.5px #6366f1,
+    0 10px 25px -5px rgba(99, 102, 241, 0.12);
+}
 
 .ts-hero-gradient {
   background:
