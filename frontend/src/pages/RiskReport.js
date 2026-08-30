@@ -2,7 +2,24 @@ import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ArrowLeft, Gauge, Loader2, CheckCircle2, AlertTriangle, Download, Share2, Copy, Trash2, Lock, ShieldCheck, MapPin, Truck } from "lucide-react";
+import { 
+  ArrowLeft, 
+  Gauge, 
+  Loader2, 
+  CheckCircle2, 
+  AlertTriangle, 
+  AlertCircle,
+  Download, 
+  Share2, 
+  Copy, 
+  Trash2, 
+  Lock, 
+  ShieldCheck, 
+  MapPin, 
+  Truck,
+  Zap,
+  Check
+} from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,43 +31,64 @@ import { LoadingState, ErrorState, EmptyState } from "@/components/common/StateV
 import { Disclaimer, SyntheticBadge } from "@/components/common/Disclaimer";
 import { RouteStrip } from "@/components/common/PageHeader";
 import { fmtDate, SEVERITY_META } from "@/lib/riskMeta";
-
 import { DriverPassModal } from "@/components/trips/DriverPassModal";
 
-const FACTOR_LABELS = {
-  route_risk: "Corridor & Checkpost Risk",
-  distance_anomaly: "Distance & Transit Feasibility",
-  schedule_validity: "Dispatch Timeline & E-Way Validity",
-  invoice_compliance: "Invoice Value & GST Rule 138",
-  cargo_suitability: "Cargo Sensitivity & Vehicle Match",
-  trip_vehicle: "Vehicle Registration & Permit Check",
-  document_risk: "Document OCR & Pre-Check",
-  historical_incidents: "Historical Corridor Incidents",
-};
+function formatBullets(text) {
+  if (!text) return [];
+  // Split into scannable clean bullet points
+  const clean = text.replace(/\(([^\)]+)\)/g, "\n$1");
+  const parts = clean
+    .split(/[\.\n]+/)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 2);
+  return parts.length > 0 ? parts : [text];
+}
 
 function FactorCard({ f }) {
   const sev = SEVERITY_META[f.severity] || SEVERITY_META.medium;
+  const bullets = formatBullets(f.description);
+  const isSafe = (f.severity || "").toLowerCase() === "low";
+
   return (
     <Card 
-      className="p-5 border-l-4" 
-      style={{ borderLeftColor: sev.color }} 
+      className="p-5 border border-slate-200 hover:border-slate-300 transition-all flex flex-col justify-between bg-white shadow-2xs rounded-xl" 
+      style={{ borderTop: `3px solid ${sev.color}` }}
       data-testid={`risk-factor-${f.factor_type}`}
     >
-      <div className="flex items-center justify-between">
-        <div className="text-sm font-bold text-slate-900">{f.title}</div>
-        <span 
-          className="rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider" 
-          style={{ color: sev.color, backgroundColor: sev.color + "15" }}
-        >
-          {sev.label}
-        </span>
+      <div>
+        <div className="flex items-center justify-between gap-2">
+          <div className="text-sm font-bold text-slate-900 leading-snug">{f.title}</div>
+          <span 
+            className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider shrink-0" 
+            style={{ color: sev.color, backgroundColor: sev.color + "15" }}
+          >
+            {isSafe ? <CheckCircle2 className="h-3 w-3" /> : <AlertTriangle className="h-3 w-3" />}
+            {sev.label}
+          </span>
+        </div>
+
+        <ul className="mt-3.5 space-y-2">
+          {bullets.map((bullet, idx) => (
+            <li key={idx} className="flex items-start gap-2.5 text-xs text-slate-700 leading-relaxed">
+              <span 
+                className="mt-1.5 h-1.5 w-1.5 rounded-full shrink-0" 
+                style={{ backgroundColor: sev.color }} 
+              />
+              <span className="font-medium">{bullet}</span>
+            </li>
+          ))}
+        </ul>
       </div>
-      <div className="mt-1 text-[11px] uppercase tracking-wider text-slate-500 font-semibold">{FACTOR_LABELS[f.factor_type] || f.factor_type}</div>
-      <p className="mt-2 text-xs text-slate-600 leading-relaxed">{f.description}</p>
-      <div className="mt-3.5 flex items-start gap-2 rounded-lg bg-slate-50 border border-slate-100 p-3 text-xs">
-        <span className="font-bold text-slate-900 shrink-0">Action:</span>
-        <span className="text-slate-600">{f.recommendation}</span>
-      </div>
+
+      {f.recommendation && (
+        <div className="mt-4 pt-3 border-t border-slate-100 flex items-start gap-2 text-xs bg-slate-50/60 p-2.5 rounded-lg">
+          <span className="font-bold text-slate-900 shrink-0 flex items-center gap-1">
+            <Zap className="h-3.5 w-3.5 text-[#cca25a]" />
+            Action:
+          </span>
+          <span className="text-slate-600 font-medium">{f.recommendation}</span>
+        </div>
+      )}
     </Card>
   );
 }
@@ -115,7 +153,7 @@ export default function RiskReport() {
           <Card className="p-6 sm:p-8">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
               <div className="flex items-center gap-2">
-                <ShieldCheck className="h-4 w-4 text-blue-600" />
+                <ShieldCheck className="h-4 w-4 text-[#cca25a]" />
                 <span className="text-xs font-bold uppercase tracking-widest text-slate-500">Pre-Departure Risk Evaluation</span>
                 {trip.is_demo && <SyntheticBadge />}
               </div>
@@ -148,7 +186,7 @@ export default function RiskReport() {
                   </div>
                   <div>
                     <div className="text-slate-500 font-medium">Estimated Route</div>
-                    <div className="font-mono font-bold text-blue-600 text-sm mt-0.5">{trip.estimated_distance_km ? `${trip.estimated_distance_km} km` : "—"}</div>
+                    <div className="font-mono font-bold text-[#cca25a] text-sm mt-0.5">{trip.estimated_distance_km ? `${trip.estimated_distance_km} km` : "—"}</div>
                   </div>
                 </div>
               </div>
@@ -161,43 +199,37 @@ export default function RiskReport() {
 
           {/* Detailed Findings */}
           <div>
-            <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-500">
-              Detailed Factor Risk Breakdown
-            </h2>
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                Detailed Factor Risk Breakdown
+              </h2>
+              <span className="text-xs text-slate-400 font-medium">{(ev.factors || []).length} factors analyzed</span>
+            </div>
+            
             <div className="grid gap-4 md:grid-cols-2">
-              {(ev.factors || []).map((f, i) => <FactorCard key={i} f={f} />)}
+              {(ev.factors || []).map((f, i) => (
+                <FactorCard key={i} f={f} />
+              ))}
             </div>
           </div>
 
-          {/* Recommendations Checklist */}
-          <Card className="p-6">
-            <h2 className="mb-4 text-xs font-bold uppercase tracking-wider text-slate-900 flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-              Actionable Pre-Departure Checklist
-            </h2>
-            <ol className="space-y-2.5">
-              {(ev.recommendations || []).map((r, i) => (
-                <li key={i} className="flex items-start gap-3 rounded-lg bg-slate-50 p-3 text-xs border border-slate-100">
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
-                  <span className="text-slate-800 leading-relaxed font-medium">{r}</span>
-                </li>
-              ))}
-            </ol>
-          </Card>
-
-          <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500 border-t border-slate-200 pt-4">
-            <span>Engine: <code className="text-slate-900 font-mono font-semibold">{ev.engine_version}</code> · Dynamic Corridor Intelligence</span>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => analyze.mutate()} 
-              disabled={analyze.isPending} 
-              data-testid="risk-reanalyze"
-              className="border-slate-200 text-xs font-semibold text-slate-700 h-8"
-            >
-              {analyze.isPending ? "Running Engine…" : "Re-evaluate Trip"}
-            </Button>
-          </div>
+          {/* Action Checklist */}
+          {ev.recommendations && ev.recommendations.length > 0 && (
+            <Card className="p-6">
+              <h2 className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-900">
+                <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                Pre-Dispatch Driver & Officer Checklist
+              </h2>
+              <ul className="space-y-2.5">
+                {ev.recommendations.map((r, i) => (
+                  <li key={i} className="flex items-start gap-2.5 text-xs text-slate-700 font-medium">
+                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                    <span>{r}</span>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          )}
 
           <Disclaimer />
         </div>

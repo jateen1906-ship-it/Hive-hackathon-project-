@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ShieldCheck, Truck, MapPin, Calendar, AlertTriangle, CheckCircle, FileText } from "lucide-react";
+import { ShieldCheck, Truck, MapPin, Calendar, AlertTriangle, CheckCircle2, FileText, Zap } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ShareAPI } from "@/lib/apiClient";
@@ -10,19 +10,15 @@ import { LoadingState, ErrorState } from "@/components/common/StateViews";
 import { RouteStrip } from "@/components/common/PageHeader";
 import { fmtDate, SEVERITY_META } from "@/lib/riskMeta";
 
-const LEVEL_COLOR = {
-  LOW: "#059669",
-  MEDIUM: "#d97706",
-  HIGH: "#ea580c",
-  CRITICAL: "#dc2626",
-};
-
-const LEVEL_BG = {
-  LOW: "#ecfdf5",
-  MEDIUM: "#fffbeb",
-  HIGH: "#fff7ed",
-  CRITICAL: "#fef2f2",
-};
+function formatBullets(text) {
+  if (!text) return [];
+  const clean = text.replace(/\(([^\)]+)\)/g, "\n$1");
+  const parts = clean
+    .split(/[\.\n]+/)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 2);
+  return parts.length > 0 ? parts : [text];
+}
 
 export default function PublicReport() {
   const { token } = useParams();
@@ -36,12 +32,12 @@ export default function PublicReport() {
   const trip = data?.trip;
 
   return (
-    <div className="min-h-screen bg-[#f1f5f9] text-slate-900">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900">
       {/* Header */}
       <header className="border-b border-slate-200 bg-white px-4 py-4 sm:px-8">
         <div className="mx-auto flex max-w-3xl items-center justify-between text-slate-900">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-white">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#cca25a] text-white">
               <ShieldCheck className="h-5 w-5" />
             </div>
             <span className="font-bold text-lg tracking-tight">TruckShield</span>
@@ -59,65 +55,25 @@ export default function PublicReport() {
             <AlertTriangle className="mx-auto mb-4 h-12 w-12 text-amber-500" />
             <h2 className="text-xl font-bold text-slate-900">Report Unavailable</h2>
             <p className="mt-2 text-xs text-slate-500">
-              {error?.message || "This link is invalid or has expired."}
+              {error?.message || "This shared report link is either invalid, revoked, or expired."}
             </p>
           </div>
         )}
 
-        {data?.evaluation && trip && (
+        {data && (
           <div className="space-y-6">
-            {/* Risk Level Banner */}
-            {level && (
-              <div
-                className="rounded-xl border px-5 py-3.5 text-xs font-semibold flex items-center gap-2"
-                style={{
-                  backgroundColor: LEVEL_BG[level] || LEVEL_BG.MEDIUM,
-                  borderColor: `${LEVEL_COLOR[level] || LEVEL_COLOR.MEDIUM}40`,
-                  color: LEVEL_COLOR[level] || LEVEL_COLOR.MEDIUM,
-                }}
-              >
-                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: LEVEL_COLOR[level] || LEVEL_COLOR.MEDIUM }} />
-                <span>Pre-departure risk assessment: <strong>{level}</strong> risk ({score}/100)</span>
-              </div>
-            )}
-
-            {/* Trip Overview Card */}
-            <Card className="overflow-hidden">
-              <div className="border-b border-slate-100 bg-slate-50/50 px-6 py-4">
-                <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
-                  Statutory Pre-Departure Report
-                </span>
-              </div>
-              <div className="grid items-center gap-6 p-6 sm:grid-cols-2">
-                <div className="space-y-3">
-                  <div>
-                    <RouteStrip origin={trip.origin} destination={trip.destination} className="text-2xl font-bold" />
+            {/* Top overview card */}
+            <Card className="p-6 sm:p-8 border-slate-200">
+              <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+                    <Calendar className="h-3.5 w-3.5" />
+                    <span>Dispatch Date: {fmtDate(trip?.travel_date)}</span>
                   </div>
-                  <div className="flex flex-wrap gap-4 text-xs text-slate-600">
-                    {trip.travel_date && (
-                      <div className="flex items-center gap-1.5">
-                        <Calendar className="h-3.5 w-3.5 text-blue-600" />
-                        <span className="text-slate-900 font-medium">{fmtDate(trip.travel_date)}</span>
-                      </div>
-                    )}
-                    {trip.vehicle_number && (
-                      <div className="flex items-center gap-1.5">
-                        <Truck className="h-3.5 w-3.5 text-slate-500" />
-                        <span className="font-mono text-slate-900 font-semibold">{trip.vehicle_number}</span>
-                      </div>
-                    )}
-                    {trip.vehicle_type && (
-                      <div className="flex items-center gap-1.5">
-                        <FileText className="h-3.5 w-3.5 text-slate-500" />
-                        <span>{trip.vehicle_type}</span>
-                      </div>
-                    )}
-                    {trip.goods_description && (
-                      <div className="flex items-center gap-1.5">
-                        <MapPin className="h-3.5 w-3.5 text-slate-500" />
-                        <span className="truncate max-w-[180px]">{trip.goods_description}</span>
-                      </div>
-                    )}
+                  <RouteStrip origin={trip?.origin} destination={trip?.destination} className="text-2xl font-extrabold" />
+                  <div className="flex items-center gap-2 text-xs text-slate-600">
+                    <Truck className="h-3.5 w-3.5 text-slate-400" />
+                    <span className="font-mono">{trip?.vehicle_number || "No vehicle declared"}</span>
                   </div>
                 </div>
                 <div className="flex justify-center">
@@ -126,27 +82,52 @@ export default function PublicReport() {
               </div>
             </Card>
 
-            {/* Risk Factors */}
+            {/* Evaluated Factors in scannable bullet layout */}
             {(data.evaluation.factors || []).length > 0 && (
               <div>
                 <h2 className="mb-3 text-xs font-bold text-slate-500 uppercase tracking-wider">
-                  Evaluated Factors
+                  Evaluated Risk Factors
                 </h2>
-                <div className="grid gap-3 md:grid-cols-2">
+                <div className="grid gap-3.5 md:grid-cols-2">
                   {(data.evaluation.factors || []).map((f, i) => {
                     const sev = SEVERITY_META[f.severity] || SEVERITY_META.medium;
+                    const bullets = formatBullets(f.description);
+                    const isSafe = (f.severity || "").toLowerCase() === "low";
                     return (
-                      <Card key={i} className="border-l-4 p-4" style={{ borderLeftColor: sev.color }}>
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="text-xs font-bold text-slate-900">{f.title}</div>
-                          <span
-                            className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase"
-                            style={{ backgroundColor: `${sev.color}15`, color: sev.color }}
-                          >
-                            {f.severity}
-                          </span>
+                      <Card 
+                        key={i} 
+                        className="p-5 border border-slate-200 bg-white shadow-2xs rounded-xl flex flex-col justify-between" 
+                        style={{ borderTop: `3px solid ${sev.color}` }}
+                      >
+                        <div>
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="text-xs font-bold text-slate-900">{f.title}</div>
+                            <span
+                              className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase inline-flex items-center gap-1"
+                              style={{ backgroundColor: `${sev.color}15`, color: sev.color }}
+                            >
+                              {isSafe ? <CheckCircle2 className="h-2.5 w-2.5" /> : <AlertTriangle className="h-2.5 w-2.5" />}
+                              {sev.label}
+                            </span>
+                          </div>
+                          <ul className="mt-3 space-y-1.5">
+                            {bullets.map((bullet, idx) => (
+                              <li key={idx} className="flex items-start gap-2 text-xs text-slate-700">
+                                <span 
+                                  className="mt-1.5 h-1.5 w-1.5 rounded-full shrink-0" 
+                                  style={{ backgroundColor: sev.color }} 
+                                />
+                                <span className="font-medium">{bullet}</span>
+                              </li>
+                            ))}
+                          </ul>
                         </div>
-                        <p className="mt-1.5 text-xs text-slate-600 leading-relaxed">{f.description}</p>
+                        {f.recommendation && (
+                          <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-start gap-1.5 text-[11px] text-slate-600 bg-slate-50 p-2 rounded">
+                            <span className="font-bold text-slate-900 shrink-0">Action:</span>
+                            <span>{f.recommendation}</span>
+                          </div>
+                        )}
                       </Card>
                     );
                   })}
@@ -156,9 +137,9 @@ export default function PublicReport() {
 
             {/* Recommendations */}
             {(data.evaluation.recommendations || []).length > 0 && (
-              <Card className="p-6">
+              <Card className="p-6 border-slate-200">
                 <h2 className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-900">
-                  <CheckCircle className="h-4 w-4 text-emerald-600" />
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                   Pre-Departure Recommendations
                 </h2>
                 <ul className="space-y-2.5">
@@ -181,14 +162,6 @@ export default function PublicReport() {
               <p className="mt-1 text-[11px]">
                 Informational purposes only — not legal advice. Risk signals are calculated deterministically.
               </p>
-              <Button
-                size="sm"
-                variant="outline"
-                className="mt-4 border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50"
-                onClick={() => navigate("/")}
-              >
-                Explore TruckShield Platform →
-              </Button>
             </div>
           </div>
         )}
