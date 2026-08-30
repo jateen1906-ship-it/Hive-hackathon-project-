@@ -43,7 +43,17 @@ export async function startCheckout({ tier, user, onSuccess }) {
     name: "TruckShield",
     description: `${order.plan_name} plan (monthly)`,
     order_id: order.order_id,
-    prefill: { email: user?.email || "" },
+    prefill: {
+      name: user?.full_name || "Fleet Operator",
+      email: user?.email || "billing@truckshield.app",
+      contact: "9999999999",
+    },
+    method: {
+      upi: true,
+      card: true,
+      netbanking: true,
+      wallet: true,
+    },
     theme: { color: "#0f172a" },
     handler: async (res) => {
       try {
@@ -52,7 +62,7 @@ export async function startCheckout({ tier, user, onSuccess }) {
           razorpay_order_id: res.razorpay_order_id,
           razorpay_signature: res.razorpay_signature,
         });
-        toast.success(`${order.plan_name} plan activated`);
+        toast.success(`${order.plan_name} plan activated successfully!`);
         onSuccess && onSuccess();
       } catch (e) {
         toast.error(e.message || "Payment verification failed");
