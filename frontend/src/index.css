@@ -8,8 +8,8 @@ body {
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #faf8f5;
-    color: #221d17;
+    background-color: #f8fafc;
+    color: #0f172a;
 }
 
 code, .font-mono {
@@ -18,36 +18,34 @@ code, .font-mono {
 
 @layer base {
     :root {
-        /* Siltstone Palette */
-        /* #CBBD93, #FFF5B8, #FFB16E, #CCA25A */
+        /* Crisp Executive Startup Theme with Siltstone Accents */
+        --background: 210 40% 98%;          /* #f8fafc - Crisp Neutral Slate, NO brown tint */
+        --foreground: 222 47% 11%;          /* #0f172a - High-contrast charcoal */
         
-        --background: 38 30% 97%;          /* #faf8f5 */
-        --foreground: 30 20% 12%;          /* #221d17 */
+        --card: 0 0% 100%;                  /* #ffffff */
+        --card-foreground: 222 47% 11%;     /* #0f172a */
         
-        --card: 0 0% 100%;                 /* #ffffff */
-        --card-foreground: 30 20% 12%;     /* #221d17 */
+        --popover: 0 0% 100%;               /* #ffffff */
+        --popover-foreground: 222 47% 11%;
         
-        --popover: 0 0% 100%;              /* #ffffff */
-        --popover-foreground: 30 20% 12%;
-        
-        --primary: 38 52% 57%;             /* #CCA25A - Rich Golden Siltstone */
+        --primary: 38 55% 52%;              /* #CCA25A - Rich Siltstone Gold */
         --primary-foreground: 0 0% 100%;
         
-        --secondary: 44 38% 69%;           /* #CBBD93 - Sandstone Khaki */
-        --secondary-foreground: 30 20% 12%;
+        --secondary: 210 40% 96%;           /* #f1f5f9 */
+        --secondary-foreground: 222 47% 11%;
         
-        --muted: 51 100% 86%;              /* #FFF5B8 - Soft Buttercream */
-        --muted-foreground: 35 15% 42%;    /* #756a5c */
+        --muted: 210 40% 96%;               /* #f1f5f9 */
+        --muted-foreground: 215 16% 47%;    /* #64748b */
         
-        --accent: 28 100% 71%;             /* #FFB16E - Warm Apricot */
-        --accent-foreground: 24 85% 18%;   /* #542807 */
+        --accent: 38 55% 52%;               /* #CCA25A */
+        --accent-foreground: 0 0% 100%;
         
-        --destructive: 350 84% 60%;        /* #f43f5e */
+        --destructive: 350 84% 60%;         /* #f43f5e */
         --destructive-foreground: 0 0% 100%;
         
-        --border: 44 30% 85%;              /* #e8dfcd (tints of #CBBD93) */
-        --input: 44 30% 85%;
-        --ring: 38 52% 57%;                /* #CCA25A */
+        --border: 214 32% 91%;              /* #e2e8f0 - Crisp razor border */
+        --input: 214 32% 91%;
+        --ring: 38 55% 52%;
         
         --radius: 0.75rem;
     }
@@ -62,20 +60,20 @@ code, .font-mono {
     }
 }
 
-/* Subtle Siltstone Scrollbars */
+/* Crisp Clean Scrollbars */
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
 }
 ::-webkit-scrollbar-track {
-    background: #faf8f5;
+    background: #f8fafc;
 }
 ::-webkit-scrollbar-thumb {
-    background: #cbbd93;
+    background: #cbd5e1;
     border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #cca25a;
+    background: #94a3b8;
 }
 
 @layer base {

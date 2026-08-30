@@ -30,8 +30,8 @@ function NavItems({ onNavigate }) {
           className={({ isActive }) =>
             `flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-semibold transition-colors ${
               isActive
-                ? "bg-[#fff8cb] text-[#614612] font-bold border border-[#cbbd93] shadow-2xs"
-                : "text-[#6b6052] hover:bg-[#faf5ec] hover:text-[#221d17]"
+                ? "bg-[#fef9ee] text-[#8a6522] font-bold border border-[#cca25a]/40 shadow-2xs"
+                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
             }`
           }
         >
@@ -45,13 +45,13 @@ function NavItems({ onNavigate }) {
 
 function Brand() {
   return (
-    <div className="flex items-center gap-3 px-5 py-4 border-b border-[#e4dbca] bg-white">
+    <div className="flex items-center gap-3 px-5 py-4 border-b border-slate-100 bg-white">
       <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#cca25a] text-white shadow-xs">
         <ShieldCheck className="h-5 w-5" />
       </div>
       <div>
-        <div className="text-sm font-bold tracking-tight text-[#221d17]">TruckShield</div>
-        <div className="text-[10px] uppercase tracking-wider text-[#968772] font-semibold">Compliance Engine</div>
+        <div className="text-sm font-bold tracking-tight text-slate-900">TruckShield</div>
+        <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Compliance Engine</div>
       </div>
     </div>
   );
@@ -72,26 +72,26 @@ export function AppShell({ children }) {
   const currentTitle = currentNav ? currentNav.label : "Dashboard";
 
   const SidebarInner = (
-    <div className="flex h-full flex-col bg-white text-[#221d17] border-r border-[#e4dbca]">
+    <div className="flex h-full flex-col bg-white text-slate-900 border-r border-slate-200">
       <Brand />
       <div className="mt-3 flex-1 overflow-y-auto bg-white"><NavItems onNavigate={() => setOpen(false)} /></div>
       
       {/* User profile footer */}
-      <div className="border-t border-[#e4dbca] p-3.5 bg-[#faf8f5]">
-        <div className="flex items-center gap-2.5 p-2 rounded-lg bg-white border border-[#e4dbca] shadow-2xs">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#ffb16e] text-[#542807] text-xs font-bold shrink-0 border border-[#ffb16e]/40">
+      <div className="border-t border-slate-100 p-3.5 bg-slate-50/50">
+        <div className="flex items-center gap-2.5 p-2 rounded-lg bg-white border border-slate-200 shadow-2xs">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#cca25a] text-white text-xs font-bold shrink-0">
             {user?.full_name ? user.full_name.charAt(0).toUpperCase() : <User className="h-4 w-4" />}
           </div>
           <div className="min-w-0 flex-1">
-            <div className="text-xs font-bold text-[#221d17] truncate">{user?.full_name || "Fleet Operator"}</div>
-            <div className="text-[11px] text-[#756a5c] truncate">{user?.company_name || user?.email}</div>
+            <div className="text-xs font-bold text-slate-900 truncate">{user?.full_name || "Fleet Operator"}</div>
+            <div className="text-[11px] text-slate-500 truncate">{user?.company_name || user?.email}</div>
           </div>
         </div>
         <Button
           variant="ghost"
           onClick={handleLogout}
           data-testid="logout-button"
-          className="mt-2 w-full justify-start text-xs text-[#756a5c] hover:bg-[#faf5ec] hover:text-[#cca25a] rounded-lg h-8 font-medium"
+          className="mt-2 w-full justify-start text-xs text-slate-500 hover:bg-slate-100 hover:text-red-600 rounded-lg h-8 font-medium"
         >
           <LogOut className="mr-2 h-3.5 w-3.5" /> Sign out
         </Button>
@@ -100,20 +100,20 @@ export function AppShell({ children }) {
   );
 
   return (
-    <div className="min-h-screen bg-[#faf8f5] text-[#221d17] flex">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 flex">
       {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 hidden w-[240px] lg:block z-40 shadow-xs border-r border-[#e4dbca]">
+      <aside className="fixed inset-y-0 left-0 hidden w-[240px] lg:block z-40 shadow-xs border-r border-slate-200">
         {SidebarInner}
       </aside>
 
       {/* Main Content Area */}
       <div className="lg:pl-[240px] flex flex-col min-h-screen flex-1">
         {/* Top Header */}
-        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-[#e4dbca] bg-white px-4 sm:px-8 shadow-2xs">
+        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-slate-200 bg-white px-4 sm:px-8 shadow-2xs">
           <div className="flex items-center gap-3">
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="lg:hidden text-[#221d17] hover:bg-[#faf5ec]" data-testid="app-shell-open-nav">
+                <Button variant="ghost" size="icon" className="lg:hidden text-slate-700 hover:bg-slate-100" data-testid="app-shell-open-nav">
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
@@ -122,8 +122,8 @@ export function AppShell({ children }) {
 
             {/* Title Header */}
             <div className="flex items-center gap-1.5">
-              <span className="text-xs text-[#968772] hidden sm:inline">TruckShield /</span>
-              <span className="font-bold text-[#221d17] text-sm sm:text-base">{currentTitle}</span>
+              <span className="text-xs text-slate-400 hidden sm:inline">TruckShield /</span>
+              <span className="font-bold text-slate-900 text-sm sm:text-base">{currentTitle}</span>
             </div>
           </div>
 

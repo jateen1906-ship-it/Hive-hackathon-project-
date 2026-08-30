@@ -10,9 +10,9 @@ import { useBilling, startCheckout } from "@/hooks/useBilling";
 import { LoadingState } from "@/components/common/StateViews";
 
 const TIER_ACCENT = { 
-  free: "#756a5c", 
+  free: "#64748b", 
   growth: "#cca25a", 
-  pro: "#282016" 
+  pro: "#0f172a" 
 };
 
 export default function Pricing() {
@@ -36,17 +36,17 @@ export default function Pricing() {
   };
 
   return (
-    <div className="min-h-screen bg-[#faf8f5] text-[#221d17]">
-      <header className="border-b border-[#e4dbca] bg-white px-4 py-4 sm:px-8">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900">
+      <header className="border-b border-slate-200 bg-white px-4 py-4 sm:px-8">
         <div className="mx-auto flex max-w-6xl items-center justify-between">
-          <button onClick={() => navigate(user ? "/dashboard" : "/")} className="flex items-center gap-2.5 text-[#221d17]">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#cca25a] text-white">
+          <button onClick={() => navigate(user ? "/dashboard" : "/")} className="flex items-center gap-2.5 text-slate-900">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#cca25a] text-white font-bold">
               <ShieldCheck className="h-5 w-5" />
             </div>
             <span className="font-bold text-lg tracking-tight">TruckShield</span>
           </button>
           {user ? (
-            <Button variant="outline" className="border-[#e4dbca] hover:bg-[#faf5ec] text-xs font-semibold h-8.5" onClick={() => navigate("/dashboard")}>
+            <Button variant="outline" className="border-slate-200 hover:bg-slate-50 text-xs font-semibold h-8.5" onClick={() => navigate("/dashboard")}>
               <ArrowLeft className="mr-1.5 h-3.5 w-3.5" /> Back to Dashboard
             </Button>
           ) : (
@@ -57,13 +57,13 @@ export default function Pricing() {
 
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <div className="text-center max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#fff8cb] border border-[#cbbd93] text-[#614612] text-xs font-semibold mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#fef9ee] border border-[#cca25a]/30 text-[#8a6522] text-xs font-semibold mb-4">
             <Sparkles className="h-3.5 w-3.5 text-[#cca25a]" /> Simple, Transparent Pricing
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-[#221d17] sm:text-5xl">
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
             Choose the right tier for your fleet
           </h1>
-          <p className="mt-4 text-base text-[#756a5c] font-medium">
+          <p className="mt-4 text-base text-slate-600 font-medium">
             Full pre-dispatch intelligence, live OSRM distance engine, and verified statutory checks. Upgrade or cancel anytime.
           </p>
         </div>
@@ -79,7 +79,7 @@ export default function Pricing() {
                 <Card 
                   key={p.tier} 
                   data-testid={`pricing-card-${p.tier}`}
-                  className={`relative flex flex-col p-7 transition-shadow bg-white border-[#e4dbca] ${
+                  className={`relative flex flex-col p-7 transition-shadow bg-white border-slate-200 ${
                     highlight 
                       ? "ring-2 ring-[#cca25a] shadow-md" 
                       : "shadow-2xs"
@@ -93,22 +93,22 @@ export default function Pricing() {
                   )}
                   
                   <div className="flex items-center justify-between">
-                    <div className="text-xl font-bold text-[#221d17]">{p.name}</div>
+                    <div className="text-xl font-bold text-slate-900">{p.name}</div>
                     <div 
                       className="h-2.5 w-2.5 rounded-full" 
                       style={{ backgroundColor: TIER_ACCENT[p.tier] }} 
                     />
                   </div>
 
-                  <div className="mt-4 flex items-baseline gap-1.5 border-b border-[#f2ebd9] pb-5">
-                    <span className="font-mono text-4xl font-extrabold text-[#221d17]">{p.price_label}</span>
-                    <span className="text-sm font-medium text-[#968772]">/month</span>
+                  <div className="mt-4 flex items-baseline gap-1.5 border-b border-slate-100 pb-5">
+                    <span className="font-mono text-4xl font-extrabold text-slate-900">{p.price_label}</span>
+                    <span className="text-sm font-medium text-slate-400">/month</span>
                   </div>
 
                   <ul className="mt-6 flex-1 space-y-3.5">
                     {p.features.map((f, i) => (
-                      <li key={i} className="flex items-start gap-2.5 text-sm text-[#221d17]">
-                        <div className="h-4 w-4 rounded-full bg-[#eaf8eb] flex items-center justify-center text-[#17421f] mt-0.5 shrink-0 border border-[#c2eec4]">
+                      <li key={i} className="flex items-start gap-2.5 text-sm text-slate-700">
+                        <div className="h-4 w-4 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 mt-0.5 shrink-0 border border-emerald-200">
                           <Check className="h-3 w-3 stroke-[3]" />
                         </div>
                         <span className="font-medium">{f}</span>
@@ -119,10 +119,10 @@ export default function Pricing() {
                   <Button 
                     className={`mt-8 w-full font-bold rounded-lg h-10 ${
                       isCurrent 
-                        ? "border border-[#e4dbca] bg-[#faf5ec] text-[#756a5c] hover:bg-[#faf5ec] cursor-default" 
+                        ? "border border-slate-200 bg-slate-100 text-slate-500 hover:bg-slate-100 cursor-default" 
                         : highlight 
                           ? "btn-primary-blue text-white" 
-                          : "bg-[#282016] text-white hover:bg-[#15100a]"
+                          : "bg-slate-900 text-white hover:bg-slate-800"
                     }`}
                     disabled={isCurrent || busy === p.tier} 
                     onClick={() => choose(p.tier)}
@@ -144,7 +144,7 @@ export default function Pricing() {
           </div>
         )}
 
-        <div className="mt-12 text-center text-xs text-[#968772] max-w-xl mx-auto border-t border-[#e4dbca] pt-6">
+        <div className="mt-12 text-center text-xs text-slate-400 max-w-xl mx-auto border-t border-slate-200 pt-6">
           Payments processed securely via Razorpay. TruckShield provides informational
           compliance pre-checks and risk signals — not legal advice.
         </div>

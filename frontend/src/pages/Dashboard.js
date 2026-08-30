@@ -55,7 +55,7 @@ export default function Dashboard() {
 
       {data && (
         <div className="space-y-6">
-          {/* Top 5 KPI Cards - Siltstone Accents */}
+          {/* Top 5 KPI Cards */}
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
             <KpiCard 
               label="Active Trips" 
@@ -68,14 +68,14 @@ export default function Dashboard() {
               label="High Risk" 
               value={data.kpis.high} 
               testId="dashboard-kpi-high-risk" 
-              accent="#e11d48" 
+              accent="#ef4444" 
               hint="Requires attention"
             />
             <KpiCard 
               label="Medium Risk" 
               value={data.kpis.medium} 
               testId="dashboard-kpi-medium-risk" 
-              accent="#ffb16e" 
+              accent="#f59e0b" 
               hint="Check compliance"
             />
             <KpiCard 
@@ -89,81 +89,81 @@ export default function Dashboard() {
               label="Incidents" 
               value={data.kpis.incidents} 
               testId="dashboard-kpi-incidents" 
-              accent="#cbbd93" 
+              accent="#8b5cf6" 
               hint="Reported on route"
             />
           </div>
 
           {/* Featured Grid */}
           <div className="grid gap-6 lg:grid-cols-3">
-            {/* Master Fleet Card (#CCA25A & #FFF5B8) */}
+            {/* Master Fleet Card (Obsidian Slate with Golden Siltstone highlights) */}
             <div className="fleet-card-slate p-6 flex flex-col justify-between min-h-[190px]">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-lg bg-[#cca25a] flex items-center justify-center text-[#282016] font-bold">
+                  <div className="h-8 w-8 rounded-lg bg-[#cca25a] flex items-center justify-center text-slate-950 font-bold">
                     <ShieldCheck className="h-4 w-4" />
                   </div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-[#fff5b8]">Fleet Intelligence</span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-200">Fleet Intelligence</span>
                 </div>
-                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#fff5b8] text-[#614612] border border-[#cbbd93]">
+                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#cca25a]/20 text-[#cca25a] border border-[#cca25a]/30">
                   {billing.plan.toUpperCase()} ACTIVE
                 </span>
               </div>
               <div className="my-2">
-                <div className="text-[11px] text-[#cbbd93] font-medium mb-1">Company Fleet Identifier</div>
+                <div className="text-[11px] text-slate-400 font-medium mb-1">Company Fleet Identifier</div>
                 <div className="font-mono text-xl sm:text-2xl font-bold tracking-widest text-white">
                   TS-{user?.id ? String(user.id).slice(0, 8).toUpperCase() : "FLEET-001"}
                 </div>
               </div>
-              <div className="flex items-center justify-between text-xs text-[#cbbd93] border-t border-[#423525] pt-3">
+              <div className="flex items-center justify-between text-xs text-slate-300 border-t border-white/[0.08] pt-3">
                 <span className="truncate max-w-[170px]">Fleet: {user?.company_name || "Logistics Network"}</span>
-                <span className="text-[#fff5b8] font-semibold text-xs">Live Engine Online</span>
+                <span className="text-emerald-400 font-semibold text-xs">Live Engine Online</span>
               </div>
             </div>
 
-            {/* Compliance Safety Rate Card (#FFB16E & #CCA25A) */}
-            <Card className="p-6 flex flex-col justify-between border-[#e4dbca]">
+            {/* Compliance Safety Rate Card */}
+            <Card className="p-6 flex flex-col justify-between border-slate-200">
               <div className="flex items-center justify-between">
-                <div className="text-xs font-bold uppercase tracking-wider text-[#756a5c]">Fleet Safety Rate</div>
-                <TrendingUp className="h-4 w-4 text-[#10b981]" />
+                <div className="text-xs font-bold uppercase tracking-wider text-slate-500">Fleet Safety Rate</div>
+                <TrendingUp className="h-4 w-4 text-emerald-600" />
               </div>
               <div className="my-2 flex items-baseline gap-2">
-                <span className="font-mono text-3xl font-bold text-[#221d17]">{safePercent}%</span>
-                <span className="text-xs text-[#10b981] font-semibold">compliant pre-checks</span>
+                <span className="font-mono text-3xl font-bold text-slate-900">{safePercent}%</span>
+                <span className="text-xs text-emerald-600 font-semibold">compliant pre-checks</span>
               </div>
               <div className="space-y-1.5">
-                <div className="h-2.5 w-full rounded-full bg-[#faf5ec] overflow-hidden flex border border-[#e4dbca]">
-                  <div style={{ width: `${(lowRisk / (totalTrips || 1)) * 100}%` }} className="bg-[#10b981] h-full" />
-                  <div style={{ width: `${(medRisk / (totalTrips || 1)) * 100}%` }} className="bg-[#ffb16e] h-full" />
-                  <div style={{ width: `${(highRisk / (totalTrips || 1)) * 100}%` }} className="bg-[#cca25a] h-full" />
+                <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden flex">
+                  <div style={{ width: `${(lowRisk / (totalTrips || 1)) * 100}%` }} className="bg-emerald-500 h-full" />
+                  <div style={{ width: `${(medRisk / (totalTrips || 1)) * 100}%` }} className="bg-amber-500 h-full" />
+                  <div style={{ width: `${(highRisk / (totalTrips || 1)) * 100}%` }} className="bg-red-500 h-full" />
                 </div>
-                <div className="flex justify-between text-[11px] text-[#756a5c] font-medium">
-                  <span className="text-[#10b981] font-bold">{lowRisk} Low</span>
-                  <span className="text-[#783506] font-bold">{medRisk} Med</span>
-                  <span className="text-[#614612] font-bold">{highRisk} High/Crit</span>
+                <div className="flex justify-between text-[11px] text-slate-500 font-medium">
+                  <span className="text-emerald-700 font-semibold">{lowRisk} Low</span>
+                  <span className="text-amber-700 font-semibold">{medRisk} Med</span>
+                  <span className="text-red-700 font-semibold">{highRisk} High/Crit</span>
                 </div>
               </div>
             </Card>
 
-            {/* Quick Actions Card (#CBBD93, #CCA25A, #FFF5B8) */}
-            <Card className="p-6 flex flex-col justify-between border-[#e4dbca]">
+            {/* Quick Actions Card */}
+            <Card className="p-6 flex flex-col justify-between border-slate-200">
               <div className="flex items-center justify-between">
-                <div className="text-xs font-bold uppercase tracking-wider text-[#756a5c]">Quick Actions</div>
+                <div className="text-xs font-bold uppercase tracking-wider text-slate-500">Quick Actions</div>
                 <Zap className="h-4 w-4 text-[#cca25a]" />
               </div>
               <div className="grid grid-cols-2 gap-2.5 my-2">
                 <button 
                   onClick={() => navigate("/trips/new")}
-                  className="flex flex-col items-center justify-center p-3 rounded-lg bg-[#faf5ec] hover:bg-[#fff8cb] border border-[#e4dbca] transition-colors text-xs font-bold text-[#221d17] hover:text-[#614612]"
+                  className="flex flex-col items-center justify-center p-3 rounded-lg bg-slate-50 hover:bg-[#fef9ee] border border-slate-200 hover:border-[#cca25a]/40 transition-colors text-xs font-semibold text-slate-800 hover:text-[#8a6522]"
                 >
                   <Truck className="h-4 w-4 mb-1 text-[#cca25a]" />
                   <span>Analyze Trip</span>
                 </button>
                 <button 
                   onClick={() => navigate("/documents")}
-                  className="flex flex-col items-center justify-center p-3 rounded-lg bg-[#faf5ec] hover:bg-[#ffe9d7] border border-[#e4dbca] transition-colors text-xs font-bold text-[#221d17] hover:text-[#783506]"
+                  className="flex flex-col items-center justify-center p-3 rounded-lg bg-slate-50 hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 transition-colors text-xs font-semibold text-slate-800 hover:text-emerald-800"
                 >
-                  <ShieldCheck className="h-4 w-4 mb-1 text-[#ffb16e]" />
+                  <ShieldCheck className="h-4 w-4 mb-1 text-emerald-600" />
                   <span>OCR Check</span>
                 </button>
               </div>
@@ -171,7 +171,7 @@ export default function Dashboard() {
                 variant="outline" 
                 size="sm" 
                 onClick={() => navigate("/analytics")}
-                className="w-full text-xs border-[#cbbd93] text-[#221d17] hover:bg-[#faf5ec] h-8 font-semibold"
+                className="w-full text-xs border-slate-200 text-slate-700 hover:bg-slate-50 h-8 font-semibold"
               >
                 Corridor Intelligence <ChevronRight className="ml-1 h-3.5 w-3.5" />
               </Button>
@@ -181,17 +181,17 @@ export default function Dashboard() {
           {/* Main 2-Column Grid */}
           <div className="grid gap-6 lg:grid-cols-3">
             {/* Recent Trips Table */}
-            <Card className="lg:col-span-2 overflow-hidden border-[#e4dbca]">
-              <div className="flex items-center justify-between border-b border-[#e4dbca] px-6 py-4 bg-[#faf8f5]">
+            <Card className="lg:col-span-2 overflow-hidden border-slate-200">
+              <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4 bg-slate-50/50">
                 <div className="flex items-center gap-2">
                   <Activity className="h-4 w-4 text-[#cca25a]" />
-                  <h2 className="text-sm font-bold text-[#221d17]">Recent Fleet Trips</h2>
+                  <h2 className="text-sm font-bold text-slate-900">Recent Fleet Trips</h2>
                 </div>
                 <Button 
                   variant="ghost" 
                   size="sm" 
                   onClick={() => navigate("/trips")}
-                  className="text-xs text-[#cca25a] hover:text-[#b38b44] p-0 h-auto font-bold"
+                  className="text-xs text-[#8a6522] hover:text-[#cca25a] p-0 h-auto font-bold"
                 >
                   View all <ArrowRight className="ml-1 h-3 w-3" />
                 </Button>
@@ -210,31 +210,31 @@ export default function Dashboard() {
                   />
                 </div>
               ) : (
-                <div className="divide-y divide-[#f2ebd9]">
+                <div className="divide-y divide-slate-100">
                   {data.recent_trips.map((t) => (
                     <button 
                       key={t.id} 
                       data-testid={`dashboard-trip-${t.id}`}
                       onClick={() => navigate(`/trips/${t.id}`)}
-                      className="flex w-full items-center justify-between px-6 py-3.5 text-left transition-colors hover:bg-[#faf5ec] group"
+                      className="flex w-full items-center justify-between px-6 py-3.5 text-left transition-colors hover:bg-slate-50/80 group"
                     >
                       <div className="min-w-0 flex-1 pr-4">
                         <div className="flex items-center gap-2.5">
                           <RouteStrip origin={t.origin} destination={t.destination} className="text-sm group-hover:text-[#cca25a] transition-colors" />
                           {t.is_demo && <SyntheticBadge />}
                         </div>
-                        <div className="mt-1 flex items-center gap-3 text-xs text-[#756a5c] font-medium">
+                        <div className="mt-1 flex items-center gap-3 text-xs text-slate-500 font-medium">
                           <span>{fmtDate(t.travel_date)}</span>
-                          {t.vehicle_number && <span className="font-mono text-[#221d17] bg-[#f2ebd9] border border-[#e4dbca] px-1.5 py-0.5 rounded text-[11px]">{t.vehicle_number}</span>}
+                          {t.vehicle_number && <span className="font-mono text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded text-[11px] font-semibold">{t.vehicle_number}</span>}
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
                         {t.risk_level ? (
                           <RiskBadge level={t.risk_level} score={t.risk_score} />
                         ) : (
-                          <span className="text-xs text-[#756a5c] px-2 py-0.5 rounded bg-[#f2ebd9]">Unanalyzed</span>
+                          <span className="text-xs text-slate-400 px-2 py-0.5 rounded bg-slate-100">Unanalyzed</span>
                         )}
-                        <ChevronRight className="h-4 w-4 text-[#cbbd93] group-hover:text-[#221d17] transition-colors" />
+                        <ChevronRight className="h-4 w-4 text-slate-400 group-hover:text-slate-700 transition-colors" />
                       </div>
                     </button>
                   ))}
@@ -243,35 +243,35 @@ export default function Dashboard() {
             </Card>
 
             {/* Route Alerts */}
-            <Card className="overflow-hidden border-[#e4dbca]">
-              <div className="flex items-center gap-2 border-b border-[#e4dbca] px-6 py-4 bg-[#faf8f5]">
-                <Bell className="h-4 w-4 text-[#cca25a]" />
-                <h2 className="text-sm font-bold text-[#221d17]">Route & Document Alerts</h2>
+            <Card className="overflow-hidden border-slate-200">
+              <div className="flex items-center gap-2 border-b border-slate-100 px-6 py-4 bg-slate-50/50">
+                <Bell className="h-4 w-4 text-amber-500" />
+                <h2 className="text-sm font-bold text-slate-900">Route & Document Alerts</h2>
               </div>
               <div className="p-5">
                 {data.alerts.length === 0 ? (
                   <div className="flex flex-col items-center py-8 text-center">
-                    <div className="h-10 w-10 rounded-full bg-[#fff8cb] flex items-center justify-center text-[#614612] mb-2 border border-[#cbbd93]">
+                    <div className="h-10 w-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 mb-2 border border-emerald-200">
                       <ShieldCheck className="h-5 w-5" />
                     </div>
-                    <p className="text-sm font-bold text-[#221d17]">All Clear</p>
-                    <p className="text-xs text-[#756a5c] mt-1">No active compliance or distance anomalies flagged.</p>
+                    <p className="text-sm font-bold text-slate-900">All Clear</p>
+                    <p className="text-xs text-slate-500 mt-1">No active compliance or distance anomalies flagged.</p>
                   </div>
                 ) : (
                   <ul className="space-y-2.5">
                     {data.alerts.map((a, i) => (
                       <li 
                         key={i} 
-                        className="flex items-start gap-3 rounded-lg border border-[#e4dbca] bg-[#faf8f5] p-3 text-xs leading-relaxed"
+                        className="flex items-start gap-3 rounded-lg border border-slate-200 bg-slate-50/70 p-3 text-xs leading-relaxed"
                       >
                         {a.type === "distance" ? (
-                          <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#cca25a]" />
+                          <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
                         ) : a.type === "document" ? (
-                          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-[#ffb16e]" />
+                          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-red-600" />
                         ) : (
-                          <Truck className="mt-0.5 h-4 w-4 shrink-0 text-[#cbbd93]" />
+                          <Truck className="mt-0.5 h-4 w-4 shrink-0 text-[#cca25a]" />
                         )}
-                        <span className="text-[#221d17] font-semibold">{a.message}</span>
+                        <span className="text-slate-800 font-medium">{a.message}</span>
                       </li>
                     ))}
                   </ul>

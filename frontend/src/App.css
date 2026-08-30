@@ -1,30 +1,30 @@
 .App {
   min-height: 100vh;
-  background-color: #faf8f5;
-  color: #221d17;
+  background-color: #f8fafc;
+  color: #0f172a;
 }
 
-/* Clean Professional Siltstone Card */
+/* Executive Startup White Card */
 .pro-card {
   background-color: #ffffff;
-  border: 1px solid #e4dbca;
+  border: 1px solid #e2e8f0;
   border-radius: 0.75rem;
-  box-shadow: 0 1px 3px 0 rgba(204, 162, 90, 0.08), 0 1px 2px -1px rgba(204, 162, 90, 0.04);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .pro-card:hover {
-  border-color: #cbbd93;
-  box-shadow: 0 4px 6px -1px rgba(204, 162, 90, 0.14), 0 2px 4px -2px rgba(204, 162, 90, 0.08);
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
 }
 
-/* Golden Siltstone Primary Action Button (#CCA25A) */
+/* Golden Siltstone Executive Button (#CCA25A) */
 .btn-primary-blue {
-  background: linear-gradient(135deg, #cca25a 0%, #b38b44 100%);
+  background: linear-gradient(135deg, #cca25a 0%, #b88e44 100%);
   color: #ffffff;
   font-weight: 600;
   border-radius: 0.5rem;
-  box-shadow: 0 2px 4px 0 rgba(204, 162, 90, 0.28);
+  box-shadow: 0 1px 3px 0 rgba(204, 162, 90, 0.25);
   transition: opacity 0.15s ease, transform 0.1s ease;
 }
 
@@ -36,27 +36,20 @@
   transform: scale(0.99);
 }
 
-/* Warm Buttercream Panel (#FFF5B8) */
+/* Siltstone Buttercream Soft Pill */
 .buttercream-badge {
-  background-color: #fff8cb;
-  color: #614612;
+  background-color: #fffde6;
+  color: #715113;
   border: 1px solid #f1e292;
 }
 
-/* Apricot Accent Pill (#FFB16E) */
-.apricot-badge {
-  background-color: #ffe9d7;
-  color: #783506;
-  border: 1px solid #ffb16e;
-}
-
-/* Earthy Espresso Master Fleet Card */
+/* Obsidian Master Fleet Card */
 .fleet-card-slate {
-  background: linear-gradient(135deg, #282016 0%, #15100a 100%);
+  background: linear-gradient(135deg, #0b0f19 0%, #030712 100%);
   color: #ffffff;
   border-radius: 0.75rem;
-  box-shadow: 0 4px 8px -1px rgba(40, 32, 22, 0.25);
-  border: 1px solid #cbbd93;
+  box-shadow: 0 4px 10px -1px rgba(11, 15, 25, 0.2);
+  border: 1px solid rgba(204, 162, 90, 0.3);
 }
 
 /* Clean Input Styling */
