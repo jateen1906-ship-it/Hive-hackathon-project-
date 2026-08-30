@@ -2,15 +2,15 @@ import React from "react";
 import { riskMeta } from "@/lib/riskMeta";
 
 const BADGE_COLORS = {
-  LOW: { text: "#17421f", bg: "#d5f3d8", border: "#bceac1" }, // Mint blossom (#D5F3D8)
-  MEDIUM: { text: "#9a4907", bg: "#fef3c7", border: "#fde68a" },
-  HIGH: { text: "#9f1239", bg: "#ffe4e9", border: "#fecdd3" },
-  CRITICAL: { text: "#881337", bg: "#ffebf0", border: "#f2c7c7" },
+  LOW: { text: "#17421f", bg: "#eaf8eb", border: "#c2eec4" }, // Compliant Sage
+  MEDIUM: { text: "#8a2b0e", bg: "#fff0e4", border: "#ffd3ac" }, // Tuscan Apricot/Sienna (#FFD3AC / #8A2B0E)
+  HIGH: { text: "#ab321a", bg: "#fdeee9", border: "#fca566" },
+  CRITICAL: { text: "#8a2b0e", bg: "#fae7e3", border: "#e35336" }, // Terracotta / Deep Sienna (#E35336)
 };
 
 export function RiskBadge({ level, score, className = "", testId }) {
   const meta = riskMeta(level);
-  const theme = BADGE_COLORS[(level || "").toUpperCase()] || { text: "#6b4f57", bg: "#faf0f2", border: "#f2c7c7" };
+  const theme = BADGE_COLORS[(level || "").toUpperCase()] || { text: "#5c4d65", bg: "#f0ecf3", border: "#9988a1" };
 
   return (
     <span

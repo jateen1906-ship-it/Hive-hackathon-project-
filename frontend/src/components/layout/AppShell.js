@@ -30,8 +30,8 @@ function NavItems({ onNavigate }) {
           className={({ isActive }) =>
             `flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-semibold transition-colors ${
               isActive
-                ? "bg-[#ffebf0] text-[#c93252] font-bold border border-[#f2c7c7] shadow-2xs"
-                : "text-[#6b4f57] hover:bg-[#fff0f3] hover:text-[#26161b]"
+                ? "bg-[#fff0e4] text-[#8a2b0e] font-bold border border-[#ffd3ac] shadow-2xs"
+                : "text-[#66576d] hover:bg-[#faf4ef] hover:text-[#2c1810]"
             }`
           }
         >
@@ -45,13 +45,13 @@ function NavItems({ onNavigate }) {
 
 function Brand() {
   return (
-    <div className="flex items-center gap-3 px-5 py-4 border-b border-[#f2c7c7] bg-white">
-      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#f46a85] text-white shadow-xs">
+    <div className="flex items-center gap-3 px-5 py-4 border-b border-[#ffd3ac] bg-white">
+      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#e35336] text-white shadow-xs">
         <ShieldCheck className="h-5 w-5" />
       </div>
       <div>
-        <div className="text-sm font-bold tracking-tight text-[#26161b]">TruckShield</div>
-        <div className="text-[10px] uppercase tracking-wider text-[#916b75] font-semibold">Compliance Engine</div>
+        <div className="text-sm font-bold tracking-tight text-[#2c1810]">TruckShield</div>
+        <div className="text-[10px] uppercase tracking-wider text-[#9988a1] font-semibold">Compliance Engine</div>
       </div>
     </div>
   );
@@ -72,26 +72,26 @@ export function AppShell({ children }) {
   const currentTitle = currentNav ? currentNav.label : "Dashboard";
 
   const SidebarInner = (
-    <div className="flex h-full flex-col bg-white text-[#26161b] border-r border-[#f2c7c7]">
+    <div className="flex h-full flex-col bg-white text-[#2c1810] border-r border-[#ffd3ac]">
       <Brand />
       <div className="mt-3 flex-1 overflow-y-auto bg-white"><NavItems onNavigate={() => setOpen(false)} /></div>
       
       {/* User profile footer */}
-      <div className="border-t border-[#f2c7c7] p-3.5 bg-[#fff8f9]">
-        <div className="flex items-center gap-2.5 p-2 rounded-lg bg-white border border-[#f2c7c7] shadow-2xs">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#f46a85] text-white text-xs font-bold shrink-0">
+      <div className="border-t border-[#ffd3ac] p-3.5 bg-[#fdf8f4]">
+        <div className="flex items-center gap-2.5 p-2 rounded-lg bg-white border border-[#ffd3ac] shadow-2xs">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#e35336] text-white text-xs font-bold shrink-0">
             {user?.full_name ? user.full_name.charAt(0).toUpperCase() : <User className="h-4 w-4" />}
           </div>
           <div className="min-w-0 flex-1">
-            <div className="text-xs font-bold text-[#26161b] truncate">{user?.full_name || "Fleet Operator"}</div>
-            <div className="text-[11px] text-[#916b75] truncate">{user?.company_name || user?.email}</div>
+            <div className="text-xs font-bold text-[#2c1810] truncate">{user?.full_name || "Fleet Operator"}</div>
+            <div className="text-[11px] text-[#9988a1] truncate">{user?.company_name || user?.email}</div>
           </div>
         </div>
         <Button
           variant="ghost"
           onClick={handleLogout}
           data-testid="logout-button"
-          className="mt-2 w-full justify-start text-xs text-[#7d656c] hover:bg-[#fff0f3] hover:text-[#c93252] rounded-lg h-8 font-medium"
+          className="mt-2 w-full justify-start text-xs text-[#7b6d82] hover:bg-[#faf4ef] hover:text-[#8a2b0e] rounded-lg h-8 font-medium"
         >
           <LogOut className="mr-2 h-3.5 w-3.5" /> Sign out
         </Button>
@@ -100,20 +100,20 @@ export function AppShell({ children }) {
   );
 
   return (
-    <div className="min-h-screen bg-[#fff8f9] text-[#26161b] flex">
+    <div className="min-h-screen bg-[#fdf8f4] text-[#2c1810] flex">
       {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 hidden w-[240px] lg:block z-40 shadow-xs border-r border-[#f2c7c7]">
+      <aside className="fixed inset-y-0 left-0 hidden w-[240px] lg:block z-40 shadow-xs border-r border-[#ffd3ac]">
         {SidebarInner}
       </aside>
 
       {/* Main Content Area */}
       <div className="lg:pl-[240px] flex flex-col min-h-screen flex-1">
         {/* Top Header */}
-        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-[#f2c7c7] bg-white px-4 sm:px-8 shadow-2xs">
+        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-[#ffd3ac] bg-white px-4 sm:px-8 shadow-2xs">
           <div className="flex items-center gap-3">
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="lg:hidden text-[#26161b] hover:bg-[#fff0f3]" data-testid="app-shell-open-nav">
+                <Button variant="ghost" size="icon" className="lg:hidden text-[#2c1810] hover:bg-[#faf4ef]" data-testid="app-shell-open-nav">
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
@@ -122,8 +122,8 @@ export function AppShell({ children }) {
 
             {/* Title Header */}
             <div className="flex items-center gap-1.5">
-              <span className="text-xs text-[#916b75] hidden sm:inline">TruckShield /</span>
-              <span className="font-bold text-[#26161b] text-sm sm:text-base">{currentTitle}</span>
+              <span className="text-xs text-[#9988a1] hidden sm:inline">TruckShield /</span>
+              <span className="font-bold text-[#2c1810] text-sm sm:text-base">{currentTitle}</span>
             </div>
           </div>
 
