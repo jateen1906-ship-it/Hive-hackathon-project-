@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { ShieldCheck, Mail, ArrowLeft, CheckCircle, Sparkles } from "lucide-react";
+import { ShieldCheck, Mail, ArrowLeft, Loader2, CheckCircle2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,109 +11,110 @@ import { AuthAPI } from "@/lib/apiClient";
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [sent, setSent] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [devToken, setDevToken] = useState(null);
 
   const submit = async (e) => {
     e.preventDefault();
-    if (!email.trim()) return;
+    if (!email.trim()) { toast.error("Enter your email address"); return; }
     setLoading(true);
     try {
-      await AuthAPI.forgotPassword(email.trim());
-      setSent(true);
+      const res = await AuthAPI.forgotPassword(email.trim());
+      setSubmitted(true);
+      if (res?.dev_reset_token) {
+        setDevToken(res.dev_reset_token);
+      }
+      toast.success("Password reset request processed");
     } catch (err) {
-      setSent(true);
+      toast.error(err.message || "Failed to process password reset");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="grid min-h-screen lg:grid-cols-2 bg-[#12100e] text-[#f5f5f4]">
-      {/* Left Hero */}
-      <div className="ts-hero-gradient relative hidden flex-col justify-between p-12 lg:flex border-r border-white/[0.06]">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-500/20 border border-orange-500/30 text-orange-400">
-            <ShieldCheck className="h-6 w-6" />
-          </div>
-          <span className="text-xl font-bold tracking-tight text-white">TruckShield</span>
-        </div>
-        <div className="max-w-md">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-semibold mb-4">
-            <Sparkles className="h-3.5 w-3.5" /> Secure Account Recovery
-          </div>
-          <h2 className="text-4xl font-extrabold leading-tight text-white">
-            Reset your password.
-          </h2>
-          <p className="mt-4 text-base text-[#a8a29e] leading-relaxed">
-            Enter your fleet account email to receive an instant secure reset link.
-          </p>
-        </div>
-        <div className="text-xs text-[#78716c] border-t border-white/[0.06] pt-4">
-          Informational compliance pre-checks only — not legal advice.
-        </div>
-      </div>
+    <div className="flex min-h-screen items-center justify-center bg-[#f8fafc] text-slate-900 p-6 relative overflow-hidden bg-light-mesh">
+      <div className="ambient-orb-1" />
+      <div className="ambient-orb-2" />
 
-      {/* Right Form */}
-      <div className="flex items-center justify-center p-6 sm:p-12">
-        <Card className="alvero-card w-full max-w-md p-8 bg-[#181512] border-white/[0.08]">
-          {sent ? (
-            <div className="text-center">
-              <div className="mx-auto mb-4 h-14 w-14 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400">
-                <CheckCircle className="h-8 w-8" />
-              </div>
-              <h1 className="text-2xl font-bold text-white tracking-tight">Check your email</h1>
-              <p className="mt-2 text-sm text-[#9e958d]">
-                If an account exists for <strong className="text-white">{email}</strong>, a password reset link has been dispatched.
-              </p>
-              <p className="mt-3 text-xs text-[#78716c]">
-                Please check your inbox and spam folder.
-              </p>
-              <Button className="mt-6 w-full border-white/[0.08] hover:bg-white/[0.04]" variant="outline" onClick={() => setSent(false)}>
-                Try another email
-              </Button>
-              <p className="mt-6 text-center text-sm text-[#9e958d]">
-                <Link to="/login" className="flex items-center justify-center gap-1.5 text-orange-400 hover:text-orange-300 font-semibold">
-                  <ArrowLeft className="h-4 w-4" /> Back to sign in
-                </Link>
-              </p>
+      <Card className="executive-card w-full max-w-md p-8 bg-white border-slate-200/90 shadow-md relative z-10">
+        <div className="mb-6 flex items-center gap-2.5">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-sky-50 border border-sky-200 text-sky-600">
+            <ShieldCheck className="h-5 w-5" />
+          </div>
+          <span className="text-lg font-bold text-slate-900">TruckShield</span>
+        </div>
+
+        {submitted ? (
+          <div className="space-y-4 text-center">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200">
+              <CheckCircle2 className="h-6 w-6" />
             </div>
-          ) : (
-            <>
-              <div className="mb-6">
-                <h1 className="text-2xl font-bold text-white tracking-tight">Forgot password?</h1>
-                <p className="mt-1 text-sm text-[#9e958d]">
-                  Enter your registered email address to receive recovery instructions.
-                </p>
-              </div>
-              <form onSubmit={submit} className="space-y-4">
-                <div className="space-y-1.5">
-                  <Label htmlFor="email" className="text-xs font-semibold text-[#d6d3d1]">Account Email</Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#78716c]" />
-                    <Input
-                      id="email"
-                      type="email"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="operator@fleet.in"
-                      className="pl-10 bg-[#12100e] border-white/[0.08] text-white focus:border-orange-500 rounded-xl h-11"
-                    />
-                  </div>
-                </div>
-                <Button type="submit" className="btn-sunset-orange w-full font-semibold rounded-xl h-11 text-sm shadow-md" disabled={loading}>
-                  {loading ? "Sending link…" : "Send reset link"}
-                </Button>
-              </form>
-              <p className="mt-6 text-center text-sm text-[#9e958d]">
-                <Link to="/login" className="flex items-center justify-center gap-1.5 text-orange-400 hover:text-orange-300 font-semibold">
-                  <ArrowLeft className="h-4 w-4" /> Back to sign in
+            <h2 className="text-xl font-bold text-slate-900">Check your inbox</h2>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              If an account with <strong className="text-slate-900">{email}</strong> exists, we've sent password reset instructions.
+            </p>
+            {devToken && (
+              <div className="rounded-lg bg-sky-50 border border-sky-200 p-3 text-left">
+                <div className="text-[11px] font-bold text-sky-800 uppercase tracking-wider">Dev Reset Link</div>
+                <Link
+                  to={`/reset-password?token=${devToken}`}
+                  className="mt-1 block text-xs text-sky-600 font-mono underline break-all"
+                >
+                  /reset-password?token={devToken}
                 </Link>
-              </p>
-            </>
-          )}
-        </Card>
-      </div>
+              </div>
+            )}
+            <div className="pt-2">
+              <Link to="/login">
+                <Button variant="outline" className="w-full border-slate-200 text-xs font-semibold text-slate-700">
+                  <ArrowLeft className="mr-2 h-3.5 w-3.5" /> Back to Sign In
+                </Button>
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Reset password</h1>
+            <p className="mt-1 text-xs text-slate-500">
+              Enter the email address associated with your fleet account.
+            </p>
+
+            <form onSubmit={submit} className="mt-6 space-y-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="email" className="text-xs font-semibold text-slate-700">Email Address</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Input
+                    id="email"
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="operator@fleet.in"
+                    className="pl-10 bg-white border-slate-200 text-slate-900 rounded-lg h-10 text-xs"
+                  />
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                className="btn-executive-primary w-full font-semibold rounded-lg h-10 text-xs shadow-xs"
+                disabled={loading}
+              >
+                {loading ? <><Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" /> Sending instructions…</> : "Send Reset Link"}
+              </Button>
+            </form>
+
+            <p className="mt-6 text-center text-xs text-slate-500">
+              Remembered your password?{" "}
+              <Link to="/login" className="font-semibold text-sky-600 hover:underline">
+                Sign in
+              </Link>
+            </p>
+          </div>
+        )}
+      </Card>
     </div>
   );
 }

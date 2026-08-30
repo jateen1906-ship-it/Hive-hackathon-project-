@@ -23,9 +23,9 @@ const DOC_TYPES = [
 ];
 
 const STATUS_STYLE = {
-  processed: "text-emerald-400 bg-emerald-500/10 border-emerald-500/30",
-  uploaded: "text-[#d6d3d1] bg-white/[0.04] border-white/[0.08]",
-  ocr_failed: "text-rose-400 bg-rose-500/10 border-rose-500/30",
+  processed: "text-emerald-700 bg-emerald-50 border-emerald-200",
+  uploaded: "text-slate-600 bg-slate-100 border-slate-200",
+  ocr_failed: "text-red-700 bg-red-50 border-red-200",
 };
 
 function UploadDialog({ presetTrip, onDone }) {
@@ -59,34 +59,34 @@ function UploadDialog({ presetTrip, onDone }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button data-testid="documents-upload-button" className="btn-sunset-orange font-semibold rounded-xl text-xs">
-          <Upload className="mr-2 h-4 w-4 stroke-[2.5]" />Upload Document
+        <Button data-testid="documents-upload-button" className="btn-executive-primary font-semibold rounded-lg text-xs">
+          <Upload className="mr-2 h-3.5 w-3.5" />Upload Document
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-[#1a1714] border-white/[0.08] text-white">
-        <DialogHeader><DialogTitle className="text-white">Upload Freight Document</DialogTitle></DialogHeader>
+      <DialogContent className="bg-white border-slate-200 text-slate-900">
+        <DialogHeader><DialogTitle className="text-slate-900">Upload Freight Document</DialogTitle></DialogHeader>
         <div className="space-y-4">
           <div className="space-y-1.5">
-            <Label className="text-xs text-[#d6d3d1]">Document File (Image or PDF)</Label>
+            <Label className="text-xs text-slate-700">Document File (Image or PDF)</Label>
             <Input type="file" accept="image/*,application/pdf" data-testid="document-file-input"
                    onChange={(e) => setFile(e.target.files?.[0] || null)} 
-                   className="bg-[#12100e] border-white/[0.08] text-white text-xs file:bg-orange-500 file:text-white file:border-0 file:rounded-md file:mr-2" />
-            <p className="text-[11px] text-[#9e958d]">Max 10 MB. Multi-page PDFs supported with native optical extraction.</p>
+                   className="bg-white border-slate-200 text-xs file:bg-slate-900 file:text-white file:border-0 file:rounded-md file:mr-2" />
+            <p className="text-[11px] text-slate-500">Max 10 MB. Multi-page PDFs supported with native optical extraction.</p>
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs text-[#d6d3d1]">Document Classification</Label>
+            <Label className="text-xs text-slate-700">Document Classification</Label>
             <Select value={docType} onValueChange={setDocType}>
-              <SelectTrigger data-testid="document-type-select" className="bg-[#12100e] border-white/[0.08] text-white"><SelectValue /></SelectTrigger>
-              <SelectContent className="bg-[#1a1714] border-white/[0.08] text-white">
+              <SelectTrigger data-testid="document-type-select" className="bg-white border-slate-200"><SelectValue /></SelectTrigger>
+              <SelectContent className="bg-white border-slate-200">
                 {DOC_TYPES.map((d) => <SelectItem key={d.v} value={d.v}>{d.l}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs text-[#d6d3d1]">Link to Trip (Optional)</Label>
+            <Label className="text-xs text-slate-700">Link to Trip (Optional)</Label>
             <Select value={tripId} onValueChange={setTripId}>
-              <SelectTrigger data-testid="document-trip-select" className="bg-[#12100e] border-white/[0.08] text-white"><SelectValue placeholder="No trip assigned" /></SelectTrigger>
-              <SelectContent className="bg-[#1a1714] border-white/[0.08] text-white">
+              <SelectTrigger data-testid="document-trip-select" className="bg-white border-slate-200"><SelectValue placeholder="No trip assigned" /></SelectTrigger>
+              <SelectContent className="bg-white border-slate-200">
                 <SelectItem value="none">No trip assigned</SelectItem>
                 {(trips || []).map((t) => <SelectItem key={t.id} value={t.id}>{t.origin} → {t.destination}</SelectItem>)}
               </SelectContent>
@@ -94,7 +94,7 @@ function UploadDialog({ presetTrip, onDone }) {
           </div>
         </div>
         <DialogFooter className="mt-4">
-          <Button onClick={submit} disabled={busy} data-testid="document-upload-submit" className="btn-sunset-orange font-semibold text-xs w-full sm:w-auto">
+          <Button onClick={submit} disabled={busy} data-testid="document-upload-submit" className="btn-executive-primary font-semibold text-xs w-full sm:w-auto">
             {busy ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Extracting Fields…</> : "Upload & Extract"}
           </Button>
         </DialogFooter>
@@ -133,8 +133,8 @@ export default function Documents() {
           action={<UploadDialog presetTrip={presetTrip} onDone={onDone} />} 
         />
       ) : (
-        <Card className="alvero-card overflow-hidden border-white/[0.07]">
-          <div className="divide-y divide-white/[0.04]">
+        <Card className="executive-card overflow-hidden">
+          <div className="divide-y divide-slate-100">
             {data.map((d) => {
               const issues = d.validation_result?.issues?.length || 0;
               return (
@@ -142,27 +142,27 @@ export default function Documents() {
                   key={d.id} 
                   onClick={() => navigate(`/documents/${d.id}`)} 
                   data-testid={`document-row-${d.id}`}
-                  className="flex w-full items-center justify-between p-4 sm:px-6 text-left hover:bg-white/[0.03] transition-colors group"
+                  className="flex w-full items-center justify-between p-4 sm:px-6 text-left hover:bg-slate-50 transition-colors group"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400 group-hover:scale-105 transition-transform shrink-0">
+                    <div className="h-10 w-10 rounded-lg bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-600 shrink-0">
                       <FileText className="h-5 w-5" />
                     </div>
                     <div>
-                      <div className="text-sm font-semibold text-white group-hover:text-orange-400 transition-colors">{d.file_name}</div>
-                      <div className="text-xs text-[#9e958d] capitalize mt-0.5">{d.document_type?.replace("_", " ")} · {fmtDate(d.created_at)}</div>
+                      <div className="text-sm font-semibold text-slate-900 group-hover:text-sky-600 transition-colors">{d.file_name}</div>
+                      <div className="text-xs text-slate-500 capitalize mt-0.5">{d.document_type?.replace("_", " ")} · {fmtDate(d.created_at)}</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
                     {issues > 0 && (
-                      <span className="text-xs font-bold text-amber-400 px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30">
+                      <span className="text-xs font-bold text-amber-700 px-2.5 py-0.5 rounded-full bg-amber-50 border border-amber-200">
                         {issues} issues
                       </span>
                     )}
-                    <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize border ${STATUS_STYLE[d.status] || "bg-white/[0.04] text-[#d6d3d1]"}`}>
+                    <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize border ${STATUS_STYLE[d.status] || "bg-slate-100 text-slate-600"}`}>
                       {d.status?.replace("_", " ")}
                     </span>
-                    <ChevronRight className="h-4 w-4 text-[#78716c] group-hover:text-white transition-colors" />
+                    <ChevronRight className="h-4 w-4 text-slate-400 group-hover:text-slate-700 transition-colors" />
                   </div>
                 </button>
               );

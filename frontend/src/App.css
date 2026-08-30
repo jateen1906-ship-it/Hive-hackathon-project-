@@ -1,100 +1,157 @@
 .App {
   min-height: 100vh;
-  background-color: #12100e;
-  color: #fafaf9;
+  background-color: #f8fafc;
+  color: #0f172a;
 }
 
-/* Alvero Ambient Dark Canvas & Glow */
-.alvero-bg {
-  background-color: #12100e;
+/* Subtle Animated Ambient Background for Light Theme */
+.animated-ambient-bg {
+  background-color: #f8fafc;
   background-image: 
-    radial-gradient(circle at 10% 10%, rgba(249, 115, 22, 0.04) 0%, transparent 40%),
-    radial-gradient(circle at 90% 80%, rgba(245, 158, 11, 0.03) 0%, transparent 45%),
-    radial-gradient(circle at 50% 50%, rgba(28, 25, 23, 0.5) 0%, transparent 100%);
+    radial-gradient(at 10% 20%, rgba(37, 99, 235, 0.04) 0px, transparent 50%),
+    radial-gradient(at 90% 10%, rgba(14, 165, 233, 0.05) 0px, transparent 50%),
+    radial-gradient(at 50% 90%, rgba(99, 102, 241, 0.04) 0px, transparent 50%),
+    radial-gradient(at 80% 80%, rgba(16, 185, 129, 0.03) 0px, transparent 50%);
   position: relative;
 }
 
-/* Alvero Card Container */
-.alvero-card {
-  background-color: #1a1714;
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.35);
-  border-radius: 1.1rem;
+/* Animated Light Mesh Grid */
+.bg-light-mesh {
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-light-mesh::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 30%, rgba(37, 99, 235, 0.03) 0%, transparent 60%),
+              radial-gradient(circle at 70% 70%, rgba(2, 132, 199, 0.03) 0%, transparent 60%);
+  animation: driftMesh 25s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes driftMesh {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(-3%, 2%) rotate(2deg);
+  }
+  100% {
+    transform: translate(2%, -3%) rotate(-2deg);
+  }
+}
+
+/* Floating Ambient Orbs Animation */
+.ambient-orb-1 {
+  position: absolute;
+  top: 5%;
+  right: 15%;
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.06) 0%, rgba(255, 255, 255, 0) 70%);
+  border-radius: 50%;
+  filter: blur(40px);
+  animation: floatOrb 18s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+.ambient-orb-2 {
+  position: absolute;
+  bottom: 10%;
+  left: 10%;
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.05) 0%, rgba(255, 255, 255, 0) 70%);
+  border-radius: 50%;
+  filter: blur(50px);
+  animation: floatOrb2 22s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes floatOrb {
+  0% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-30px) translateX(20px); }
+  100% { transform: translateY(15px) translateX(-25px); }
+}
+
+@keyframes floatOrb2 {
+  0% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(25px) translateX(-20px); }
+  100% { transform: translateY(-20px) translateX(30px); }
+}
+
+/* Subtle dot background */
+.bg-dot-pattern {
+  background-color: #f8fafc;
+  background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Executive Professional Card */
+.executive-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
+  border-radius: 0.875rem;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.alvero-card:hover {
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.5);
+.executive-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.06), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
 }
 
-/* Warm Sunset Orange Primary Gradient Button */
-.btn-sunset-orange {
-  background: linear-gradient(135deg, #ff6b35 0%, #f97316 50%, #ea580c 100%);
+/* Professional Primary Button */
+.btn-executive-primary {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
   color: #ffffff;
-  box-shadow: 0 4px 14px -1px rgba(249, 115, 22, 0.35);
+  box-shadow: 0 2px 8px -1px rgba(15, 23, 42, 0.25);
   transition: all 0.2s ease;
 }
 
-.btn-sunset-orange:hover {
-  background: linear-gradient(135deg, #ff7a47 0%, #fb923c 50%, #f97316 100%);
-  box-shadow: 0 6px 20px 0px rgba(249, 115, 22, 0.5);
+.btn-executive-primary:hover {
+  background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+  box-shadow: 0 4px 12px 0px rgba(15, 23, 42, 0.35);
   transform: translateY(-1px);
 }
 
-.btn-sunset-orange:active {
-  transform: translateY(0);
+.btn-executive-blue {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: #ffffff;
+  box-shadow: 0 3px 12px -1px rgba(37, 99, 235, 0.3);
+  transition: all 0.2s ease;
+}
+
+.btn-executive-blue:hover {
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+  box-shadow: 0 5px 16px 0px rgba(37, 99, 235, 0.4);
+  transform: translateY(-1px);
 }
 
 /* Active Sidebar Navigation Pill */
-.nav-pill-active {
-  background: linear-gradient(135deg, #ff6b35 0%, #f97316 100%) !important;
+.nav-pill-active-light {
+  background: #0f172a !important;
   color: #ffffff !important;
-  box-shadow: 0 4px 16px -2px rgba(249, 115, 22, 0.45);
+  box-shadow: 0 2px 8px -1px rgba(15, 23, 42, 0.2);
 }
 
-/* Dark Glassmorphism Header */
-.alvero-header {
-  background-color: rgba(18, 16, 14, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-}
-
-/* Alvero Dark Hero Gradient */
+/* Header Gradient */
 .ts-hero-gradient {
   background:
-    radial-gradient(800px circle at 15% 20%, rgba(249, 115, 22, 0.15), transparent 60%),
-    radial-gradient(600px circle at 85% 10%, rgba(245, 158, 11, 0.12), transparent 50%),
-    #14110f;
+    radial-gradient(1000px circle at 15% 10%, rgba(37, 99, 235, 0.08), transparent 60%),
+    radial-gradient(800px circle at 85% 0%, rgba(2, 132, 199, 0.06), transparent 50%),
+    #0f172a;
 }
 
-.ts-grid-lines {
-  background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 32px 32px;
-}
-
-/* Featured Credit Card / Fleet Master Badge */
-.fleet-card-gold {
-  background: linear-gradient(135deg, #422817 0%, #2e1d13 50%, #1f140d 100%);
-  border: 1px solid rgba(249, 115, 22, 0.25);
-  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
-}
-
-/* KPI Card Accent Highlights */
-.kpi-accent-orange {
-  border-left: 3.5px solid #f97316;
-}
-.kpi-accent-amber {
-  border-left: 3.5px solid #f59e0b;
-}
-.kpi-accent-emerald {
-  border-left: 3.5px solid #10b981;
-}
-.kpi-accent-crimson {
-  border-left: 3.5px solid #ef4444;
-}
-.kpi-accent-sky {
-  border-left: 3.5px solid #38bdf8;
+/* Fleet Master Card Light Theme */
+.fleet-card-executive {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+  color: #ffffff;
+  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.2);
 }

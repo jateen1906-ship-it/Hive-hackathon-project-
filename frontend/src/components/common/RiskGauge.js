@@ -2,21 +2,20 @@ import React from "react";
 import { motion } from "framer-motion";
 import { riskMeta } from "@/lib/riskMeta";
 
-// Semi-circle risk gauge (0-100) with colored threshold arc.
+// Semi-circle risk gauge (0-100) with colored threshold arc for crisp light & dark themes.
 export function RiskGauge({ score = 0, level, size = 260 }) {
   const meta = riskMeta(level);
   const s = Math.max(0, Math.min(100, Number(score) || 0));
   const r = size / 2 - 18;
   const cx = size / 2;
   const cy = size / 2;
-  const circumference = Math.PI * r; // half circle
+  const circumference = Math.PI * r;
 
-  // segments for LOW/MED/HIGH/CRITICAL along the 180deg arc
   const segs = [
-    { to: 30, color: "hsl(var(--risk-low))" },
-    { to: 60, color: "hsl(var(--risk-medium))" },
-    { to: 80, color: "hsl(var(--risk-high))" },
-    { to: 100, color: "hsl(var(--risk-critical))" },
+    { to: 30, color: "#10b981" },
+    { to: 60, color: "#f59e0b" },
+    { to: 80, color: "#ea580c" },
+    { to: 100, color: "#dc2626" },
   ];
   let prev = 0;
   const arcs = segs.map((seg, i) => {
@@ -36,7 +35,7 @@ export function RiskGauge({ score = 0, level, size = 260 }) {
         strokeDasharray={`${len} ${circumference * 2}`}
         strokeDashoffset={-offset}
         transform={`rotate(180 ${cx} ${cy})`}
-        opacity={0.28}
+        opacity={0.22}
       />
     );
   });
@@ -47,7 +46,7 @@ export function RiskGauge({ score = 0, level, size = 260 }) {
     <div className="relative flex flex-col items-center" style={{ width: size, height: size / 2 + 44 }}
          role="img" aria-label={`Trip risk score ${s.toFixed(0)} out of 100, ${meta.label} risk`}>
       <svg width={size} height={size / 2 + 10} viewBox={`0 0 ${size} ${size / 2 + 10}`}>
-        <circle cx={cx} cy={cy} r={r} fill="none" stroke="hsl(var(--muted))" strokeWidth={12}
+        <circle cx={cx} cy={cy} r={r} fill="none" stroke="#e2e8f0" strokeWidth={12}
                 strokeDasharray={`${circumference} ${circumference * 2}`} transform={`rotate(180 ${cx} ${cy})`} />
         {arcs}
         <motion.circle
@@ -59,12 +58,12 @@ export function RiskGauge({ score = 0, level, size = 260 }) {
         />
       </svg>
       <div className="absolute inset-x-0 flex flex-col items-center" style={{ top: size / 2 - 54 }}>
-        <div className="font-mono text-4xl font-semibold tabular-nums" style={{ color: meta.color }}
+        <div className="font-mono text-4xl font-extrabold tabular-nums" style={{ color: meta.color }}
              data-testid="risk-report-score">
           {s.toFixed(0)}
         </div>
-        <div className="text-xs text-muted-foreground">/ 100</div>
-        <div className="mt-1 text-sm font-semibold" style={{ color: meta.color }}>{meta.label} risk</div>
+        <div className="text-xs text-slate-400 font-semibold">/ 100</div>
+        <div className="mt-1 text-xs font-bold uppercase tracking-wider" style={{ color: meta.color }}>{meta.label} risk</div>
       </div>
     </div>
   );

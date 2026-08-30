@@ -25,9 +25,9 @@ export default function Trips() {
           <Button 
             onClick={() => navigate("/trips/new")} 
             data-testid="trips-new-button"
-            className="btn-sunset-orange font-semibold rounded-xl"
+            className="btn-executive-primary font-semibold rounded-lg text-xs"
           >
-            <Plus className="mr-2 h-4 w-4 stroke-[2.5]" />
+            <Plus className="mr-2 h-3.5 w-3.5" />
             New Trip
           </Button>
         } 
@@ -41,50 +41,50 @@ export default function Trips() {
           title="No trips recorded yet" 
           description="Create a trip to generate an explainable compliance-risk report."
           action={
-            <Button onClick={() => navigate("/trips/new")} className="btn-sunset-orange font-semibold rounded-xl">
+            <Button onClick={() => navigate("/trips/new")} className="btn-executive-primary font-semibold rounded-lg text-xs">
               Create your first trip
             </Button>
           } 
         />
       ) : (
-        <Card className="alvero-card overflow-hidden border-white/[0.07]">
+        <Card className="executive-card overflow-hidden">
           <div className="hidden md:block">
             <Table>
-              <TableHeader className="bg-white/[0.02] border-b border-white/[0.06]">
-                <TableRow className="border-white/[0.06] hover:bg-transparent">
-                  <TableHead className="text-xs font-bold uppercase tracking-wider text-[#9e958d] py-4 pl-6">Route</TableHead>
-                  <TableHead className="text-xs font-bold uppercase tracking-wider text-[#9e958d] py-4">Travel date</TableHead>
-                  <TableHead className="text-xs font-bold uppercase tracking-wider text-[#9e958d] py-4">Vehicle</TableHead>
-                  <TableHead className="text-xs font-bold uppercase tracking-wider text-[#9e958d] py-4">Status</TableHead>
-                  <TableHead className="text-xs font-bold uppercase tracking-wider text-[#9e958d] py-4 pr-6 text-right">Risk Score</TableHead>
+              <TableHeader className="bg-slate-50/70 border-b border-slate-100">
+                <TableRow className="border-slate-100 hover:bg-transparent">
+                  <TableHead className="text-xs font-bold uppercase tracking-wider text-slate-500 py-3.5 pl-6">Route</TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wider text-slate-500 py-3.5">Travel date</TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wider text-slate-500 py-3.5">Vehicle</TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wider text-slate-500 py-3.5">Status</TableHead>
+                  <TableHead className="text-xs font-bold uppercase tracking-wider text-slate-500 py-3.5 pr-6 text-right">Risk Score</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody className="divide-y divide-white/[0.04]">
+              <TableBody className="divide-y divide-slate-100">
                 {data.map((t) => (
                   <TableRow 
                     key={t.id} 
-                    className="cursor-pointer border-white/[0.04] hover:bg-white/[0.03] transition-colors" 
+                    className="cursor-pointer border-slate-100 hover:bg-slate-50/80 transition-colors" 
                     data-testid={`trip-row-${t.id}`} 
                     onClick={() => navigate(`/trips/${t.id}`)}
                   >
-                    <TableCell className="py-4 pl-6">
+                    <TableCell className="py-3.5 pl-6">
                       <div className="flex items-center gap-2.5">
                         <RouteStrip origin={t.origin} destination={t.destination} className="text-sm font-semibold" />
                         {t.is_demo && <SyntheticBadge />}
                       </div>
                     </TableCell>
-                    <TableCell className="text-sm text-[#9e958d] py-4">{fmtDate(t.travel_date)}</TableCell>
-                    <TableCell className="font-mono text-xs text-[#d6d3d1] py-4">{t.vehicle_number || "—"}</TableCell>
-                    <TableCell className="text-sm py-4">
-                      <span className="capitalize px-2.5 py-1 rounded-full bg-white/[0.04] text-xs font-medium text-[#d6d3d1]">
+                    <TableCell className="text-xs text-slate-500 py-3.5">{fmtDate(t.travel_date)}</TableCell>
+                    <TableCell className="font-mono text-xs text-slate-700 py-3.5">{t.vehicle_number || "—"}</TableCell>
+                    <TableCell className="text-xs py-3.5">
+                      <span className="capitalize px-2.5 py-0.5 rounded-full bg-slate-100 text-xs font-medium text-slate-700">
                         {t.status}
                       </span>
                     </TableCell>
-                    <TableCell className="text-right py-4 pr-6">
+                    <TableCell className="text-right py-3.5 pr-6">
                       {t.risk_level ? (
                         <RiskBadge level={t.risk_level} score={t.risk_score} />
                       ) : (
-                        <span className="text-xs text-[#9e958d]">Not analyzed</span>
+                        <span className="text-xs text-slate-400">Not analyzed</span>
                       )}
                     </TableCell>
                   </TableRow>
@@ -94,21 +94,21 @@ export default function Trips() {
           </div>
 
           {/* Mobile list view */}
-          <div className="divide-y divide-white/[0.04] md:hidden">
+          <div className="divide-y divide-slate-100 md:hidden">
             {data.map((t) => (
               <button 
                 key={t.id} 
                 onClick={() => navigate(`/trips/${t.id}`)} 
-                className="flex w-full flex-col gap-1.5 p-4 text-left hover:bg-white/[0.03] transition-colors"
+                className="flex w-full flex-col gap-1.5 p-4 text-left hover:bg-slate-50 transition-colors"
               >
                 <div className="flex items-center justify-between">
                   <RouteStrip origin={t.origin} destination={t.destination} className="text-sm font-semibold" />
                   {t.risk_level && <RiskBadge level={t.risk_level} score={t.risk_score} />}
                 </div>
-                <div className="flex items-center gap-2 text-xs text-[#9e958d]">
+                <div className="flex items-center gap-2 text-xs text-slate-500">
                   <span>{fmtDate(t.travel_date)}</span>
                   <span>•</span>
-                  <span className="font-mono text-[#d6d3d1]">{t.vehicle_number || "no vehicle"}</span>
+                  <span className="font-mono text-slate-700">{t.vehicle_number || "no vehicle"}</span>
                 </div>
               </button>
             ))}

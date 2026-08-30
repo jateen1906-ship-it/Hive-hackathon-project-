@@ -1,15 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
     margin: 0;
-    font-family: 'Plus Jakarta Sans', 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #12100e;
-    color: #f5f5f4;
+    background-color: #f8fafc;
+    color: #0f172a;
 }
 
 code, .font-mono {
@@ -18,52 +18,52 @@ code, .font-mono {
 
 @layer base {
     :root {
-        /* Alvero Luxury Dark Espresso Theme */
-        --background: 24 16% 7%;          /* #12100e */
-        --foreground: 40 20% 97%;         /* #fafaf9 */
+        /* Executive Crisp Light Theme */
+        --background: 210 40% 98%;        /* #f8fafc */
+        --foreground: 222 47% 11%;        /* #0f172a */
         
-        --card: 24 14% 11%;               /* #1a1714 */
-        --card-foreground: 40 20% 97%;    /* #fafaf9 */
+        --card: 0 0% 100%;                /* #ffffff */
+        --card-foreground: 222 47% 11%;   /* #0f172a */
         
-        --popover: 24 14% 11%;            /* #1a1714 */
-        --popover-foreground: 40 20% 97%;
+        --popover: 0 0% 100%;             /* #ffffff */
+        --popover-foreground: 222 47% 11%;
         
-        --primary: 24 95% 53%;            /* #f97316 - Radiant Sunset Orange */
-        --primary-foreground: 0 0% 100%;  /* #ffffff */
+        --primary: 221 83% 53%;           /* #2563eb - Royal Indigo Blue */
+        --primary-foreground: 210 40% 98%;
         
-        --secondary: 24 12% 16%;          /* #26211d */
-        --secondary-foreground: 40 20% 95%;
+        --secondary: 210 40% 96%;         /* #f1f5f9 */
+        --secondary-foreground: 222 47% 11%;
         
-        --muted: 24 12% 15%;              /* #241f1b */
-        --muted-foreground: 24 8% 62%;     /* #9e958d */
+        --muted: 210 40% 96%;             /* #f1f5f9 */
+        --muted-foreground: 215 16% 47%;  /* #64748b */
         
-        --accent: 24 12% 18%;             /* #2d2722 */
-        --accent-foreground: 40 20% 97%;
+        --accent: 210 40% 96%;            /* #f1f5f9 */
+        --accent-foreground: 222 47% 11%;
         
-        --destructive: 0 72% 51%;         /* #dc2626 */
+        --destructive: 0 84% 60%;         /* #ef4444 */
         --destructive-foreground: 0 0% 98%;
         
-        --border: 24 10% 20%;             /* #332b25 */
-        --input: 24 10% 22%;              /* #383029 */
-        --ring: 24 95% 53%;               /* #f97316 */
+        --border: 214 32% 91%;            /* #e2e8f0 */
+        --input: 214 32% 91%;             /* #e2e8f0 */
+        --ring: 221 83% 53%;              /* #2563eb */
         
-        /* Dark Theme Tailored Risk Levels */
-        --risk-low: 152 69% 45%;          /* #10b981 - Emerald */
-        --risk-medium: 38 92% 50%;        /* #f59e0b - Amber */
-        --risk-high: 24 95% 53%;          /* #f97316 - Sunset Orange */
-        --risk-critical: 0 84% 60%;       /* #ef4444 - Crimson */
+        /* Statutory Risk Tokens */
+        --risk-low: 152 69% 38%;          /* #059669 */
+        --risk-medium: 38 92% 45%;        /* #d97706 */
+        --risk-high: 14 90% 50%;          /* #ea580c */
+        --risk-critical: 0 84% 55%;       /* #dc2626 */
         
-        --risk-low-bg: 152 60% 12%;       /* Dark Emerald Tint */
-        --risk-medium-bg: 38 75% 12%;      /* Dark Amber Tint */
-        --risk-high-bg: 24 80% 13%;        /* Dark Orange Tint */
-        --risk-critical-bg: 0 75% 14%;     /* Dark Crimson Tint */
+        --risk-low-bg: 142 71% 95%;       /* #ecfdf5 */
+        --risk-medium-bg: 45 93% 95%;     /* #fffbeb */
+        --risk-high-bg: 24 95% 95%;       /* #fff7ed */
+        --risk-critical-bg: 0 84% 96%;    /* #fef2f2 */
         
-        --chart-1: 24 95% 53%;            /* Orange */
-        --chart-2: 38 92% 50%;            /* Amber */
-        --chart-3: 152 69% 45%;           /* Emerald */
-        --chart-4: 280 65% 60%;           /* Violet */
-        --chart-5: 0 84% 60%;             /* Rose */
-        --radius: 1rem;
+        --chart-1: 221 83% 53%;           /* Blue */
+        --chart-2: 199 89% 48%;           /* Cyan */
+        --chart-3: 152 69% 38%;           /* Emerald */
+        --chart-4: 38 92% 50%;            /* Amber */
+        --chart-5: 0 84% 60%;             /* Red */
+        --radius: 0.875rem;
     }
 }
 
@@ -82,14 +82,14 @@ code, .font-mono {
     height: 6px;
 }
 ::-webkit-scrollbar-track {
-    background: #141210;
+    background: #f1f5f9;
 }
 ::-webkit-scrollbar-thumb {
-    background: #2d2621;
+    background: #cbd5e1;
     border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #453b34;
+    background: #94a3b8;
 }
 
 @layer base {
